@@ -34,6 +34,10 @@ The build is a fully static export (`out/`), so it can be hosted anywhere.
 - **Vercel / Netlify / Cloudflare Pages:** build command `npm run build`, output directory `out`.
 - Set the two environment variables above in the host's dashboard.
 
+## Claude Artifact preview
+
+`npx tsx scripts/build-artifact-preview.ts` builds `preview/`: a single-page version of the site (same data, photos and design) for sharing as a Claude Artifact. It carries a "Design preview by Marvani" bar so it can't be mistaken for the official store.
+
 ## Where things live
 
 ```
