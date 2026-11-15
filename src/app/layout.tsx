@@ -4,7 +4,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
-import { SITE_URL, site } from "@/data/site";
+import { SITE_URL, site, NOINDEX } from "@/data/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
   icons: { icon: "/favicon.svg" },
   alternates: { canonical: "/" },
+  robots: NOINDEX ? { index: false, follow: false } : undefined,
 };
 
 export const viewport: Viewport = {

@@ -22,6 +22,7 @@ Requires Node 20 or later.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `https://www.peak-side.com` | Canonical URLs, sitemap, Open Graph, JSON-LD |
 | `NEXT_PUBLIC_STORE_URL` | `https://www.peak-side.com` | Where "Choose size & checkout" sends shoppers |
+| `NEXT_PUBLIC_NOINDEX` | unset | Set to `1` for client-preview builds so search engines ignore them |
 
 > **Domain plan.** If this site replaces the Wix site on `peak-side.com`, move the Wix store to a subdomain
 > (for example `shop.peak-side.com`) and set `NEXT_PUBLIC_STORE_URL` to match. Otherwise the checkout links point at this site.

@@ -8,6 +8,9 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.peak-s
 // `${STORE_URL}/product-page/<storeSlug>` where size, colour and payment are handled.
 // If this front-end takes over the main domain, move the Wix store to a subdomain
 // (e.g. shop.peak-side.com) and update NEXT_PUBLIC_STORE_URL.
+// Preview/staging builds: set NEXT_PUBLIC_NOINDEX=1 so search engines ignore the copy.
+export const NOINDEX = process.env.NEXT_PUBLIC_NOINDEX === "1";
+
 export const STORE_URL = (process.env.NEXT_PUBLIC_STORE_URL || "https://www.peak-side.com").replace(/\/$/, "");
 
 export const site = {
