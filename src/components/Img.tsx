@@ -1,4 +1,5 @@
 import manifest from "@/data/image-manifest.json";
+import { BASE_PATH } from "@/data/site";
 
 type Entry = { w: number; h: number; kind: string; widths: number[]; color: string };
 const M = manifest as Record<string, Entry>;
@@ -8,7 +9,7 @@ export const imageSrc = (name: string, target = 960) => {
   const e = M[name];
   if (!e) return "";
   const w = e.widths.find((x) => x >= target) ?? e.widths[e.widths.length - 1];
-  return `/images/${name}-${w}.webp`;
+  return `${BASE_PATH}/images/${name}-${w}.webp`;
 };
 
 type Props = {
@@ -28,7 +29,7 @@ export default function Img({ name, alt, sizes = "100vw", className = "", priori
     if (process.env.NODE_ENV !== "production") console.warn("Missing image", name);
     return null;
   }
-  const srcSet = e.widths.map((w) => `/images/${name}-${w}.webp ${w}w`).join(", ");
+  const srcSet = e.widths.map((w) => `${BASE_PATH}/images/${name}-${w}.webp ${w}w`).join(", ");
   const studio = e.kind === "studio" && blend;
   return (
     // eslint-disable-next-line @next/next/no-img-element

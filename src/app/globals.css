@@ -81,8 +81,9 @@
     mix-blend-mode: multiply;
   }
   .mask-pks {
-    -webkit-mask: url("/images/mark-pks-480.webp") center / contain no-repeat;
-    mask: url("/images/mark-pks-480.webp") center / contain no-repeat;
+    /* --pks is set on <body> so the path respects the base path. */
+    -webkit-mask: var(--pks) center / contain no-repeat;
+    mask: var(--pks) center / contain no-repeat;
     background: currentColor;
   }
   .grain::after {

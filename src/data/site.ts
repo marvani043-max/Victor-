@@ -2,6 +2,9 @@
 // Everything here was taken from the live peak-side.com store (Nov 2026).
 // Anything not verified is marked TODO and must be confirmed with Peak Side before launch.
 
+/** Sub-folder the site is served from ("" at a domain root, "/Victor-" on GitHub Pages). */
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.peak-side.com").replace(/\/$/, "");
 
 // Checkout lives on the existing Wix store. Product buttons send shoppers to

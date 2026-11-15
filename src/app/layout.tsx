@@ -4,7 +4,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
-import { SITE_URL, site, NOINDEX } from "@/data/site";
+import { SITE_URL, site, NOINDEX, BASE_PATH } from "@/data/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -18,10 +18,10 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Peak Side",
     locale: "en_US",
-    images: [{ url: "/images/tunnel-crew-1600.webp", width: 1600, height: 1067, alt: "The Peak Side crew in hoodies, tees and crop tops" }],
+    images: [{ url: `${SITE_URL}/images/tunnel-crew-1600.webp`, width: 1600, height: 1067, alt: "The Peak Side crew in hoodies, tees and crop tops" }],
   },
   twitter: { card: "summary_large_image" },
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: `${BASE_PATH}/favicon.svg` },
   alternates: { canonical: "/" },
   robots: NOINDEX ? { index: false, follow: false } : undefined,
 };
@@ -46,7 +46,7 @@ const orgLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ ["--pks" as string]: `url(${BASE_PATH}/images/mark-pks-480.webp)` }}>
         <a href="#main" className="label sr-only z-[60] bg-ink px-4 py-3 text-bone focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
           Skip to content
         </a>

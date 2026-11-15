@@ -7,6 +7,8 @@ import { products, getProduct, relatedTo, categoryLabel } from "@/data/products"
 import { SITE_URL, storeProductUrl } from "@/data/site";
 import { imageSrc } from "@/components/Img";
 
+const ORIGIN = new URL(SITE_URL).origin;
+
 export const dynamicParams = false;
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: `${p.name} — $${p.price.toFixed(2)}`,
     description: `${p.description ?? p.summary} ${p.inStock ? `Sizes ${p.sizes.join(", ")}.` : "Currently sold out."}`.trim(),
     alternates: { canonical: `/shop/${p.slug}/` },
-    openGraph: { images: [{ url: img }], title: p.name },
+    openGraph: { images: [{ url: `${ORIGIN}${img}` }], title: p.name },
   };
 }
 
@@ -39,7 +41,7 @@ export default async function ProductPage({ params }: Params) {
         description: p.description ?? p.summary,
         brand: { "@type": "Brand", name: "Peak Side" },
         category: categoryLabel(p.category),
-        image: p.colorways.flatMap((c) => c.images.slice(0, 2)).map((n) => `${SITE_URL}${imageSrc(n, 1600)}`),
+        image: p.colorways.flatMap((c) => c.images.slice(0, 2)).map((n) => `${ORIGIN}${imageSrc(n, 1600)}`),
         color: p.colorways.map((c) => c.name).join(", "),
         size: p.sizes.length ? p.sizes.join(", ") : undefined,
         offers: {
