@@ -12,13 +12,15 @@
     "products:csv": "node dev/export-products-csv.mjs",
     "test": "node dev/tests/run.mjs",
     "screenshots": "node dev/tests/screenshots.mjs",
-    "package": "node dev/package-theme.mjs"
+    "package": "node dev/package-theme.mjs",
+    "artifact": "node dev/artifact/build.mjs"
   },
   "devDependencies": {
     "@fontsource-variable/overpass": "5.2.5",
     "@fontsource/overpass-mono": "5.2.5",
     "@shopify/theme-check-node": "3.22.0",
     "axe-core": "4.10.3",
+    "esbuild": "^0.24.2",
     "liquidjs": "10.21.1"
   }
 }

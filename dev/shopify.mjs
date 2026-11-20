@@ -9,7 +9,8 @@ import { PRODUCTS, COLLECTIONS, MENUS, PAGES, POLICIES } from './data/products.m
 
 export const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 export const THEME = path.join(ROOT, 'theme');
-const MANIFEST = JSON.parse(fs.readFileSync(path.join(ROOT, 'dev/data/image-manifest.json'), 'utf8'));
+// PS_MANIFEST lets the artifact build point at a manifest trimmed to the image widths it ships.
+const MANIFEST = JSON.parse(fs.readFileSync(process.env.PS_MANIFEST || path.join(ROOT, 'dev/data/image-manifest.json'), 'utf8'));
 const LOCALE = JSON.parse(fs.readFileSync(path.join(THEME, 'locales/en.default.json'), 'utf8'));
 const SIZE_ORDER = ['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'];
 
@@ -219,13 +220,13 @@ function splitArgs(str) {
   return parts;
 }
 
-export function createEngine() {
+export function createEngine(opts = {}) {
   const liquid = new Liquid({
     root: [path.join(THEME, 'snippets')],
     extname: '.liquid',
     strictFilters: true,
-    cache: false,
-    outputEscape: undefined,
+    cache: !!opts.fs,
+    ...(opts.fs ? { fs: opts.fs } : {}),
   });
 
   // --- filters

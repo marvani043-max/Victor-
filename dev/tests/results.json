@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-11-20T00:47:22.019Z",
+  "ranAt": "2026-11-20T00:56:42.537Z",
   "passed": 31,
   "failed": 0,
   "results": [
@@ -187,7 +187,7 @@
       "group": "Performance",
       "name": "Cumulative layout shift during load (measured, not a Lighthouse score)",
       "ok": true,
-      "detail": "/ @360: 0.000; / @1440: 0.000; /products/double-zip-hoodie @360: 0.002; /products/double-zip-hoodie @1440: 0.000; /collections/all @360: 0.000; /collections/all @1440: 0.000"
+      "detail": "/ @360: 0.000; / @1440: 0.000; /products/double-zip-hoodie @360: 0.000; /products/double-zip-hoodie @1440: 0.000; /collections/all @360: 0.000; /collections/all @1440: 0.000"
     }
   ]
 }

@@ -22,6 +22,7 @@ npm run contrast       # WCAG contrast for every colour token pair → docs/cont
 npm run products:csv   # docs/import/products.csv, redirects.csv, garment-details.json
 npm run screenshots    # docs/screenshots/*.jpg
 npm run package        # dist/peak-side-field-tag-theme.zip, ready to upload to Shopify
+npm run artifact       # dist/artifact/: static multi-page design preview (shared as a private Claude Artifact)
 ```
 
 Requires Node 20 or later. Playwright with Chromium must be available for `npm test` and `npm run screenshots`.
