@@ -23,7 +23,7 @@ const SETS: Record<"trail" | "tunnel", { title: string; line: string; looks: Loo
     line: "Back in town: graffiti walls, late light, the whole crew. Same clothes, different backdrop.",
     looks: [
       { image: "tunnel-crop-duo-2", alt: "Two friends in black off-shoulder crop tops against graffiti", product: "black-off-shoulder-crop-top" },
-      { image: "tunnel-zip-navy", alt: "Navy double zip hoodie worn in a graffiti tunnel", product: "double-zip-hoodie" },
+      { image: "tunnel-zip-black-2", alt: "Black double zip hoodie worn in a graffiti tunnel", product: "double-zip-hoodie" },
       { image: "tunnel-tee-black-back", alt: "Back print of the black Summer Edition tee", product: "black-summer-edition-tee" },
       { image: "tunnel-crop-white", alt: "White off-shoulder crop top in a graffiti tunnel", product: "white-off-shoulder-crop-top" },
     ],

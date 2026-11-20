@@ -181,7 +181,7 @@ const LOOKS = {
     line: "Back in town: graffiti walls, late light, the whole crew. Same clothes, different backdrop.",
     looks: [
       ["tunnel-crop-duo-2", "Two friends in black off-shoulder crop tops against graffiti", "black-off-shoulder-crop-top"],
-      ["tunnel-zip-navy", "Navy double zip hoodie worn in a graffiti tunnel", "double-zip-hoodie"],
+      ["tunnel-zip-black-2", "Black double zip hoodie worn in a graffiti tunnel", "double-zip-hoodie"],
       ["tunnel-tee-black-back", "Back print of the black Summer Edition tee", "black-summer-edition-tee"],
       ["tunnel-crop-white", "White off-shoulder crop top in a graffiti tunnel", "white-off-shoulder-crop-top"],
     ],

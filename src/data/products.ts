@@ -167,12 +167,10 @@ export const products: Product[] = [
     category: "zip-ups",
     price: 54.95,
     inStock: true,
-    summary: "Boxy full-zip hoodie with a two-way zipper and the PKS script on the chest. Three colourways.",
+    summary: "Boxy full-zip hoodie with a two-way zipper and the PKS script on the chest.",
     sizes: ["S", "M", "L", "XL", "2XL"],
     colorways: [
       { name: "Black", swatch: "#232323", images: ["zip-black-front", "zip-black-back", "tunnel-zip-black", "tunnel-zip-black-2"], spin: { front: "zip-black-front", back: "zip-black-back" } },
-      { name: "Navy Blue", swatch: "#2E4462", images: ["zip-navy-front", "zip-navy-back", "tunnel-zip-navy", "tunnel-zip-navy-2"], spin: { front: "zip-navy-front", back: "zip-navy-back" } },
-      { name: "Flower Gray", swatch: "#C9C9C7", images: ["zip-grey-front", "zip-grey-back", "tunnel-zip-grey"], spin: { front: "zip-grey-front", back: "zip-grey-back" } },
     ],
     lifestyle: "tunnel-zip-black",
   },

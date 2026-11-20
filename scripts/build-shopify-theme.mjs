@@ -33,7 +33,7 @@ const PHOTOS = [
   ["tunnel-crop-white", "Tunnel: white crop top"],
   ["tunnel-crop-white-2", "Tunnel: white crop top 2"],
   ["tunnel-zip-black", "Tunnel: black zip hoodie"],
-  ["tunnel-zip-navy", "Tunnel: navy zip hoodie"],
+  ["tunnel-zip-black-2", "Tunnel: black zip hoodie 2"],
   ["tunnel-tee-black-back", "Tunnel: tee back print"],
   ["night-boxy-trio", "Night: boxy tee trio"],
   ["detail-graphic-black", "Detail: Summer Edition graphic"],
