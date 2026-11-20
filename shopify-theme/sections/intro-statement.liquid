@@ -1,0 +1,63 @@
+{%- assign s = section.settings -%}
+<section class="wrap py-20 sm:py-32" aria-labelledby="Heading-{{ section.id }}" {{ section.shopify_attributes }}>
+  <div class="grid gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-3" data-reveal>
+      <p class="label text-granite">{{ shop.name }} — {{ settings.brand_descriptor }}</p>
+      {%- render 'icon', name: 'ridge', class: 'mt-4 h-3 w-28 text-bloom' -%}
+    </div>
+    <div class="lg:col-span-9">
+      <h2 id="Heading-{{ section.id }}" class="display-wide text-[8.5vw] leading-[1.02] sm:text-5xl lg:text-[4.1rem]" data-reveal>
+        {{ s.statement }} {% if s.accent != blank %}<span class="whitespace-nowrap text-bloom">{{ s.accent }}</span>{% endif %} {{ s.statement_end }}
+      </h2>
+      {%- if section.blocks.size > 0 -%}
+        <div class="mt-14 grid grid-cols-3 gap-4 border-t border-ink/15 pt-6" data-reveal style="--delay: 0.1s">
+          {%- for block in section.blocks -%}
+            <div {{ block.shopify_attributes }}>
+              <p class="display text-5xl sm:text-8xl">
+                {%- case block.type -%}
+                  {%- when 'product_count' -%}
+                    {{- collections.all.products_count -}}
+                  {%- when 'lowest_price' -%}
+                    {%- assign lowest = 0 -%}
+                    {%- for product in collections.all.products limit: 50 -%}
+                      {%- if product.available and product.price_min > 0 -%}
+                        {%- if lowest == 0 or product.price_min < lowest -%}{%- assign lowest = product.price_min -%}{%- endif -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {{- lowest | money_without_trailing_zeros -}}
+                  {%- else -%}
+                    {{- block.settings.value -}}
+                {%- endcase -%}
+              </p>
+              <p class="label mt-2 text-granite">{{ block.settings.label }}</p>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Intro statement",
+  "tag": "div",
+  "settings": [
+    { "type": "textarea", "id": "statement", "label": "Statement", "default": "Clothes for the days that start on a trail and end in town. Started by a" },
+    { "type": "text", "id": "accent", "label": "Accent (pink)", "default": "16-year-old" },
+    { "type": "text", "id": "statement_end", "label": "Statement ending", "default": "who'd rather be outside." }
+  ],
+  "blocks": [
+    { "type": "stat", "name": "Number", "settings": [{ "type": "text", "id": "value", "label": "Number", "default": "16" }, { "type": "text", "id": "label", "label": "Label", "default": "Founder's age at launch" }] },
+    { "type": "product_count", "name": "Product count", "limit": 1, "settings": [{ "type": "text", "id": "label", "label": "Label", "default": "Pieces in the range" }] },
+    { "type": "lowest_price", "name": "Starting price", "limit": 1, "settings": [{ "type": "text", "id": "label", "label": "Label", "default": "Starting price" }] }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "Intro statement",
+      "blocks": [{ "type": "stat" }, { "type": "product_count" }, { "type": "lowest_price" }]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,303 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section.id
+  assign is_coming = false
+  if product.tags contains 'coming-soon'
+    assign is_coming = true
+  endif
+
+  capture spin
+    render 'spin-images', product: product, width: 1200
+  endcapture
+  assign spin_parts = spin | strip | split: '|'
+  assign spin_kind = spin_parts[0]
+  assign skip_first_media = false
+  if spin_kind == 'photo'
+    assign skip_first_media = true
+  endif
+
+  assign media_count = product.media.size
+  assign summary = product.metafields.custom.summary.value
+  assign fit_note = product.metafields.custom.fit_note.value
+  assign size_chart = product.metafields.custom.size_chart
+
+  assign on_sale = false
+  if current_variant.compare_at_price > current_variant.price
+    assign on_sale = true
+  endif
+-%}
+
+<section class="wrap pb-24 pt-6 sm:pt-10" data-product data-form-id="{{ form_id }}" data-coming="{{ is_coming }}">
+  <nav aria-label="Breadcrumb" class="label mb-6 flex flex-wrap items-center gap-2 text-granite">
+    <a href="{{ routes.root_url }}" class="link-u">{{ 'general.home' | t }}</a>
+    <span aria-hidden="true">/</span>
+    {%- if collection -%}
+      <a href="{{ collection.url }}" class="link-u">{{ collection.title }}</a>
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}" class="link-u">{{ 'general.shop_all' | t }}</a>
+    {%- endif -%}
+  </nav>
+
+  <div class="grid gap-8 lg:grid-cols-12 lg:gap-12">
+    {%- comment -%} Gallery {%- endcomment -%}
+    <div class="min-w-0 lg:col-span-7">
+      {%- if spin_kind != blank -%}
+        <div role="tablist" aria-label="Gallery view" class="mb-3 inline-flex border border-ink/15 p-1 lg:hidden">
+          <button type="button" role="tab" class="gview label px-4 py-2.5" aria-selected="true" data-gview="spin">{{ 'products.product.view_360' | t }}</button>
+          <button type="button" role="tab" class="gview label px-4 py-2.5" aria-selected="false" data-gview="photos">{{ 'products.product.photos' | t: count: media_count }}</button>
+        </div>
+        <div class="relative -mx-4 aspect-[4/5] sm:-mx-6 lg:hidden" data-gpanel="spin">
+          <ps-spin class="absolute inset-0" front="{{ spin_parts[1] }}" back="{{ spin_parts[2] }}" label="{{ product.title | escape }}" word="{{ product.type | default: shop.name | escape }}"{% if spin_kind == 'photo' %} plain{% endif %}></ps-spin>
+        </div>
+      {%- endif -%}
+
+      <div class="relative -mx-4 sm:-mx-6 lg:hidden" data-gpanel="photos"{% if spin_kind != blank %} hidden{% endif %}>
+        <div class="no-scrollbar flex snap-x snap-mandatory overflow-x-auto" tabindex="0" aria-label="{{ 'accessibility.product_images' | t }}" data-rail>
+          {%- for media in product.media -%}
+            <div class="relative aspect-[4/5] w-full shrink-0 snap-center bg-white" data-media-id="{{ media.id }}">
+              {{ media.preview_image | image_url: width: 1200 | image_tag: widths: '480, 720, 960, 1200', sizes: '100vw', class: 'absolute inset-0 h-full w-full object-cover', alt: media.alt, loading: 'lazy' }}
+            </div>
+          {%- else -%}
+            <div class="relative aspect-[4/5] w-full shrink-0 bg-stone">{{ 'product-apparel-1' | placeholder_svg_tag: 'absolute inset-0 h-full w-full p-10 text-granite' }}</div>
+          {%- endfor -%}
+        </div>
+        {%- if media_count > 1 -%}
+          <div class="pointer-events-none absolute bottom-4 left-0 right-0 flex justify-center gap-1.5" data-dots>
+            {%- for media in product.media -%}
+              <span class="h-[3px] transition-all duration-300 {% if forloop.first %}w-6 bg-ink{% else %}w-3 bg-ink/25{% endif %}"></span>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="hidden grid-cols-2 gap-3 lg:grid" data-desktop-gallery>
+        {%- if spin_kind != blank -%}
+          <div class="relative col-span-2 aspect-[5/6]">
+            <ps-spin class="absolute inset-0" front="{{ spin_parts[1] }}" back="{{ spin_parts[2] }}" label="{{ product.title | escape }}" word="{{ product.type | default: shop.name | escape }}"{% if spin_kind == 'photo' %} plain{% endif %}></ps-spin>
+          </div>
+        {%- endif -%}
+        {%- liquid
+          assign shown = 0
+          assign total = media_count
+          if skip_first_media
+            assign total = total | minus: 1
+          endif
+        -%}
+        {%- for media in product.media -%}
+          {%- if skip_first_media and forloop.first -%}{%- continue -%}{%- endif -%}
+          {%- liquid
+            assign full = false
+            if spin_kind == blank and shown == 0
+              assign full = true
+            endif
+            assign odd_total = total | modulo: 2
+            assign last_index = total | minus: 1
+            if spin_kind != blank and odd_total == 1 and shown == last_index
+              assign full = true
+            endif
+            if spin_kind == blank and odd_total == 0 and shown == last_index
+              assign full = true
+            endif
+            assign shown = shown | plus: 1
+          -%}
+          <div class="relative overflow-hidden bg-white {% if full %}col-span-2 aspect-[5/6]{% else %}aspect-[4/5]{% endif %}" data-media-id="{{ media.id }}">
+            {%- if full -%}
+              {{ media.preview_image | image_url: width: 1800 | image_tag: widths: '720, 960, 1280, 1800', sizes: '58vw', class: 'absolute inset-0 h-full w-full object-cover', alt: media.alt, loading: 'lazy' }}
+            {%- else -%}
+              {{ media.preview_image | image_url: width: 1200 | image_tag: widths: '480, 720, 960, 1200', sizes: '29vw', class: 'absolute inset-0 h-full w-full object-cover', alt: media.alt, loading: 'lazy' }}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- comment -%} Buy panel {%- endcomment -%}
+    <div class="lg:col-span-5">
+      <div class="lg:sticky" style="top: calc(var(--header-h) + 2rem)">
+        {%- if product.type != blank -%}<p class="label text-granite">{{ product.type }}</p>{%- endif -%}
+        <h1 class="display mt-3 text-[12vw] sm:text-7xl lg:text-[4.25rem]">{{ product.title }}</h1>
+
+        <div class="mt-5 flex flex-wrap items-center gap-4">
+          <p class="font-mono text-xl">
+            <span data-price>{{ current_variant.price | money }}</span>
+            <span class="ml-2 text-[15px] text-granite line-through" data-compare-price{% unless on_sale %} hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</span>
+          </p>
+          {%- if is_coming -%}
+            <span class="label bg-sakura px-2 py-1 text-ink">{{ 'products.product.coming_soon' | t }}</span>
+          {%- endif -%}
+          <span class="label bg-ink px-2 py-1 text-bone" data-sold-out-badge{% if current_variant.available or is_coming %} hidden{% endif %}>{{ 'products.product.sold_out' | t }}</span>
+        </div>
+
+        {%- if summary != blank -%}
+          <p class="mt-6 max-w-md text-[16px] leading-relaxed">{{ summary }}</p>
+        {%- endif -%}
+
+        {%- form 'product', product, id: form_id, class: 'mt-8', novalidate: 'novalidate', data-product-form: '' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+          {{ form | payment_terms }}
+
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              {%- assign opt_name = option.name | downcase -%}
+              {%- assign is_colour = false -%}
+              {%- if opt_name == 'color' or opt_name == 'colour' -%}{%- assign is_colour = true -%}{%- endif -%}
+              <fieldset class="mt-7 first:mt-0" data-option-index="{{ forloop.index0 }}">
+                <legend class="label">{{ option.name }} <span class="text-granite">— <span data-option-selected>{{ option.selected_value }}</span></span></legend>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  {%- for value in option.values -%}
+                    {%- assign input_id = form_id | append: '-' | append: option.position | append: '-' | append: forloop.index0 -%}
+                    <input type="radio" id="{{ input_id }}" name="option-{{ option.position }}" value="{{ value | escape }}" class="opt-input visually-hidden" {% if option.selected_value == value %}checked{% endif %}>
+                    {%- if is_colour -%}
+                      <label for="{{ input_id }}" class="swatch-pill flex cursor-pointer items-center gap-2 border border-ink/15 px-3 py-2 hover:border-ink/50">
+                        <span class="h-4 w-4 rounded-full ring-1 ring-ink/20" style="background: {% render 'colour-swatch', value: value %}"></span>
+                        <span class="text-[13px]">{{ value }}</span>
+                      </label>
+                    {%- else -%}
+                      <label for="{{ input_id }}" class="opt-pill flex h-11 min-w-[3rem] cursor-pointer items-center justify-center border border-ink/15 px-3 font-mono text-[13px] hover:border-ink/50" data-option-label>{{ value }}</label>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          {%- if fit_note != blank -%}
+            <p class="mt-4 text-[13px] font-medium">{{ 'products.product.fit_note' | t }}: {{ fit_note }}</p>
+          {%- endif -%}
+
+          {%- unless is_coming -%}
+            <div class="mt-7">
+              <label class="label block" for="Quantity-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
+              <div class="qty mt-3">
+                <button type="button" data-qty="-1" aria-label="{{ 'products.product.decrease' | t }}">&minus;</button>
+                <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" inputmode="numeric">
+                <button type="button" data-qty="1" aria-label="{{ 'products.product.increase' | t }}">+</button>
+              </div>
+            </div>
+          {%- endunless -%}
+
+          <div class="mt-8" data-buy-area>
+            {%- if is_coming -%}
+              {%- if settings.social_instagram_link != blank -%}
+                <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" class="btn-ink w-full py-5">{{ 'products.product.coming_soon' | t }} {% render 'icon', name: 'arrow-up-right' %}</a>
+              {%- else -%}
+                <button type="button" class="btn-ink w-full py-5 opacity-80" disabled>{{ 'products.product.coming_soon' | t }}</button>
+              {%- endif -%}
+            {%- else -%}
+              <button type="submit" name="add" class="btn-ink w-full py-5 disabled:cursor-not-allowed disabled:opacity-60" data-add-button data-label-add="{{ 'products.product.add_to_cart' | t }}" data-label-sold="{{ 'products.product.sold_out' | t }}" data-label-unavailable="{{ 'products.product.unavailable' | t }}" {% unless current_variant.available %}disabled{% endunless %}>
+                <span data-add-label>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+                {% render 'icon', name: 'arrow' %}
+              </button>
+              {%- if section.settings.show_dynamic_checkout -%}
+                <div class="mt-3">{{ form | payment_button }}</div>
+              {%- endif -%}
+            {%- endif -%}
+            <p class="mt-3 text-[12px] leading-relaxed text-granite">
+              {%- if is_coming -%}
+                {%- capture ig_link -%}<a class="underline" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer">{{ settings.social_instagram_handle | default: 'Instagram' }}</a>{%- endcapture -%}
+                {{ 'products.product.coming_soon_note_html' | t: link: ig_link }}
+              {%- else -%}
+                {{ 'products.product.free_shipping_note' | t }}
+              {%- endif -%}
+            </p>
+          </div>
+        {%- endform -%}
+
+        <div class="mt-8 border-t border-ink/15">
+          {%- if product.description != blank -%}
+            <details class="group border-b border-ink/15" open>
+              <summary class="flex cursor-pointer list-none items-center justify-between py-4 [&::-webkit-details-marker]:hidden">
+                <span class="label text-[12px]">{{ 'products.product.details' | t }}</span>
+                {%- render 'icon', name: 'plus', class: 'h-3 w-3 transition-transform duration-300 group-open:rotate-45' -%}
+              </summary>
+              <div class="rte pb-5 text-[15px] leading-relaxed text-ink/80">{{ product.description }}</div>
+            </details>
+          {%- endif -%}
+          {%- if size_chart != blank or fit_note != blank -%}
+            <details class="group border-b border-ink/15">
+              <summary class="flex cursor-pointer list-none items-center justify-between py-4 [&::-webkit-details-marker]:hidden">
+                <span class="label text-[12px]">{{ 'products.product.fit' | t }}</span>
+                {%- render 'icon', name: 'plus', class: 'h-3 w-3 transition-transform duration-300 group-open:rotate-45' -%}
+              </summary>
+              <div class="rte pb-5 text-[15px] leading-relaxed text-ink/80">
+                {%- if fit_note != blank -%}<p>{{ fit_note }}</p>{%- endif -%}
+                {%- if size_chart != blank -%}{{ size_chart | metafield_tag }}{%- endif -%}
+              </div>
+            </details>
+          {%- endif -%}
+          <details class="group border-b border-ink/15">
+            <summary class="flex cursor-pointer list-none items-center justify-between py-4 [&::-webkit-details-marker]:hidden">
+              <span class="label text-[12px]">{{ 'products.product.shipping' | t }}</span>
+              {%- render 'icon', name: 'plus', class: 'h-3 w-3 transition-transform duration-300 group-open:rotate-45' -%}
+            </summary>
+            <div class="rte pb-5 text-[15px] leading-relaxed text-ink/80">
+              {{ settings.shipping_summary }}
+              {%- assign policy_url = settings.shipping_link | default: shop.shipping_policy.url -%}
+              {%- if policy_url != blank -%}
+                <p><a href="{{ policy_url }}" class="inline-flex items-center gap-1.5 font-medium">{{ 'products.product.full_policy' | t }} {% render 'icon', name: 'arrow-up-right', class: 'h-3 w-3' %}</a></p>
+              {%- endif -%}
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Mobile sticky buy bar {%- endcomment -%}
+  <div class="fixed inset-x-0 bottom-0 z-30 border-t border-ink/10 bg-bone/95 p-3 backdrop-blur lg:hidden" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); padding-left: max(0.75rem, env(safe-area-inset-left)); padding-right: max(0.75rem, env(safe-area-inset-right))" hidden data-sticky-buy>
+    {%- if is_coming -%}
+      <a href="{{ settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener noreferrer" class="btn-ink w-full py-3.5">{{ 'products.product.coming_soon' | t }}</a>
+    {%- else -%}
+      <button type="submit" form="{{ form_id }}" name="add" class="btn-ink w-full py-3.5 disabled:opacity-60" data-add-button data-label-add="{{ 'products.product.add_to_cart' | t }}" data-label-sold="{{ 'products.product.sold_out' | t }}" data-label-unavailable="{{ 'products.product.unavailable' | t }}" {% unless current_variant.available %}disabled{% endunless %}>
+        <span data-add-label>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+        <span class="opacity-60">·</span>
+        <span data-price>{{ current_variant.price | money }}</span>
+      </button>
+    {%- endif -%}
+  </div>
+
+  <script type="application/json" data-variants>
+    [
+      {%- for variant in product.variants -%}
+        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available }}, "price": {{ variant.price | money | json }}, "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %}, "media": {{ variant.featured_media.id | default: 'null' }}}{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  </script>
+</section>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {%- if product.featured_media -%}
+    "image": [{{ product.featured_media.preview_image | image_url: width: 1200 | prepend: 'https:' | json }}],
+    {%- endif -%}
+    "description": {{ product.description | strip_html | json }},
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type": "Offer",
+          {%- if variant.sku != blank -%}"sku": {{ variant.sku | json }},{%- endif -%}
+          "availability": "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price": {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "url": {{ request.origin | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product information",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons (Shop Pay, Apple Pay, PayPal…)", "default": true },
+    { "type": "paragraph", "content": "Optional product metafields: custom.summary (single line text), custom.fit_note (single line text), custom.size_chart (rich text), custom.spin_front and custom.spin_back (images for the 360° viewer)." }
+  ]
+}
+{% endschema %}

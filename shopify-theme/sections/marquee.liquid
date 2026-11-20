@@ -1,0 +1,34 @@
+<div class="marquee overflow-hidden border-b border-ink/10 bg-bone py-4" {{ section.shopify_attributes }}>
+  <div class="marquee-track flex w-max">
+    {%- for i in (1..4) -%}
+      <div class="flex shrink-0 items-center"{% if i > 1 %} aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <span class="flex items-center" {% if i == 1 %}{{ block.shopify_attributes }}{% endif %}>
+            <span class="label whitespace-nowrap px-6 text-[12px]">{{ block.settings.text }}</span>
+            {%- render 'icon', name: 'ridge', class: 'h-2.5 w-10 opacity-50' -%}
+          </span>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Scrolling text",
+  "tag": "section",
+  "blocks": [
+    { "type": "item", "name": "Item", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Free shipping with code FREESHIP2026" }] }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling text",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Free shipping with code FREESHIP2026" } },
+        { "type": "item", "settings": { "text": "Ships in 2–5 business days" } },
+        { "type": "item", "settings": { "text": "30 days returns & exchanges" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

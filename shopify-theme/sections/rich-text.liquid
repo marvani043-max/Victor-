@@ -1,0 +1,28 @@
+{%- assign s = section.settings -%}
+<section class="wrap py-20 sm:py-28" {{ section.shopify_attributes }}>
+  <div class="grid gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-3" data-reveal>
+      {%- if s.show_mark -%}<span aria-hidden="true" class="mask-pks block h-12 w-16 text-bloom"></span>{%- endif -%}
+      {%- if s.eyebrow != blank -%}<p class="label mt-6 text-granite">{{ s.eyebrow }}</p>{%- endif -%}
+      {%- render 'icon', name: 'ridge', class: 'mt-4 h-3 w-24 text-ink/40' -%}
+    </div>
+    <div class="space-y-8 lg:col-span-8 lg:col-start-5" data-reveal style="--delay: 0.06s">
+      {%- if s.lead != blank -%}<p class="display-wide text-[7vw] leading-[1.1] sm:text-4xl lg:text-[2.9rem]">{{ s.lead }}</p>{%- endif -%}
+      {%- if s.text != blank -%}<div class="rte max-w-2xl text-[18px] leading-relaxed text-ink/80">{{ s.text }}</div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "show_mark", "label": "Show PKS mark", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "In the founder's words" },
+    { "type": "textarea", "id": "lead", "label": "Large text", "default": "“I am a 16-year-old that started this brand because I love being outside, and it has been my dream to own a clothing brand ever since I was younger.”" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>“How it got to here: I had a week where I was looking at stuff from a different perspective and realized there will never be any opportunity like this if I don't figure out how to get there myself.”</p><p>“This brand has not only helped me but also brought the community together and has started many new relationships.”</p>" }
+  ],
+  "presets": [{ "name": "Rich text" }]
+}
+{% endschema %}

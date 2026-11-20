@@ -1,0 +1,174 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-split",
+      "settings": {
+        "fallback_1": "trail-falls-front",
+        "alt_1": "Wearing the black Summer Edition tee in front of a mountain waterfall",
+        "label_1": "01 — Trail",
+        "position_1": "object-position: 28% 40%",
+        "fallback_2": "tunnel-pink-hoodie",
+        "alt_2": "Two friends in Peak Side hoodies against a graffiti wall",
+        "label_2": "02 — Tunnel",
+        "position_2": "object-position: 62% 30%",
+        "heading_1": "Mountains",
+        "heading_2": "meet",
+        "heading_accent": "everyday.",
+        "text": "Heavyweight hoodies, Summer Edition tees and crop tops for days that start on a trail and end in town.",
+        "button_1_label": "Shop the collection",
+        "button_1_link": "",
+        "button_2_label": "Our story",
+        "button_2_link": "/pages/our-story"
+      }
+    },
+    "summer": {
+      "type": "feature-collection",
+      "settings": {
+        "fallback": "detail-graphic-black",
+        "alt": "Close-up of the cherry-blossom Peak Side graphic on a faded black tee",
+        "eyebrow": "The graphic",
+        "heading": "Summer",
+        "heading_accent": "Edition",
+        "text": "<p>Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs across tees in black and white, regular and boxy, plus the washed crop top.</p>",
+        "collection": "summer-edition",
+        "products_to_show": 2,
+        "button_label": "Shop Summer Edition",
+        "button_link": "",
+        "effect": "petals",
+        "hint": "Move your cursor or tap to shake the blossom",
+        "background": "#F6EEF0"
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": { "type": "item", "settings": { "text": "Free shipping with code FREESHIP2026" } },
+        "m2": { "type": "item", "settings": { "text": "Ships in 2–5 business days" } },
+        "m3": { "type": "item", "settings": { "text": "30 days returns & exchanges" } },
+        "m4": { "type": "item", "settings": { "text": "Shop Pay and secure checkout" } },
+        "m5": { "type": "item", "settings": { "text": "Sizes S to 3XL" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5"]
+    },
+    "intro": {
+      "type": "intro-statement",
+      "blocks": {
+        "s1": { "type": "stat", "settings": { "value": "16", "label": "Founder's age at launch" } },
+        "s2": { "type": "product_count", "settings": { "label": "Pieces in the range" } },
+        "s3": { "type": "lowest_price", "settings": { "label": "Starting price" } }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "statement": "Clothes for the days that start on a trail and end in town. Started by a",
+        "accent": "16-year-old",
+        "statement_end": "who'd rather be outside."
+      }
+    },
+    "best_sellers": {
+      "type": "product-grid",
+      "settings": {
+        "heading": "Best sellers",
+        "collection": "best-sellers",
+        "only_tagged": true,
+        "limit": 4,
+        "view_all_label": "Shop all"
+      }
+    },
+    "showcase": {
+      "type": "spin-showcase",
+      "settings": {
+        "collection": "",
+        "eyebrow": "360° · Grab it and turn it",
+        "heading": "Spin",
+        "heading_accent": "the drop.",
+        "text": "Front, back and every angle in between before you buy. Drag the garment to spin it, or flick through the range.",
+        "button_label": "Shop this piece"
+      }
+    },
+    "tiles": {
+      "type": "collection-tiles",
+      "blocks": {
+        "t1": { "type": "tile", "settings": { "title": "Hoodies & zips", "note": "Oversized, faded, heavyweight", "link": "/collections/hoodies", "fallback": "tunnel-zip-black", "alt": "Black double zip hoodie worn against graffiti" } },
+        "t2": { "type": "tile", "settings": { "title": "Summer Edition", "note": "Tees in regular and boxy cuts", "link": "/collections/summer-edition", "fallback": "trail-overlook", "alt": "White Summer Edition tee at a mountain overlook" } },
+        "t3": { "type": "tile", "settings": { "title": "Crop tops", "note": "Off-shoulder and washed", "link": "/collections/crop-tops", "fallback": "tunnel-crop-white-2", "alt": "White off-shoulder crop top" } }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "blocks": {
+        "l1": { "type": "look", "settings": { "tab": "1", "fallback": "trail-falls-back", "caption": "Summer Edition Boxy Tee — Black", "alt": "Back of the black boxy Summer Edition tee beside a waterfall" } },
+        "l2": { "type": "look", "settings": { "tab": "1", "fallback": "trail-overlook", "caption": "Summer Edition Tee — White", "alt": "White Summer Edition tee at a canyon overlook" } },
+        "l3": { "type": "look", "settings": { "tab": "1", "fallback": "trail-ridge", "caption": "Summer Edition Tee — White", "alt": "White Summer Edition tee on a granite boulder" } },
+        "l4": { "type": "look", "settings": { "tab": "1", "fallback": "trail-falls-wide", "caption": "Summer Edition Boxy Tee — Black", "alt": "Black boxy tee at the base of a waterfall" } },
+        "l5": { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-crop-duo-2", "caption": "Off-Shoulder Crop Top — Black", "alt": "Two friends in black off-shoulder crop tops against graffiti" } },
+        "l6": { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-zip-navy", "caption": "Double Zip Hoodie", "alt": "Navy double zip hoodie worn in a graffiti tunnel" } },
+        "l7": { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-tee-black-back", "caption": "Summer Edition Tee — Black", "alt": "Back print of the black Summer Edition tee" } },
+        "l8": { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-crop-white", "caption": "Off-Shoulder Crop Top — White", "alt": "White off-shoulder crop top in a graffiti tunnel" } }
+      },
+      "block_order": ["l1", "l2", "l3", "l4", "l5", "l6", "l7", "l8"],
+      "settings": {
+        "eyebrow": "The lookbook",
+        "heading_1": "Two places.",
+        "heading_2": "One wardrobe.",
+        "tab_1": "Trail",
+        "tab_1_line": "Granite, spray and switchbacks. Tees that handle the climb and still look right at the top.",
+        "tab_2": "Tunnel",
+        "tab_2_line": "Back in town: graffiti walls, late light, the whole crew. Same clothes, different backdrop.",
+        "wearing_label": "Wearing"
+      }
+    },
+    "fit": {
+      "type": "fit-finder",
+      "settings": {
+        "eyebrow": "Fit finder",
+        "heading": "Trail or",
+        "heading_accent": "tunnel?",
+        "text": "Three taps and we'll point you to the piece that fits your day, your weather and the way you like to wear it.",
+        "collection": ""
+      }
+    },
+    "winter": {
+      "type": "collection-drop",
+      "settings": {
+        "eyebrow": "New · Coming soon",
+        "heading": "The Winter",
+        "heading_accent": "Drop.",
+        "text": "Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.",
+        "collection": "winter-drop",
+        "limit": 4,
+        "button_label": "Shop the Winter Drop",
+        "button_link": "",
+        "dark": true,
+        "effect": "snow"
+      }
+    },
+    "story": {
+      "type": "story-teaser",
+      "settings": {
+        "fallback": "tunnel-crew",
+        "alt": "The Peak Side crew lined up in front of a graffiti tunnel",
+        "eyebrow": "From the founder",
+        "quote": "“I realized there will never be any opportunity like this if I don't figure out how to get there myself.”",
+        "text": "Peak Side started with one teenager, a love of being outside and a long-held dream of running a clothing brand. It's since grown into a community of friends who wear it everywhere.",
+        "button_label": "Read the story",
+        "button_link": "/pages/our-story"
+      }
+    },
+    "instagram": {
+      "type": "instagram-grid",
+      "blocks": {
+        "p1": { "type": "photo", "settings": { "fallback": "tunnel-crop-sit", "alt": "Friends in crop tops sitting in front of graffiti" } },
+        "p2": { "type": "photo", "settings": { "fallback": "trail-path", "alt": "White Summer Edition tee on a forest trail by a waterfall" } },
+        "p3": { "type": "photo", "settings": { "fallback": "night-boxy-trio", "alt": "Three friends showing off the boxy tee back print at night" } },
+        "p4": { "type": "photo", "settings": { "fallback": "trail-falls-duo", "alt": "Two friends in Peak Side tees at the foot of a waterfall" } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"],
+      "settings": {
+        "eyebrow": "Drops, restocks, the crew",
+        "button_label": "Follow on Instagram"
+      }
+    }
+  },
+  "order": ["hero", "summer", "marquee", "intro", "best_sellers", "showcase", "tiles", "lookbook", "fit", "winter", "story", "instagram"]
+}

@@ -1,0 +1,103 @@
+{%- comment -%}
+  Product card. Params: product, sizes, show_best_seller (default true), eager (bool)
+{%- endcomment -%}
+{%- liquid
+  assign card_sizes = sizes | default: '(min-width: 1024px) 25vw, 50vw'
+  assign show_best = true
+  if show_best_seller == false
+    assign show_best = false
+  endif
+  assign img_loading = 'lazy'
+  if eager
+    assign img_loading = 'eager'
+  endif
+
+  capture spin
+    render 'spin-images', product: product, width: 900
+  endcapture
+  assign spin_parts = spin | strip | split: '|'
+  assign spin_kind = spin_parts[0]
+
+  assign is_coming = false
+  if product.tags contains 'coming-soon'
+    assign is_coming = true
+  endif
+  assign is_sold_out = false
+  unless product.available or is_coming
+    assign is_sold_out = true
+  endunless
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+
+  assign first_image = product.featured_media.preview_image
+  assign second_image = product.media[1].preview_image
+
+  assign colour_count = 0
+  for option in product.options_with_values
+    assign opt_name = option.name | downcase
+    if opt_name == 'color' or opt_name == 'colour'
+      assign colour_option = option
+      assign colour_count = option.values.size
+    endif
+  endfor
+
+  assign status_label = ''
+  if is_coming
+    assign status_label = 'products.product.coming_soon' | t | prepend: ', '
+  elsif is_sold_out
+    assign status_label = 'products.product.sold_out' | t | prepend: ', '
+  endif
+-%}
+<a href="{{ product.url }}" class="group block" aria-label="{{ product.title | escape }}, {{ product.price | money | strip_html }}{{ status_label }}">
+  {%- if spin_kind != blank and settings.card_flip -%}
+    <div {% if settings.card_tilt %}data-tilt{% endif %} class="flip-stage relative aspect-[4/5] overflow-hidden {% if spin_kind == 'cut' %}bg-stone{% else %}bg-white{% endif %}">
+      <div class="flip-inner">
+        <img src="{{ spin_parts[1] }}" alt="" width="900" height="900" loading="{{ img_loading }}" class="flip-face h-full w-full object-contain {% if spin_kind == 'cut' %}cut-shadow p-[9%]{% else %}p-[4%]{% endif %}">
+        <img src="{{ spin_parts[2] }}" alt="" width="900" height="900" loading="lazy" class="flip-face flip-back h-full w-full object-contain {% if spin_kind == 'cut' %}cut-shadow p-[9%]{% else %}p-[4%]{% endif %}">
+      </div>
+      <span class="label absolute bottom-3 right-3 bg-bone/90 px-2 py-1 text-[10px] text-ink">360°</span>
+      {%- render 'product-badges', product: product, is_coming: is_coming, is_sold_out: is_sold_out, on_sale: on_sale, show_best: show_best -%}
+    </div>
+  {%- else -%}
+    <div {% if settings.card_tilt %}data-tilt{% endif %} class="relative aspect-[4/5] overflow-hidden bg-white">
+      {%- if first_image != blank -%}
+        {{ first_image | image_url: width: 1200 | image_tag: widths: '360, 540, 720, 960, 1200', sizes: card_sizes, alt: '', loading: img_loading, class: 'absolute inset-0 h-full w-full object-cover transition-[transform,opacity] duration-700 ease-out group-hover:scale-[1.03]' }}
+        {%- if second_image != blank -%}
+          {{ second_image | image_url: width: 1200 | image_tag: widths: '360, 540, 720, 960, 1200', sizes: card_sizes, alt: '', loading: 'lazy', class: 'absolute inset-0 h-full w-full scale-[1.06] object-cover opacity-0 transition-[transform,opacity] duration-700 ease-out group-hover:scale-100 group-hover:opacity-100' }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'absolute inset-0 h-full w-full bg-stone p-8 text-granite' }}
+      {%- endif -%}
+      {%- render 'product-badges', product: product, is_coming: is_coming, is_sold_out: is_sold_out, on_sale: on_sale, show_best: show_best -%}
+    </div>
+  {%- endif -%}
+
+  <div class="mt-3 flex items-start justify-between gap-3">
+    <div class="min-w-0">
+      <h3 class="text-[15px] font-medium leading-snug">{{ product.title }}</h3>
+      {%- if colour_count > 1 -%}
+        <div class="mt-2 flex items-center gap-1.5">
+          {%- for value in colour_option.values limit: 6 -%}
+            <span title="{{ value | escape }}" class="h-2.5 w-2.5 rounded-full ring-1 ring-ink/15" style="background: {% render 'colour-swatch', value: value %}"></span>
+          {%- endfor -%}
+          <span class="label ml-1 text-[10px] opacity-70">{{ colour_count }} colours</span>
+        </div>
+      {%- endif -%}
+    </div>
+    <p class="shrink-0 text-right font-mono text-[13px]">
+      {%- if on_sale -%}
+        <span class="mr-1 line-through opacity-50">{{ product.compare_at_price | money }}</span>
+      {%- endif -%}
+      <span class="{% if is_sold_out %}line-through opacity-60{% endif %}">
+        {%- if product.price_varies -%}
+          {%- assign min_price = product.price_min | money -%}
+          {{- 'products.product.from_price' | t: price: min_price -}}
+        {%- else -%}
+          {{- product.price | money -}}
+        {%- endif -%}
+      </span>
+    </p>
+  </div>
+</a>

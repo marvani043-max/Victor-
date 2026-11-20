@@ -1,0 +1,198 @@
+{
+  "general": {
+    "tagged": "tagged \"{{ tags }}\"",
+    "page": "Page {{ page }}",
+    "home": "Home",
+    "shop_all": "Shop all",
+    "menu": "Menu",
+    "close": "Close",
+    "view_all": "View all",
+    "copy": "Copy",
+    "copied": "Copied",
+    "password_page": {
+      "login_form_heading": "Enter store using password",
+      "login_password_button": "Enter",
+      "login_form_password_label": "Password",
+      "login_form_error": "Wrong password. Try again.",
+      "admin_link_html": "Are you the store owner? <a href=\"/admin\" class=\"underline\">Log in here</a>"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "cart_count": "{{ count }} items in bag",
+    "close_menu": "Close menu",
+    "open_menu": "Open menu",
+    "search": "Search",
+    "account": "Account",
+    "cart": "Bag",
+    "previous_slide": "Previous",
+    "next_slide": "Next",
+    "product_images": "Product images"
+  },
+  "newsletter": {
+    "label": "Email address",
+    "button": "Sign up",
+    "success": "Thanks, you're on the list."
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to bag",
+      "sold_out": "Sold out",
+      "coming_soon": "Coming soon",
+      "unavailable": "Unavailable",
+      "best_seller": "Best seller",
+      "sale": "Sale",
+      "from_price": "From {{ price }}",
+      "quantity": "Quantity",
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity",
+      "view_360": "360° spin",
+      "photos": "Photos ({{ count }})",
+      "details": "Details",
+      "fit": "Fit & sizing",
+      "shipping": "Shipping & returns",
+      "full_policy": "Full policy",
+      "fit_note": "Fit note",
+      "choose_options": "Choose your options",
+      "colour": "Colour",
+      "you_may_like": "Wear it with",
+      "coming_soon_note_html": "Part of a new drop and not on sale yet. Follow {{ link }} to hear the moment it's live.",
+      "sold_out_note": "This piece is sold out right now.",
+      "free_shipping_note": "Taxes and shipping calculated at checkout."
+    }
+  },
+  "collections": {
+    "filter": "Filter",
+    "all": "All",
+    "sort": "Sort",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "empty": "Nothing here yet",
+    "clear": "Clear filters"
+  },
+  "cart": {
+    "title": "Your bag",
+    "empty": "Your bag is empty",
+    "continue": "Continue shopping",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "update": "Update bag",
+    "checkout": "Check out",
+    "note": "Order note",
+    "taxes": "Taxes, discounts and shipping calculated at checkout.",
+    "item": "Item",
+    "quantity": "Quantity",
+    "total": "Total"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search hoodies, tees, crop tops…",
+    "submit": "Search",
+    "results": {
+      "one": "{{ count }} result for “{{ terms }}”",
+      "other": "{{ count }} results for “{{ terms }}”"
+    },
+    "no_results": "No results for “{{ terms }}”. Try another word."
+  },
+  "customer": {
+    "login": {
+      "title": "Log in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "forgot": "Forgot your password?",
+      "create": "Create account",
+      "guest": "Continue as guest"
+    },
+    "recover": {
+      "title": "Reset your password",
+      "text": "We'll email you a link to reset your password.",
+      "submit": "Send link",
+      "success": "We've sent you an email with a link to update your password.",
+      "cancel": "Cancel"
+    },
+    "register": {
+      "title": "Create account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "submit": "Create"
+    },
+    "account": {
+      "title": "Account",
+      "orders": "Order history",
+      "no_orders": "You haven't placed any orders yet.",
+      "details": "Account details",
+      "addresses": "Manage addresses",
+      "logout": "Log out",
+      "order": "Order",
+      "date": "Date",
+      "payment": "Payment",
+      "fulfillment": "Fulfillment",
+      "total": "Total"
+    },
+    "addresses": {
+      "title": "Addresses",
+      "add": "Add a new address",
+      "edit": "Edit",
+      "delete": "Delete",
+      "default": "Default",
+      "save": "Save address",
+      "cancel": "Cancel",
+      "company": "Company",
+      "address1": "Address",
+      "address2": "Apartment, suite, etc.",
+      "city": "City",
+      "country": "Country/region",
+      "province": "Province",
+      "zip": "Postal/ZIP code",
+      "phone": "Phone",
+      "set_default": "Set as default address",
+      "delete_confirm": "Delete this address?"
+    },
+    "activate": {
+      "title": "Activate account",
+      "text": "Create your password to activate your account.",
+      "password_confirm": "Confirm password",
+      "submit": "Activate account",
+      "decline": "Decline invitation"
+    },
+    "reset": {
+      "title": "Reset account password",
+      "submit": "Reset password"
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "date": "Placed on {{ date }}",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "quantity": "Quantity",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "billing": "Billing address",
+      "shipping_address": "Shipping address",
+      "back": "Back to account"
+    }
+  },
+  "gift_card": {
+    "title": "Your {{ value }} gift card",
+    "code": "Gift card code",
+    "copy": "Copy code",
+    "expired": "Expired",
+    "expires_on": "Expires on {{ date }}",
+    "shop": "Start shopping",
+    "print": "Print"
+  },
+  "blogs": {
+    "read_more": "Read more",
+    "back": "Back to the journal"
+  }
+}

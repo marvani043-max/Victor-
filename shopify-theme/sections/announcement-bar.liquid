@@ -1,0 +1,37 @@
+{%- if section.settings.text != blank -%}
+  <div class="bg-ink text-bone" {{ section.shopify_attributes }}>
+    <div class="wrap flex min-h-9 flex-wrap items-center justify-center gap-x-3 gap-y-1 py-2 text-center">
+      <p class="label text-[10px] sm:text-[11px]">
+        {%- if section.settings.link != blank -%}
+          <a href="{{ section.settings.link }}" class="link-u">{{ section.settings.text }}</a>
+        {%- else -%}
+          {{ section.settings.text }}
+        {%- endif -%}
+        {%- if section.settings.code != blank %} <span class="text-sakura">{{ section.settings.code }}</span>{% endif -%}
+      </p>
+      {%- if section.settings.code != blank -%}
+        <button
+          type="button"
+          class="label border-b border-bone/40 text-[10px] transition-colors hover:border-sakura hover:text-sakura sm:text-[11px]"
+          data-copy="{{ section.settings.code | escape }}"
+          data-copied-label="{{ 'general.copied' | t }} ✓"
+          aria-label="{{ 'general.copy' | t }} {{ section.settings.code | escape }}"
+        >
+          {{- 'general.copy' | t -}}
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "class": "announcement-section",
+  "settings": [
+    { "type": "text", "id": "text", "label": "Text", "default": "Free shipping with code" },
+    { "type": "text", "id": "code", "label": "Discount code", "info": "Shown with a one-tap Copy button.", "default": "FREESHIP2026" },
+    { "type": "url", "id": "link", "label": "Link" }
+  ]
+}
+{% endschema %}

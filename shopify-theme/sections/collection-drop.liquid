@@ -1,0 +1,53 @@
+{%- liquid
+  assign s = section.settings
+  assign products_list = s.collection.products
+-%}
+<section class="relative overflow-hidden py-20 sm:py-28 {% if s.dark %}bg-ink text-bone{% else %}bg-bone text-ink{% endif %}" aria-labelledby="Heading-{{ section.id }}" {{ section.shopify_attributes }}>
+  {%- if s.effect == 'snow' -%}<ps-petals snow></ps-petals>{%- elsif s.effect == 'petals' -%}<ps-petals></ps-petals>{%- endif -%}
+  <div class="wrap relative">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div data-reveal>
+        {%- if s.eyebrow != blank -%}<p class="label text-sakura">{{ s.eyebrow }}</p>{%- endif -%}
+        <h2 id="Heading-{{ section.id }}" class="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">
+          {{ s.heading }} <span class="text-sakura">{{ s.heading_accent }}</span>
+        </h2>
+      </div>
+      <div class="max-w-sm" data-reveal style="--delay: 0.08s">
+        {%- if s.text != blank -%}<p class="text-[16px] leading-relaxed opacity-80">{{ s.text }}</p>{%- endif -%}
+        {%- if s.button_label != blank -%}
+          <a href="{{ s.button_link | default: s.collection.url | default: routes.all_products_collection_url }}" class="{% if s.dark %}btn-bone{% else %}btn-ink{% endif %} mt-6">{{ s.button_label }} {% render 'icon', name: 'arrow' %}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if products_list.size > 0 -%}
+      <ul class="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">
+        {%- for product in products_list limit: s.limit -%}
+          <li data-reveal style="--delay: {{ forloop.index0 | times: 0.06 }}s">{% render 'product-card', product: product, show_best_seller: false %}</li>
+        {%- endfor -%}
+      </ul>
+    {%- elsif request.design_mode -%}
+      <p class="form-message mt-10 opacity-80">Choose a collection in this section's settings to show the drop.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection drop",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "New · Coming soon" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The Winter" },
+    { "type": "text", "id": "heading_accent", "label": "Heading accent (pink)", "default": "Drop." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script." },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the Winter Drop" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to the collection." },
+    { "type": "checkbox", "id": "dark", "label": "Dark background", "default": true },
+    { "type": "select", "id": "effect", "label": "Falling effect", "default": "snow", "options": [{ "value": "snow", "label": "Snow" }, { "value": "petals", "label": "Cherry-blossom petals" }, { "value": "none", "label": "None" }] }
+  ],
+  "presets": [{ "name": "Collection drop" }]
+}
+{% endschema %}

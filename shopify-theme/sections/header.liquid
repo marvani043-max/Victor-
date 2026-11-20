@@ -1,0 +1,108 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign transparent = false
+  if section.settings.transparent_home and template.name == 'index'
+    assign transparent = true
+  endif
+-%}
+<header
+  id="SiteHeader"
+  class="hdr relative z-40{% if transparent %} is-clear{% endif %}"
+  style="height: var(--header-h)"
+  data-header
+  {% if transparent %}data-transparent{% endif %}
+  {{ section.shopify_attributes }}
+>
+  <div class="wrap flex h-full items-center justify-between gap-4">
+    <a href="{{ routes.root_url }}" class="group flex items-center gap-1" aria-label="{{ shop.name }} — {{ 'general.home' | t }}">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 400 | image_tag: class: 'h-8 w-auto', alt: shop.name, loading: 'eager' }}
+      {%- else -%}
+        <span aria-hidden="true" class="mask-pks block h-8 w-11 transition-transform duration-500 ease-out group-hover:-rotate-6"></span>
+        <span class="display text-[22px] leading-none tracking-[0.01em]">{{ section.settings.logo_text | default: shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav aria-label="Main" class="hidden items-center gap-8 lg:flex">
+      {%- if menu != blank and menu.links.size > 0 -%}
+        {%- for link in menu.links -%}
+          <a href="{{ link.url }}" class="label link-u pb-0.5"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}" class="label link-u pb-0.5">{{ 'general.shop_all' | t }}</a>
+      {%- endif -%}
+    </nav>
+
+    <div class="flex items-center gap-3 sm:gap-4">
+      <a href="{{ routes.search_url }}" class="hidden p-1 transition-opacity hover:opacity-60 sm:block" aria-label="{{ 'accessibility.search' | t }}">
+        {%- render 'icon', name: 'search', class: 'h-5 w-5' -%}
+      </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="hidden p-1 transition-opacity hover:opacity-60 sm:block" aria-label="{{ 'accessibility.account' | t }}">
+          {%- render 'icon', name: 'account', class: 'h-5 w-5' -%}
+        </a>
+      {%- endif -%}
+      {%- if settings.social_instagram_link != blank -%}
+        <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hidden p-1 transition-opacity hover:opacity-60 xl:block">
+          {%- render 'icon', name: 'instagram', class: 'h-4 w-4' -%}
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="relative flex items-center p-1 transition-opacity hover:opacity-60" aria-label="{{ 'accessibility.cart_count' | t: count: cart.item_count }}">
+        {%- render 'icon', name: 'bag', class: 'h-5 w-5' -%}
+        <span class="hdr-count absolute -right-1.5 -top-1 grid place-items-center rounded-full bg-bloom px-1 font-mono text-[10px] text-bone{% if cart.item_count == 0 %} hidden{% endif %}" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}" class="hdr-cta hidden px-4 py-2.5 font-mono text-[11px] uppercase tracking-label transition-colors md:inline-flex">
+          {{- section.settings.cta_label -}}
+        </a>
+      {%- endif -%}
+      <button type="button" class="label flex h-10 items-center gap-2 lg:hidden" aria-expanded="false" aria-controls="MobileMenu" data-menu-toggle>
+        <span data-menu-label data-open="{{ 'general.menu' | t }}" data-close="{{ 'general.close' | t }}">{{ 'general.menu' | t }}</span>
+        <span aria-hidden="true" class="relative block h-2.5 w-5">
+          <span class="bar1 absolute left-0 top-0 h-px w-full bg-current transition-transform duration-300"></span>
+          <span class="bar2 absolute bottom-0 left-0 h-px w-full bg-current transition-transform duration-300"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="MobileMenu" class="mobile-menu fixed inset-x-0 bottom-0 z-30 flex flex-col overflow-y-auto bg-bone text-ink lg:hidden" role="dialog" aria-modal="true" aria-label="{{ 'general.menu' | t }}" hidden data-mobile-menu>
+  <nav aria-label="Mobile" class="wrap flex flex-1 flex-col justify-center gap-1 py-8">
+    {%- if menu != blank and menu.links.size > 0 -%}
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}" class="display flex items-center justify-between border-b border-ink/10 py-3 text-[12vw] sm:text-7xl">
+          {{ link.title }} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}" class="display flex items-center justify-between border-b border-ink/10 py-3 text-[12vw] sm:text-7xl">
+        {{ 'general.shop_all' | t }} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}
+      </a>
+    {%- endif -%}
+  </nav>
+  <div class="wrap flex flex-wrap items-center justify-between gap-4 py-6" style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom))">
+    <a href="{{ routes.search_url }}" class="label flex items-center gap-2">{% render 'icon', name: 'search', class: 'h-4 w-4' %} {{ 'accessibility.search' | t }}</a>
+    {%- if shop.customer_accounts_enabled -%}
+      <a href="{{ routes.account_url }}" class="label flex items-center gap-2">{% render 'icon', name: 'account', class: 'h-4 w-4' %} {{ 'accessibility.account' | t }}</a>
+    {%- endif -%}
+    {%- if settings.social_instagram_link != blank -%}
+      <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" class="label flex items-center gap-2">{% render 'icon', name: 'instagram', class: 'h-4 w-4' %} {{ settings.social_instagram_handle }}</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "header-section",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Leave empty to use the PKS mark and the shop name." },
+    { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Peak Side" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop now" },
+    { "type": "url", "id": "cta_link", "label": "Button link" },
+    { "type": "checkbox", "id": "transparent_home", "label": "Clear header over the home page hero", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,50 @@
+<section class="pb-24 sm:pb-32" aria-label="Shop by category" {{ section.shopify_attributes }}>
+  <div class="wrap grid gap-3 md:grid-cols-3">
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      <a href="{{ b.link | default: routes.all_products_collection_url }}" class="group relative block aspect-[4/5] overflow-hidden bg-coal text-bone md:aspect-[2/3]" data-reveal style="--delay: {{ forloop.index0 | times: 0.08 }}s" {{ block.shopify_attributes }}>
+        {%- render 'image', image: b.image, fallback: b.fallback, alt: b.alt, class: 'absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out group-hover:scale-[1.06]', sizes: '(min-width: 768px) 33vw, 100vw' -%}
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+          {%- if b.note != blank -%}<p class="label text-bone/70">{{ b.note }}</p>{%- endif -%}
+          <div class="mt-2 flex items-end justify-between gap-3">
+            <p class="display text-5xl sm:text-6xl">{{ b.title }}</p>
+            <span class="mb-1 grid h-10 w-10 shrink-0 place-items-center bg-bone text-ink transition-all duration-500 group-hover:bg-sakura">{% render 'icon', name: 'arrow' %}</span>
+          </div>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection tiles",
+  "tag": "div",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Hoodies" },
+        { "type": "text", "id": "note", "label": "Note", "default": "Oversized, faded, heavyweight" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "select", "id": "fallback", "label": "Bundled photo (used when no image is set)", "default": "tunnel-zip-black", "options": [{"value":"","label":"None"},{"value":"trail-falls-front","label":"Trail: waterfall, black tee"},{"value":"trail-falls-back","label":"Trail: waterfall, tee back"},{"value":"trail-falls-wide","label":"Trail: waterfall, wide"},{"value":"trail-falls-rock","label":"Trail: granite and falls"},{"value":"trail-falls-duo","label":"Trail: two at the falls"},{"value":"trail-overlook","label":"Trail: canyon overlook"},{"value":"trail-ridge","label":"Trail: boulder"},{"value":"trail-path","label":"Trail: forest path"},{"value":"tunnel-crew","label":"Tunnel: the crew"},{"value":"tunnel-pink-hoodie","label":"Tunnel: pink hoodie"},{"value":"tunnel-crop-duo-2","label":"Tunnel: crop top duo"},{"value":"tunnel-crop-sit","label":"Tunnel: sitting crew"},{"value":"tunnel-crop-white","label":"Tunnel: white crop top"},{"value":"tunnel-crop-white-2","label":"Tunnel: white crop top 2"},{"value":"tunnel-zip-black","label":"Tunnel: black zip hoodie"},{"value":"tunnel-zip-navy","label":"Tunnel: navy zip hoodie"},{"value":"tunnel-tee-black-back","label":"Tunnel: tee back print"},{"value":"night-boxy-trio","label":"Night: boxy tee trio"},{"value":"detail-graphic-black","label":"Detail: Summer Edition graphic"}] },
+        { "type": "text", "id": "alt", "label": "Image description (alt text)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection tiles",
+      "blocks": [
+        { "type": "tile", "settings": { "title": "Hoodies & zips", "note": "Oversized, faded, heavyweight", "fallback": "tunnel-zip-black" } },
+        { "type": "tile", "settings": { "title": "Summer Edition", "note": "Tees in regular and boxy cuts", "fallback": "trail-overlook" } },
+        { "type": "tile", "settings": { "title": "Crop tops", "note": "Off-shoulder and washed", "fallback": "tunnel-crop-white-2" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,57 @@
+{%- liquid
+  assign s = section.settings
+  if s.collection != blank
+    assign source = s.collection.products
+  else
+    assign source = collections.all.products
+  endif
+  assign sep = ''
+  assign count = 0
+-%}
+{%- capture items -%}
+  {%- for product in source limit: 40 -%}
+    {%- capture spin -%}{%- render 'spin-images', product: product, width: 1000 -%}{%- endcapture -%}
+    {%- assign parts = spin | strip | split: '|' -%}
+    {%- if parts.size == 3 -%}
+      {%- capture thumb -%}{%- render 'spin-images', product: product, width: 300 -%}{%- endcapture -%}
+      {%- assign thumb_parts = thumb | strip | split: '|' -%}
+      {%- assign price = product.price | money | strip_html -%}
+      {%- if product.tags contains 'coming-soon' -%}{%- assign status = 'products.product.coming_soon' | t -%}{%- else -%}{%- assign status = product.type -%}{%- endif -%}
+      {{ sep }}{"name": {{ product.title | json }}, "price": {{ price | json }}, "colour": {{ status | default: shop.name | json }}, "href": {{ product.url | json }}, "front": {{ parts[1] | json }}, "back": {{ parts[2] | json }}, "thumb": {{ thumb_parts[1] | json }}, "word": {{ product.type | default: shop.name | json }}, "plain": {% if parts[0] == 'photo' %}true{% else %}false{% endif %}}
+      {%- assign sep = ',' -%}
+      {%- assign count = count | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if count > 0 -%}
+  <section class="border-y border-ink/10 bg-bone py-20 sm:py-28" aria-label="{{ s.heading | escape }} {{ s.heading_accent | escape }}" {{ section.shopify_attributes }}>
+    <div class="wrap">
+      <ps-showcase>
+        <script type="application/json">
+          {"eyebrow": {{ s.eyebrow | json }}, "heading": {{ s.heading | json }}, "accent": {{ s.heading_accent | json }}, "lead": {{ s.text | json }}, "cta": {{ s.button_label | json }}, "items": [{{ items }}]}
+        </script>
+      </ps-showcase>
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <section class="wrap py-16" {{ section.shopify_attributes }}>
+    <p class="form-message text-granite">No products with 360° images yet. Add the custom.spin_front and custom.spin_back image metafields to a product, or tag it 360, and it will appear here.</p>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "360° showcase",
+  "tag": "div",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Leave empty to use every product that has 360° images." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "360° · Grab it and turn it" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Spin" },
+    { "type": "text", "id": "heading_accent", "label": "Heading accent (pink)", "default": "the drop." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Front, back and every angle in between before you buy. Drag the garment to spin it, or flick through the range." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop this piece" }
+  ],
+  "presets": [{ "name": "360° showcase" }]
+}
+{% endschema %}

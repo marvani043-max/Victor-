@@ -1,0 +1,35 @@
+{%- assign s = section.settings -%}
+<section class="relative overflow-hidden bg-stone" aria-labelledby="Heading-{{ section.id }}" {{ section.shopify_attributes }}>
+  <div class="grid lg:grid-cols-2">
+    <div class="relative min-h-[60vh] lg:min-h-[86vh]">
+      {%- render 'image', image: s.image, fallback: s.fallback, alt: s.alt, class: 'absolute inset-0 h-full w-full object-cover', sizes: '(min-width: 1024px) 50vw, 100vw' -%}
+    </div>
+    <div class="wrap flex flex-col justify-center py-20 lg:px-16 lg:py-24" data-reveal>
+      <span aria-hidden="true" class="mask-pks block h-14 w-20 text-bloom"></span>
+      {%- if s.eyebrow != blank -%}<p class="label mt-8 text-granite">{{ s.eyebrow }}</p>{%- endif -%}
+      <blockquote id="Heading-{{ section.id }}" class="display-wide mt-5 text-3xl leading-[1.08] sm:text-[2.6rem]">{{ s.quote }}</blockquote>
+      {%- if s.text != blank -%}<p class="mt-6 max-w-md text-[16px] leading-relaxed text-ink/75">{{ s.text }}</p>{%- endif -%}
+      {%- if s.button_label != blank -%}
+        <a href="{{ s.button_link | default: routes.root_url }}" class="btn-line mt-8 self-start">{{ s.button_label }} {% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Quote with image",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "select", "id": "fallback", "label": "Bundled photo (used when no image is set)", "default": "tunnel-crew", "options": [{"value":"","label":"None"},{"value":"trail-falls-front","label":"Trail: waterfall, black tee"},{"value":"trail-falls-back","label":"Trail: waterfall, tee back"},{"value":"trail-falls-wide","label":"Trail: waterfall, wide"},{"value":"trail-falls-rock","label":"Trail: granite and falls"},{"value":"trail-falls-duo","label":"Trail: two at the falls"},{"value":"trail-overlook","label":"Trail: canyon overlook"},{"value":"trail-ridge","label":"Trail: boulder"},{"value":"trail-path","label":"Trail: forest path"},{"value":"tunnel-crew","label":"Tunnel: the crew"},{"value":"tunnel-pink-hoodie","label":"Tunnel: pink hoodie"},{"value":"tunnel-crop-duo-2","label":"Tunnel: crop top duo"},{"value":"tunnel-crop-sit","label":"Tunnel: sitting crew"},{"value":"tunnel-crop-white","label":"Tunnel: white crop top"},{"value":"tunnel-crop-white-2","label":"Tunnel: white crop top 2"},{"value":"tunnel-zip-black","label":"Tunnel: black zip hoodie"},{"value":"tunnel-zip-navy","label":"Tunnel: navy zip hoodie"},{"value":"tunnel-tee-black-back","label":"Tunnel: tee back print"},{"value":"night-boxy-trio","label":"Night: boxy tee trio"},{"value":"detail-graphic-black","label":"Detail: Summer Edition graphic"}] },
+    { "type": "text", "id": "alt", "label": "Image description (alt text)", "default": "The Peak Side crew lined up in front of a graffiti tunnel" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "From the founder" },
+    { "type": "textarea", "id": "quote", "label": "Quote", "default": "“I realized there will never be any opportunity like this if I don't figure out how to get there myself.”" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Peak Side started with one teenager, a love of being outside and a long-held dream of running a clothing brand. It's since grown into a community of friends who wear it everywhere." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Read the story" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Quote with image" }]
+}
+{% endschema %}

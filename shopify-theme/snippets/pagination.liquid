@@ -1,0 +1,18 @@
+{%- comment -%} Pagination links. Params: paginate {%- endcomment -%}
+<nav class="mt-16 flex items-center justify-center gap-2" aria-label="Pagination">
+  {%- if paginate.previous -%}
+    <a href="{{ paginate.previous.url }}" class="btn-line px-4 py-3" aria-label="{{ 'general.pagination.previous' | t }}">{% render 'icon', name: 'arrow-left' %}</a>
+  {%- endif -%}
+  {%- for part in paginate.parts -%}
+    {%- if part.is_link -%}
+      <a href="{{ part.url }}" class="label grid h-11 min-w-[2.75rem] place-items-center border border-ink/15 px-3 hover:border-ink">{{ part.title }}</a>
+    {%- elsif part.title == paginate.current_page -%}
+      <span class="label grid h-11 min-w-[2.75rem] place-items-center bg-ink px-3 text-bone" aria-current="page">{{ part.title }}</span>
+    {%- else -%}
+      <span class="label grid h-11 min-w-[2.75rem] place-items-center px-3">{{ part.title }}</span>
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if paginate.next -%}
+    <a href="{{ paginate.next.url }}" class="btn-line px-4 py-3" aria-label="{{ 'general.pagination.next' | t }}">{% render 'icon', name: 'arrow' %}</a>
+  {%- endif -%}
+</nav>

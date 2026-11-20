@@ -1,0 +1,21 @@
+{%- comment -%}
+  Outputs a CSS colour for a colour option value: the Shopify swatch colour when one is set,
+  otherwise a best guess from the colour name. Params: value
+{%- endcomment -%}
+{%- if value.swatch.color -%}
+  {{- value.swatch.color -}}
+{%- else -%}
+  {%- assign n = value | downcase -%}
+  {%- if n contains 'navy' -%}#2E4462
+  {%- elsif n contains 'pink' -%}#EC5C9B
+  {%- elsif n contains 'black' -%}#1B1B1A
+  {%- elsif n contains 'white' or n contains 'cream' or n contains 'bone' -%}#F7F6F2
+  {%- elsif n contains 'dark grey' or n contains 'dark gray' or n contains 'charcoal' -%}#4B4A48
+  {%- elsif n contains 'grey' or n contains 'gray' -%}#B5B4B0
+  {%- elsif n contains 'blue' -%}#3B5B8C
+  {%- elsif n contains 'green' -%}#4E6B4A
+  {%- elsif n contains 'red' -%}#B23A3A
+  {%- elsif n contains 'brown' or n contains 'tan' -%}#8A6A4F
+  {%- else -%}#D9D5CC
+  {%- endif -%}
+{%- endif -%}

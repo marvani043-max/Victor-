@@ -1,0 +1,16 @@
+<div class="wrap py-16 sm:py-24" {{ section.shopify_attributes }}>
+  {%- if section.settings.show_title -%}
+    <h1 class="display text-[15vw] sm:text-[7rem] lg:text-[8.5rem]">{{ page.title }}</h1>
+  {%- endif -%}
+  {%- if page.content != blank -%}
+    <div class="rte mt-10 max-w-3xl text-[17px] leading-relaxed text-ink/85">{{ page.content }}</div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Page content",
+  "tag": "section",
+  "settings": [{ "type": "checkbox", "id": "show_title", "label": "Show page title", "default": true }]
+}
+{% endschema %}

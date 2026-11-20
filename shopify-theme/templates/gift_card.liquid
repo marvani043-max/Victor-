@@ -1,0 +1,41 @@
+{%- layout none -%}
+{%- liquid
+  assign value = gift_card.initial_value | money
+  assign title = 'gift_card.title' | t: value: value
+  if gift_card.expires_on
+    assign expires = gift_card.expires_on | date: format: 'date'
+  endif
+-%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="robots" content="noindex">
+    <title>{{ title }} | {{ shop.name }}</title>
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+  </head>
+  <body>
+    <main class="wrap flex min-h-screen flex-col items-center justify-center py-16 text-center">
+      <p class="label text-granite">{{ shop.name }}</p>
+      <h1 class="display mt-4 text-6xl sm:text-8xl">{{ title }}</h1>
+      {%- if gift_card.expired -%}
+        <p class="label mt-4 bg-ink px-2 py-1 text-bone">{{ 'gift_card.expired' | t }}</p>
+      {%- elsif gift_card.expires_on -%}
+        <p class="mt-4 text-[14px] text-granite">{{ 'gift_card.expires_on' | t: date: expires }}</p>
+      {%- endif -%}
+      <p class="mt-8 font-mono text-3xl">{{ gift_card.balance | money }}</p>
+      <div class="mt-6 border border-ink/20 px-6 py-4">
+        <p class="label text-granite">{{ 'gift_card.code' | t }}</p>
+        <p class="mt-2 select-all font-mono text-xl">{{ gift_card.code | format_code }}</p>
+      </div>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href="{{ shop.url }}" class="btn-ink">{{ 'gift_card.shop' | t }}</a>
+        {%- if gift_card.pass_url -%}
+          <a href="{{ gift_card.pass_url }}" class="btn-line">Apple Wallet</a>
+        {%- endif -%}
+      </div>
+    </main>
+  </body>
+</html>

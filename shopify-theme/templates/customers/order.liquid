@@ -1,0 +1,59 @@
+{%- assign placed = order.created_at | date: format: 'date_at_time' -%}
+<div class="wrap py-16 sm:py-24">
+  <a href="{{ routes.account_url }}" class="label link-u inline-flex items-center gap-2 text-granite">{% render 'icon', name: 'arrow-left' %} {{ 'customer.order.back' | t }}</a>
+  <h1 class="display mt-6 text-[13vw] sm:text-7xl">{{ 'customer.order.title' | t: name: order.name }}</h1>
+  <p class="mt-3 text-[15px] text-ink/70">{{ 'customer.order.date' | t: date: placed }}</p>
+
+  <div class="mt-10 overflow-x-auto">
+    <table class="w-full min-w-[560px] text-left text-[14px]">
+      <thead>
+        <tr class="label text-granite">
+          <th class="py-3 pr-4 font-normal">{{ 'customer.order.product' | t }}</th>
+          <th class="py-3 pr-4 font-normal">{{ 'customer.order.sku' | t }}</th>
+          <th class="py-3 pr-4 font-normal">{{ 'customer.order.price' | t }}</th>
+          <th class="py-3 pr-4 font-normal">{{ 'customer.order.quantity' | t }}</th>
+          <th class="py-3 text-right font-normal">{{ 'customer.order.total' | t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for line_item in order.line_items -%}
+          <tr class="border-t border-ink/10">
+            <td class="py-3 pr-4">
+              {{ line_item.title | link_to: line_item.product.url }}
+              {%- if line_item.fulfillment -%}
+                <p class="mt-1 text-[13px] text-granite">{{ line_item.fulfillment.created_at | date: format: 'date' }} {% if line_item.fulfillment.tracking_url %}· <a href="{{ line_item.fulfillment.tracking_url }}" class="underline">{{ line_item.fulfillment.tracking_number }}</a>{% endif %}</p>
+              {%- endif -%}
+            </td>
+            <td class="py-3 pr-4">{{ line_item.sku }}</td>
+            <td class="py-3 pr-4 font-mono">{{ line_item.final_price | money }}</td>
+            <td class="py-3 pr-4">{{ line_item.quantity }}</td>
+            <td class="py-3 text-right font-mono">{{ line_item.final_line_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+      <tfoot class="text-[14px]">
+        <tr class="border-t border-ink/15"><td colspan="4" class="py-2">{{ 'customer.order.subtotal' | t }}</td><td class="py-2 text-right font-mono">{{ order.line_items_subtotal_price | money }}</td></tr>
+        {%- for shipping_method in order.shipping_methods -%}
+          <tr><td colspan="4" class="py-2">{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})</td><td class="py-2 text-right font-mono">{{ shipping_method.price | money }}</td></tr>
+        {%- endfor -%}
+        {%- for tax_line in order.tax_lines -%}
+          <tr><td colspan="4" class="py-2">{{ 'customer.order.tax' | t }} ({{ tax_line.title }})</td><td class="py-2 text-right font-mono">{{ tax_line.price | money }}</td></tr>
+        {%- endfor -%}
+        <tr class="border-t border-ink/15 font-medium"><td colspan="4" class="py-3">{{ 'customer.order.total' | t }}</td><td class="py-3 text-right font-mono">{{ order.total_net_amount | money_with_currency }}</td></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="mt-12 grid gap-10 sm:grid-cols-2">
+    <div>
+      <h2 class="label border-b border-ink pb-3 text-[12px]">{{ 'customer.order.billing' | t }}</h2>
+      <div class="mt-4 text-[15px] leading-relaxed text-ink/80">{{ order.billing_address | format_address }}</div>
+    </div>
+    {%- if order.shipping_address -%}
+      <div>
+        <h2 class="label border-b border-ink pb-3 text-[12px]">{{ 'customer.order.shipping_address' | t }}</h2>
+        <div class="mt-4 text-[15px] leading-relaxed text-ink/80">{{ order.shipping_address | format_address }}</div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>

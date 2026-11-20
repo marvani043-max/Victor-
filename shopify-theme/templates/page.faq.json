@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "main": { "type": "main-page", "settings": { "show_title": true } },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "How long until my order ships?", "answer": "<p>Orders are typically processed within 2–5 business days. Once your order ships you'll get an email with tracking. Delivery time after that depends on your location and the shipping method you choose at checkout.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Is there free shipping?", "answer": "<p>Yes. Use code FREESHIP2026 at checkout for free shipping.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "Can I return or exchange something?", "answer": "<p>Yes, within 30 days of delivery. Items need to be unworn, unwashed, in original condition and with the original tags attached. Sale and final-sale items can't be returned or exchanged.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "Who pays for return shipping?", "answer": "<p>Return shipping is paid by the customer, unless the item arrived damaged or defective, or we sent the wrong item.</p>" } },
+        "q5": { "type": "question", "settings": { "question": "My item arrived damaged or it's the wrong one. What do I do?", "answer": "<p>Email us within 7 days of delivery with your order number and photos of the item, and we'll sort it out.</p>" } },
+        "q6": { "type": "question", "settings": { "question": "My package says delivered but I can't find it.", "answer": "<p>Please contact the shipping carrier first. If you still need help after that, email us with your order number.</p>" } },
+        "q7": { "type": "question", "settings": { "question": "How do the crop tops and boxy tees fit?", "answer": "<p>The off-shoulder crop tops run roomy, so we recommend sizing down. The boxy Summer Edition tees are the same design as the regular tees with a boxier cut, so stay true to size.</p>" } },
+        "q8": { "type": "question", "settings": { "question": "How do I start a return or exchange?", "answer": "<p>Email us with your order number and what you'd like to do. Refunds go back to your original payment method once your return is received and approved.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"],
+      "settings": {
+        "heading": "FAQ",
+        "text": "Can't find your answer? Email us and we'll get back to you.",
+        "button_label": "Email Peak Side"
+      }
+    }
+  },
+  "order": ["main", "faq"]
+}

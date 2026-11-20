@@ -1,0 +1,58 @@
+<div class="wrap grid gap-16 py-16 sm:py-24 lg:grid-cols-2">
+  <div>
+    <h1 class="display text-[15vw] sm:text-7xl lg:text-[6rem]" data-login-heading>{{ 'customer.login.title' | t }}</h1>
+
+    <div data-login-panel>
+      {%- form 'customer_login', class: 'mt-8 max-w-md space-y-4', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}<div class="form-message" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div>
+          <label for="CustomerEmail" class="label">{{ 'customer.login.email' | t }}</label>
+          <input type="email" name="customer[email]" id="CustomerEmail" class="field mt-2" autocomplete="email" autocapitalize="off" required>
+        </div>
+        {%- if form.password_needed -%}
+          <div>
+            <label for="CustomerPassword" class="label">{{ 'customer.login.password' | t }}</label>
+            <input type="password" name="customer[password]" id="CustomerPassword" class="field mt-2" autocomplete="current-password" required>
+          </div>
+          <button type="button" class="label link-u text-granite" data-show-recover>{{ 'customer.login.forgot' | t }}</button>
+        {%- endif -%}
+        <button type="submit" class="btn-ink w-full">{{ 'customer.login.submit' | t }}</button>
+        <a href="{{ routes.account_register_url }}" class="btn-line w-full">{{ 'customer.login.create' | t }}</a>
+      {%- endform -%}
+    </div>
+
+    <div class="mt-8 max-w-md" data-recover-panel hidden>
+      <p class="text-[15px] text-ink/75">{{ 'customer.recover.text' | t }}</p>
+      {%- form 'recover_customer_password', class: 'mt-4 space-y-4' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form-message" role="status">{{ 'customer.recover.success' | t }}</p>
+        {%- endif -%}
+        {%- if form.errors -%}<div class="form-message" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <label for="RecoverEmail" class="label">{{ 'customer.login.email' | t }}</label>
+        <input type="email" name="email" id="RecoverEmail" class="field" autocomplete="email" required>
+        <button type="submit" class="btn-ink w-full">{{ 'customer.recover.submit' | t }}</button>
+        <button type="button" class="label link-u text-granite" data-hide-recover>{{ 'customer.recover.cancel' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+
+  {%- if shop.checkout.guest_login -%}
+    <div class="self-end">
+      {%- form 'guest_login' -%}
+        <button type="submit" class="btn-line">{{ 'customer.login.guest' | t }}</button>
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+</div>
+<script>
+  (function () {
+    var show = document.querySelector('[data-show-recover]');
+    var hide = document.querySelector('[data-hide-recover]');
+    var login = document.querySelector('[data-login-panel]');
+    var recover = document.querySelector('[data-recover-panel]');
+    function toggle(r) { if (login) login.hidden = r; if (recover) recover.hidden = !r; }
+    if (show) show.addEventListener('click', function () { toggle(true); });
+    if (hide) hide.addEventListener('click', function () { toggle(false); });
+    if (location.hash === '#recover') toggle(true);
+  })();
+</script>

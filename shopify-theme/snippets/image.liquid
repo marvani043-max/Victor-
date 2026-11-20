@@ -1,0 +1,15 @@
+{%- comment -%}
+  Responsive image. Uses a Shopify image when one is set, otherwise a bundled Peak Side photo.
+  Params: image (image object), fallback (bundled photo key, e.g. 'trail-falls-front'),
+          alt, class, sizes, loading ('lazy' | 'eager'), style
+{%- endcomment -%}
+{%- liquid
+  assign img_loading = loading | default: 'lazy'
+  assign img_sizes = sizes | default: '100vw'
+-%}
+{%- if image != blank -%}
+  {%- assign img_alt = alt | default: image.alt | escape -%}
+  {{ image | image_url: width: 1800 | image_tag: widths: '480, 720, 960, 1280, 1800', sizes: img_sizes, class: class, alt: img_alt, loading: img_loading, style: style }}
+{%- elsif fallback != blank -%}
+  {%- render 'bundled-photo', key: fallback, alt: alt, class: class, loading: img_loading, style: style -%}
+{%- endif -%}

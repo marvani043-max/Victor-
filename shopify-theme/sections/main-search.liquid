@@ -1,0 +1,45 @@
+<div class="wrap pb-28 pt-10 sm:pt-16" {{ section.shopify_attributes }}>
+  <h1 class="display text-[17vw] sm:text-[8rem] lg:text-[10rem]">{{ 'search.title' | t }}</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
+    <label for="SearchInput" class="visually-hidden">{{ 'search.title' | t }}</label>
+    <input id="SearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}" class="field min-w-0 flex-1" autocomplete="off">
+    <input type="hidden" name="options[prefix]" value="last">
+    <button type="submit" class="btn-ink shrink-0">{{ 'search.submit' | t }}</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      <p class="label mt-10 text-granite" aria-live="polite">
+        {%- if search.results_count > 0 -%}
+          {{ 'search.results' | t: count: search.results_count, terms: search.terms }}
+        {%- else -%}
+          {{ 'search.no_results' | t: terms: search.terms }}
+        {%- endif -%}
+      </p>
+      {%- if search.results_count > 0 -%}
+        <ul class="mt-6 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">
+          {%- for item in search.results -%}
+            <li>
+              {%- if item.object_type == 'product' -%}
+                {% render 'product-card', product: item %}
+              {%- else -%}
+                <a href="{{ item.url }}" class="block border border-ink/15 p-5 hover:border-ink">
+                  <p class="label text-granite">{{ item.object_type }}</p>
+                  <p class="mt-2 text-[16px] font-medium">{{ item.title }}</p>
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {%- if paginate.pages > 1 -%}{%- render 'pagination', paginate: paginate -%}{%- endif -%}
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search results",
+  "tag": "section"
+}
+{% endschema %}

@@ -40,8 +40,10 @@ const SPIN_CSS = `${TOKENS}
 :host{display:block;position:relative;width:100%;height:100%;min-height:280px;container-type:size}
 .stage{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 95% at 50% 36%,#F4F1EB 0%,var(--stone) 52%,#D9D3C8 100%);cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;outline:none;perspective:1500px}
 .stage:focus-visible{box-shadow:inset 0 0 0 2px var(--bloom)}
+.stage.plain{background:#fff}
+.stage.plain .face img{filter:none}
 .stage.dragging{cursor:grabbing}
-.word{position:absolute;left:50%;top:43%;white-space:nowrap;font-size:min(34cqw,46cqh);${DISPLAY}color:transparent;-webkit-text-stroke:1.5px rgba(17,17,15,.12);pointer-events:none;will-change:transform}
+.word{position:absolute;left:50%;top:43%;white-space:nowrap;font-size:18vw;font-size:min(34cqw,46cqh);${DISPLAY}color:transparent;-webkit-text-stroke:1.5px rgba(17,17,15,.12);pointer-events:none;will-change:transform}
 .floor{position:absolute;left:22%;right:22%;bottom:15.5%;height:6%;border-radius:50%;background:radial-gradient(closest-side,rgba(17,17,15,.30),rgba(17,17,15,0));will-change:transform}
 .spinner{position:absolute;inset:7% 9% 19%;transform-style:preserve-3d;will-change:transform}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
@@ -65,7 +67,7 @@ const SPIN_CSS = `${TOKENS}
 `;
 
 class PsSpin extends HTMLElement {
-  static observedAttributes = ["front", "back", "word", "label"];
+  static observedAttributes = ["front", "back", "word", "label", "plain"];
   private shadow?: ShadowRoot;
   private stage!: HTMLDivElement;
   private spinner!: HTMLDivElement;
@@ -234,6 +236,7 @@ class PsSpin extends HTMLElement {
       sh.style.setProperty("-webkit-mask", m);
       sh.style.setProperty("mask", m);
     });
+    this.stage.classList.toggle("plain", this.hasAttribute("plain"));
     this.word.textContent = this.getAttribute("word") || "Peak Side";
     (this.shadow!.querySelector(".lbl") as HTMLElement).textContent = this.getAttribute("word") || "";
     this.stage.setAttribute("aria-label", `360 degree view of ${label}. Drag, or use the arrow keys, to turn it.`);
@@ -342,7 +345,8 @@ class PsSpin extends HTMLElement {
 /* <ps-showcase>                                                        */
 /* ------------------------------------------------------------------ */
 
-type ShowItem = { name: string; price: string; colour: string; href: string; front: string; back: string; thumb: string; word: string };
+type ShowItem = { name: string; price: string; colour: string; href: string; front: string; back: string; thumb: string; word: string; plain?: boolean };
+type ShowData = { items: ShowItem[]; eyebrow?: string; heading?: string; accent?: string; lead?: string; cta?: string };
 
 const SHOW_CSS = `${TOKENS}
 :host{display:block;color:var(--ink)}
@@ -379,7 +383,7 @@ h2 em{font-style:normal;color:var(--bloom)}
 class PsShowcase extends HTMLElement {
   connectedCallback() {
     if (this.shadowRoot) return;
-    const data = readJSON<{ items: ShowItem[] }>(this);
+    const data = readJSON<ShowData>(this);
     if (!data?.items?.length) return;
     const items = data.items;
     const root = this.attachShadow({ mode: "open" });
@@ -387,12 +391,12 @@ class PsShowcase extends HTMLElement {
 <div class="wrap">
   <div class="viewer"><ps-spin></ps-spin></div>
   <div class="info">
-    <p class="eyebrow">360° · Grab it and turn it</p>
-    <h2>Spin <em>the drop.</em></h2>
-    <p class="lead">Front, back and every angle in between before you buy. Drag the garment to spin it, or flick through the range.</p>
+    <p class="eyebrow">${esc(data.eyebrow ?? "360° · Grab it and turn it")}</p>
+    <h2>${esc(data.heading ?? "Spin")} <em>${esc(data.accent ?? "the drop.")}</em></h2>
+    <p class="lead">${esc(data.lead ?? "Front, back and every angle in between before you buy. Drag the garment to spin it, or flick through the range.")}</p>
     <div class="cur" aria-live="polite"><div><p class="cname"></p><p class="ccol"></p></div><p class="cprice"></p></div>
     <div class="actions">
-      <a class="cta" href="#">Shop this piece ${ARROW}</a>
+      <a class="cta" href="#">${esc(data.cta ?? "Shop this piece")} ${ARROW}</a>
       <div class="nav"><span class="count"></span>
         <button type="button" class="prev" aria-label="Previous piece">${ARROW_L}</button>
         <button type="button" class="next" aria-label="Next piece">${ARROW}</button>
@@ -416,6 +420,8 @@ class PsShowcase extends HTMLElement {
       spin.setAttribute("label", `${it.name} in ${it.colour}`);
       spin.setAttribute("word", it.word);
       spin.setAttribute("back", it.back);
+      if (it.plain) spin.setAttribute("plain", "");
+      else spin.removeAttribute("plain");
       spin.setAttribute("front", it.front);
       $(".cname").textContent = it.name;
       $(".ccol").textContent = it.colour;

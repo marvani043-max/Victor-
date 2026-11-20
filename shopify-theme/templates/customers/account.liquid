@@ -1,0 +1,55 @@
+<div class="wrap py-16 sm:py-24">
+  <div class="flex flex-wrap items-end justify-between gap-6">
+    <h1 class="display text-[15vw] sm:text-7xl lg:text-[6rem]">{{ 'customer.account.title' | t }}</h1>
+    <a href="{{ routes.account_logout_url }}" class="label link-u">{{ 'customer.account.logout' | t }}</a>
+  </div>
+
+  <div class="mt-12 grid gap-12 lg:grid-cols-12">
+    <section class="lg:col-span-8">
+      <h2 class="label border-b border-ink pb-3 text-[12px]">{{ 'customer.account.orders' | t }}</h2>
+      {%- paginate customer.orders by 20 -%}
+        {%- if customer.orders.size > 0 -%}
+          <div class="overflow-x-auto">
+            <table class="mt-2 w-full min-w-[520px] text-left text-[14px]">
+              <thead>
+                <tr class="label text-granite">
+                  <th class="py-3 pr-4 font-normal">{{ 'customer.account.order' | t }}</th>
+                  <th class="py-3 pr-4 font-normal">{{ 'customer.account.date' | t }}</th>
+                  <th class="py-3 pr-4 font-normal">{{ 'customer.account.payment' | t }}</th>
+                  <th class="py-3 pr-4 font-normal">{{ 'customer.account.fulfillment' | t }}</th>
+                  <th class="py-3 text-right font-normal">{{ 'customer.account.total' | t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr class="border-t border-ink/10">
+                    <td class="py-3 pr-4"><a href="{{ order.customer_url }}" class="underline">{{ order.name }}</a></td>
+                    <td class="py-3 pr-4">{{ order.created_at | date: format: 'date' }}</td>
+                    <td class="py-3 pr-4">{{ order.financial_status_label }}</td>
+                    <td class="py-3 pr-4">{{ order.fulfillment_status_label }}</td>
+                    <td class="py-3 text-right font-mono">{{ order.total_net_amount | money_with_currency }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+          </div>
+          {%- if paginate.pages > 1 -%}{%- render 'pagination', paginate: paginate -%}{%- endif -%}
+        {%- else -%}
+          <p class="mt-4 text-[15px] text-ink/75">{{ 'customer.account.no_orders' | t }}</p>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </section>
+
+    <aside class="lg:col-span-4">
+      <h2 class="label border-b border-ink pb-3 text-[12px]">{{ 'customer.account.details' | t }}</h2>
+      <div class="mt-4 text-[15px] leading-relaxed">
+        <p class="font-medium">{{ customer.name }}</p>
+        <p class="text-ink/75">{{ customer.email }}</p>
+        {%- if customer.default_address -%}
+          <div class="mt-3 text-ink/75">{{ customer.default_address | format_address }}</div>
+        {%- endif -%}
+        <a href="{{ routes.account_addresses_url }}" class="btn-line mt-6">{{ 'customer.account.addresses' | t }} ({{ customer.addresses_count }})</a>
+      </div>
+    </aside>
+  </div>
+</div>

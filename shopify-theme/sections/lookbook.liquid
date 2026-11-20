@@ -1,0 +1,112 @@
+{%- assign s = section.settings -%}
+<section class="bg-ink py-20 text-bone sm:py-28" aria-labelledby="Heading-{{ section.id }}" data-lookbook {{ section.shopify_attributes }}>
+  <div class="wrap">
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        {%- if s.eyebrow != blank -%}<p class="label text-mist">{{ s.eyebrow }}</p>{%- endif -%}
+        <h2 id="Heading-{{ section.id }}" class="display mt-4 text-[16vw] sm:text-8xl lg:text-[8.5rem]">{{ s.heading_1 }}<br>{{ s.heading_2 }}</h2>
+      </div>
+      <div class="max-w-sm">
+        <div role="tablist" aria-label="{{ s.eyebrow | escape }}" class="inline-flex border border-bone/25 p-1">
+          <button role="tab" type="button" class="look-tab label px-6 py-3" aria-selected="true" aria-controls="Look-{{ section.id }}-1" data-tab="1" data-line="{{ s.tab_1_line | escape }}">{{ s.tab_1 }}</button>
+          <button role="tab" type="button" class="look-tab label px-6 py-3" aria-selected="false" aria-controls="Look-{{ section.id }}-2" data-tab="2" data-line="{{ s.tab_2_line | escape }}">{{ s.tab_2 }}</button>
+        </div>
+        <p class="mt-5 text-[15px] leading-relaxed text-bone/75" data-look-line>{{ s.tab_1_line }}</p>
+      </div>
+    </div>
+
+    {%- for tab in (1..2) -%}
+      {%- assign tab_value = tab | append: '' -%}
+      <div id="Look-{{ section.id }}-{{ tab }}" role="tabpanel" class="mt-12" data-look="{{ tab }}"{% if tab == 2 %} hidden{% endif %}>
+        <ul class="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-12 lg:gap-4 lg:overflow-visible lg:px-0">
+          {%- assign j = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.settings.tab != tab_value -%}{%- continue -%}{%- endif -%}
+            {%- liquid
+              assign pos = j | modulo: 4
+              case pos
+                when 0
+                  assign span = 'lg:col-span-5 lg:row-span-2'
+                  assign aspect = 'aspect-[3/4] lg:aspect-auto lg:h-full'
+                when 1
+                  assign span = 'lg:col-span-4'
+                  assign aspect = 'aspect-[3/4]'
+                when 2
+                  assign span = 'lg:col-span-3 lg:mt-24'
+                  assign aspect = 'aspect-[3/4]'
+                else
+                  assign span = 'lg:col-span-7'
+                  assign aspect = 'aspect-[3/4] lg:aspect-[16/10]'
+              endcase
+              assign j = j | plus: 1
+              assign p = block.settings.product
+            -%}
+            <li class="w-[78vw] shrink-0 snap-start sm:w-[46vw] lg:w-auto {{ span }}" {{ block.shopify_attributes }}>
+              <a href="{{ p.url | default: routes.all_products_collection_url }}" class="group relative block h-full overflow-hidden bg-coal">
+                <div class="relative {{ aspect }}">
+                  {%- render 'image', image: block.settings.image, fallback: block.settings.fallback, alt: block.settings.alt, class: 'absolute inset-0 h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105', sizes: '(min-width: 1024px) 40vw, 78vw' -%}
+                </div>
+                <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-ink/85 to-transparent p-4 pt-16">
+                  <div>
+                    <p class="label text-[10px] text-mist">{{ s.wearing_label }}</p>
+                    <p class="mt-1 text-[14px] font-medium">{{ p.title | default: block.settings.caption }}</p>
+                  </div>
+                  <span class="flex items-center gap-2 font-mono text-[12px]">
+                    {%- if p != blank -%}{{ p.price | money }}{%- endif -%}
+                    <span class="grid h-8 w-8 place-items-center bg-bone text-ink transition-colors group-hover:bg-sakura">{% render 'icon', name: 'arrow' %}</span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Lookbook",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The lookbook" },
+    { "type": "text", "id": "heading_1", "label": "Heading line 1", "default": "Two places." },
+    { "type": "text", "id": "heading_2", "label": "Heading line 2", "default": "One wardrobe." },
+    { "type": "text", "id": "tab_1", "label": "First tab", "default": "Trail" },
+    { "type": "textarea", "id": "tab_1_line", "label": "First tab text", "default": "Granite, spray and switchbacks. Tees that handle the climb and still look right at the top." },
+    { "type": "text", "id": "tab_2", "label": "Second tab", "default": "Tunnel" },
+    { "type": "textarea", "id": "tab_2_line", "label": "Second tab text", "default": "Back in town: graffiti walls, late light, the whole crew. Same clothes, different backdrop." },
+    { "type": "text", "id": "wearing_label", "label": "Product label", "default": "Wearing" }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        { "type": "select", "id": "tab", "label": "Tab", "default": "1", "options": [{ "value": "1", "label": "First tab" }, { "value": "2", "label": "Second tab" }] },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "select", "id": "fallback", "label": "Bundled photo (used when no image is set)", "default": "trail-falls-back", "options": [{"value":"","label":"None"},{"value":"trail-falls-front","label":"Trail: waterfall, black tee"},{"value":"trail-falls-back","label":"Trail: waterfall, tee back"},{"value":"trail-falls-wide","label":"Trail: waterfall, wide"},{"value":"trail-falls-rock","label":"Trail: granite and falls"},{"value":"trail-falls-duo","label":"Trail: two at the falls"},{"value":"trail-overlook","label":"Trail: canyon overlook"},{"value":"trail-ridge","label":"Trail: boulder"},{"value":"trail-path","label":"Trail: forest path"},{"value":"tunnel-crew","label":"Tunnel: the crew"},{"value":"tunnel-pink-hoodie","label":"Tunnel: pink hoodie"},{"value":"tunnel-crop-duo-2","label":"Tunnel: crop top duo"},{"value":"tunnel-crop-sit","label":"Tunnel: sitting crew"},{"value":"tunnel-crop-white","label":"Tunnel: white crop top"},{"value":"tunnel-crop-white-2","label":"Tunnel: white crop top 2"},{"value":"tunnel-zip-black","label":"Tunnel: black zip hoodie"},{"value":"tunnel-zip-navy","label":"Tunnel: navy zip hoodie"},{"value":"tunnel-tee-black-back","label":"Tunnel: tee back print"},{"value":"night-boxy-trio","label":"Night: boxy tee trio"},{"value":"detail-graphic-black","label":"Detail: Summer Edition graphic"}] },
+        { "type": "text", "id": "alt", "label": "Image description (alt text)" },
+        { "type": "product", "id": "product", "label": "Product worn" },
+        { "type": "text", "id": "caption", "label": "Caption (used when no product is set)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook",
+      "blocks": [
+        { "type": "look", "settings": { "tab": "1", "fallback": "trail-falls-back", "caption": "Summer Edition Boxy Tee — Black", "alt": "Back of the black boxy Summer Edition tee beside a waterfall" } },
+        { "type": "look", "settings": { "tab": "1", "fallback": "trail-overlook", "caption": "Summer Edition Tee — White", "alt": "White Summer Edition tee at a canyon overlook" } },
+        { "type": "look", "settings": { "tab": "1", "fallback": "trail-ridge", "caption": "Summer Edition Tee — White", "alt": "White Summer Edition tee on a granite boulder" } },
+        { "type": "look", "settings": { "tab": "1", "fallback": "trail-falls-wide", "caption": "Summer Edition Boxy Tee — Black", "alt": "Black boxy tee at the base of a waterfall" } },
+        { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-crop-duo-2", "caption": "Off-Shoulder Crop Top — Black", "alt": "Two friends in black off-shoulder crop tops against graffiti" } },
+        { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-zip-navy", "caption": "Double Zip Hoodie", "alt": "Navy double zip hoodie worn in a graffiti tunnel" } },
+        { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-tee-black-back", "caption": "Summer Edition Tee — Black", "alt": "Back print of the black Summer Edition tee" } },
+        { "type": "look", "settings": { "tab": "2", "fallback": "tunnel-crop-white", "caption": "Off-Shoulder Crop Top — White", "alt": "White off-shoulder crop top in a graffiti tunnel" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

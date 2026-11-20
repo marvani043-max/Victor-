@@ -1,0 +1,92 @@
+{%- liquid
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign active_count = 0
+  for filter in collection.filters
+    assign active_count = active_count | plus: filter.active_values.size
+  endfor
+-%}
+<div class="wrap pb-28 pt-10 sm:pt-16" {{ section.shopify_attributes }}>
+  <div class="flex flex-col gap-4 pb-8 sm:flex-row sm:items-end sm:justify-between">
+    <h1 class="display text-[18vw] sm:text-[8rem] lg:text-[10rem]">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <div class="rte max-w-xs pb-3 text-[15px] leading-relaxed text-ink/70">{{ collection.description }}</div>
+    {%- elsif section.settings.intro != blank -%}
+      <p class="max-w-xs pb-3 text-[15px] leading-relaxed text-ink/70">{{ section.settings.intro }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- paginate collection.products by section.settings.per_page -%}
+    <div class="sticky z-20 -mx-4 border-y border-ink/10 bg-bone/95 px-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10" style="top: var(--header-h)">
+      <div class="flex flex-col gap-3 py-3 lg:flex-row lg:items-center lg:justify-between">
+        <div class="no-scrollbar -mx-1 flex min-w-0 items-center gap-1 overflow-x-auto px-1" role="group" aria-label="{{ 'collections.filter' | t }}">
+          <a href="{{ collection.url }}?sort_by={{ sort_by }}" class="filter-chip label shrink-0 whitespace-nowrap px-3.5 py-2.5 hover:bg-stone"{% if active_count == 0 %} aria-current="true"{% endif %}>
+            {{ 'collections.all' | t }} <span class="opacity-60">{{ collection.all_products_count }}</span>
+          </a>
+          {%- for filter in collection.filters -%}
+            {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+              {%- for value in filter.values -%}
+                {%- if value.count == 0 and value.active == false -%}{%- continue -%}{%- endif -%}
+                <a href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" class="filter-chip label shrink-0 whitespace-nowrap px-3.5 py-2.5 hover:bg-stone"{% if value.active %} aria-current="true"{% endif %}>
+                  {{ value.label }} <span class="opacity-60">{{ value.count }}</span>
+                </a>
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <form class="flex items-center justify-between gap-6 lg:justify-end" method="get" action="{{ collection.url }}" data-sort-form>
+          {%- for filter in collection.filters -%}
+            {%- for value in filter.active_values -%}
+              <input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">
+            {%- endfor -%}
+          {%- endfor -%}
+          <label class="label flex items-center gap-2" for="SortBy-{{ section.id }}">
+            <span class="text-granite">{{ 'collections.sort' | t }}</span>
+            <select id="SortBy-{{ section.id }}" name="sort_by" class="label cursor-pointer border-b border-ink/30 bg-transparent py-1 pr-1 focus:outline-none" style="font-size: 16px">
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+              {%- endfor -%}
+            </select>
+          </label>
+          <noscript><button type="submit" class="label underline">{{ 'collections.sort' | t }}</button></noscript>
+        </form>
+      </div>
+    </div>
+
+    <p class="label mt-6 text-granite" aria-live="polite">{{ 'collections.product_count' | t: count: collection.products_count }}</p>
+
+    {%- if collection.products.size > 0 -%}
+      <ul class="mt-4 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-y-14">
+        {%- for product in collection.products -%}
+          {%- liquid
+            assign eager_img = false
+            if forloop.index0 < 4
+              assign eager_img = true
+            endif
+          -%}
+          <li>{% render 'product-card', product: product, eager: eager_img %}</li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="py-24 text-center">
+        <p class="display text-5xl">{{ 'collections.empty' | t }}</p>
+        <a href="{{ collection.url }}" class="btn-line mt-6">{{ 'collections.clear' | t }}</a>
+      </div>
+    {%- endif -%}
+
+    {%- if paginate.pages > 1 -%}
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endif -%}
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{
+  "name": "Collection grid",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "textarea", "id": "intro", "label": "Intro (used when the collection has no description)", "default": "Every piece in the current range. Pick a product to see colours and sizes." },
+    { "type": "paragraph", "content": "Filter chips come from Shopify's storefront filters. Set them up in the Search & Discovery app (for example Product type, Availability)." }
+  ]
+}
+{% endschema %}

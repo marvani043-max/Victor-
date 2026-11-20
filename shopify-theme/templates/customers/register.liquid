@@ -1,0 +1,23 @@
+<div class="wrap py-16 sm:py-24">
+  <h1 class="display text-[15vw] sm:text-7xl lg:text-[6rem]">{{ 'customer.register.title' | t }}</h1>
+  {%- form 'create_customer', class: 'mt-8 max-w-md space-y-4', novalidate: 'novalidate' -%}
+    {%- if form.errors -%}<div class="form-message" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+    <div>
+      <label for="RegisterFirstName" class="label">{{ 'customer.register.first_name' | t }}</label>
+      <input type="text" name="customer[first_name]" id="RegisterFirstName" class="field mt-2" autocomplete="given-name">
+    </div>
+    <div>
+      <label for="RegisterLastName" class="label">{{ 'customer.register.last_name' | t }}</label>
+      <input type="text" name="customer[last_name]" id="RegisterLastName" class="field mt-2" autocomplete="family-name">
+    </div>
+    <div>
+      <label for="RegisterEmail" class="label">{{ 'customer.login.email' | t }}</label>
+      <input type="email" name="customer[email]" id="RegisterEmail" class="field mt-2" autocomplete="email" autocapitalize="off" required>
+    </div>
+    <div>
+      <label for="RegisterPassword" class="label">{{ 'customer.login.password' | t }}</label>
+      <input type="password" name="customer[password]" id="RegisterPassword" class="field mt-2" autocomplete="new-password" required>
+    </div>
+    <button type="submit" class="btn-ink w-full">{{ 'customer.register.submit' | t }}</button>
+  {%- endform -%}
+</div>

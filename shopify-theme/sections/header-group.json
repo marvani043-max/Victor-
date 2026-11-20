@@ -1,0 +1,25 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "settings": {
+        "text": "Free shipping with code",
+        "code": "FREESHIP2026",
+        "link": ""
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "logo_text": "Peak Side",
+        "cta_label": "Shop now",
+        "cta_link": "",
+        "transparent_home": true
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

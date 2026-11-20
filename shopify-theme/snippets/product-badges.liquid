@@ -1,0 +1,14 @@
+{%- comment -%} Badges in the top-left of a product card. {%- endcomment -%}
+<div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+  {%- if is_coming -%}
+    <span class="label bg-sakura px-2 py-1 text-[10px] text-ink">{{ 'products.product.coming_soon' | t }}</span>
+  {%- elsif is_sold_out -%}
+    <span class="label bg-ink px-2 py-1 text-[10px] text-bone">{{ 'products.product.sold_out' | t }}</span>
+  {%- endif -%}
+  {%- if on_sale and is_sold_out == false -%}
+    <span class="label bg-bloom px-2 py-1 text-[10px] text-bone">{{ 'products.product.sale' | t }}</span>
+  {%- endif -%}
+  {%- if show_best and product.tags contains 'best-seller' and is_sold_out == false -%}
+    <span class="label bg-bone/90 px-2 py-1 text-[10px] text-ink">{{ 'products.product.best_seller' | t }}</span>
+  {%- endif -%}
+</div>

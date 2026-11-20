@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "banner": {
+      "type": "image-banner",
+      "settings": {
+        "fallback": "trail-falls-rock",
+        "alt": "Standing on granite at the foot of a waterfall in a Peak Side tee",
+        "position": "object-position: 50% 72%",
+        "height": 78,
+        "eyebrow": "Our story",
+        "heading": "Started at 16.",
+        "heading_accent": "Built outside."
+      }
+    },
+    "words": {
+      "type": "rich-text",
+      "settings": {
+        "show_mark": true,
+        "eyebrow": "In the founder's words",
+        "lead": "“I am a 16-year-old that started this brand because I love being outside, and it has been my dream to own a clothing brand ever since I was younger.”",
+        "text": "<p>“How it got to here: I had a week where I was looking at stuff from a different perspective and realized there will never be any opportunity like this if I don't figure out how to get there myself.”</p><p>“This brand has not only helped me but also brought the community together and has started many new relationships.”</p>"
+      }
+    },
+    "made": {
+      "type": "story-teaser",
+      "settings": {
+        "fallback": "tunnel-crew",
+        "alt": "The Peak Side crew wearing tees, hoodies and crop tops",
+        "eyebrow": "What we make",
+        "quote": "Made for both places.",
+        "text": "Hoodies made for snow days on the mountain and school days in town. Summer Edition tees and crop tops for long afternoons on the trail. Everything is designed to work in both places.",
+        "button_label": "Shop the collection",
+        "button_link": "/collections/all"
+      }
+    }
+  },
+  "order": ["banner", "words", "made"]
+}

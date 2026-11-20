@@ -1,0 +1,96 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Peak Side",
+    "theme_version": "1.0.0",
+    "theme_author": "Marvani",
+    "theme_documentation_url": "https://www.peak-side.com",
+    "theme_support_url": "https://www.peak-side.com"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Square image, at least 180 × 180px."
+      },
+      {
+        "type": "text",
+        "id": "brand_descriptor",
+        "label": "Brand line",
+        "default": "an outdoor brand"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Customer support email",
+        "info": "Shown in the footer and on the FAQ page."
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram_handle",
+        "label": "Instagram handle",
+        "default": "@peak.side"
+      },
+      {
+        "type": "url",
+        "id": "social_instagram_link",
+        "label": "Instagram link"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok_link",
+        "label": "TikTok link"
+      }
+    ]
+  },
+  {
+    "name": "Products",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "360° spin: add two image metafields to products, custom.spin_front and custom.spin_back (transparent PNG or WebP cut-outs work best). Or tag a product 360 to spin its first two product images."
+      },
+      {
+        "type": "paragraph",
+        "content": "Badges come from product tags: best-seller, coming-soon. Fit finder tags: warmth:cold or warmth:warm, fit:oversized / fit:boxy / fit:cropped / fit:classic, place:trail / place:tunnel."
+      },
+      {
+        "type": "checkbox",
+        "id": "card_flip",
+        "label": "Flip product cards to the back image on hover",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_tilt",
+        "label": "Tilt product cards toward the cursor",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Shipping & returns",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "shipping_summary",
+        "label": "Summary shown on product pages",
+        "default": "<p>Orders are processed within 2–5 business days, with tracking emailed when your order ships. Returns and exchanges are accepted within 30 days of delivery on unworn, unwashed items with tags attached.</p>"
+      },
+      {
+        "type": "url",
+        "id": "shipping_link",
+        "label": "Full policy link",
+        "info": "Defaults to your Shopify shipping policy."
+      }
+    ]
+  }
+]

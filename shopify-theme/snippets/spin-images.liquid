@@ -1,0 +1,25 @@
+{%- comment -%}
+  Works out a product's front/back images for the 360° viewer and card flip.
+  Priority: metafields custom.spin_front + custom.spin_back (transparent cut-outs),
+  then products tagged "360" use their first two product images.
+  Outputs (captured by the caller): "cut|<front url>|<back url>", "photo|<front url>|<back url>" or "".
+  Params: product, width (default 1200)
+{%- endcomment -%}
+{%- liquid
+  assign w = width | default: 1200
+  assign f = product.metafields.custom.spin_front.value
+  assign b = product.metafields.custom.spin_back.value
+  if f != blank and b != blank
+    assign f_img = f.preview_image | default: f
+    assign b_img = b.preview_image | default: b
+    echo 'cut|'
+    echo f_img | image_url: width: w
+    echo '|'
+    echo b_img | image_url: width: w
+  elsif product.tags contains '360' and product.media.size > 1
+    echo 'photo|'
+    echo product.media[0].preview_image | image_url: width: w
+    echo '|'
+    echo product.media[1].preview_image | image_url: width: w
+  endif
+-%}

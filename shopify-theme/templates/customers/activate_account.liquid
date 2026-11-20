@@ -1,0 +1,11 @@
+<div class="wrap py-16 sm:py-24">
+  <h1 class="display text-[13vw] sm:text-7xl">{{ 'customer.activate.title' | t }}</h1>
+  <p class="mt-4 text-[15px] text-ink/75">{{ 'customer.activate.text' | t }}</p>
+  {%- form 'activate_customer_password', class: 'mt-8 max-w-md space-y-4' -%}
+    {%- if form.errors -%}<div class="form-message" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+    <div><label for="ActivatePassword" class="label">{{ 'customer.login.password' | t }}</label><input type="password" name="customer[password]" id="ActivatePassword" class="field mt-2" autocomplete="new-password"></div>
+    <div><label for="ActivateConfirm" class="label">{{ 'customer.activate.password_confirm' | t }}</label><input type="password" name="customer[password_confirmation]" id="ActivateConfirm" class="field mt-2" autocomplete="new-password"></div>
+    <button type="submit" class="btn-ink w-full">{{ 'customer.activate.submit' | t }}</button>
+    <button type="submit" name="decline" class="label link-u text-granite">{{ 'customer.activate.decline' | t }}</button>
+  {%- endform -%}
+</div>
