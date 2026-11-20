@@ -1,6 +1,5 @@
 {%- liquid
   assign s = section.settings
-  assign products_list = s.collection.products
 -%}
 <section class="relative overflow-hidden py-24 sm:py-32" style="background: {{ s.background }}" aria-labelledby="Heading-{{ section.id }}" {{ section.shopify_attributes }}>
   {%- if s.effect == 'petals' -%}<ps-petals></ps-petals>{%- elsif s.effect == 'snow' -%}<ps-petals snow></ps-petals>{%- endif -%}
@@ -18,18 +17,18 @@
       {%- if s.text != blank -%}<div class="rte mt-6 max-w-md text-[17px] leading-relaxed text-ink/80">{{ s.text }}</div>{%- endif -%}
       {%- if s.hint != blank and s.effect != 'none' -%}<p class="label mt-5 text-bloom">{{ s.hint }}</p>{%- endif -%}
 
-      {%- if products_list.size > 0 -%}
-        <ul class="mt-8 grid grid-cols-2 gap-3">
-          {%- for product in products_list limit: s.products_to_show -%}
-            <li>{% render 'product-card', product: product, show_best_seller: false, sizes: '(min-width: 1024px) 20vw, 50vw' %}</li>
-          {%- endfor -%}
-        </ul>
+      {%- capture cards -%}
+        {%- render 'collection-products', collection: s.collection, tag: s.fallback_tag, keyword: s.fallback_keyword, limit: s.products_to_show, fill: false, li_class: '', reveal: false, show_best_seller: false, sizes: '(min-width: 1024px) 20vw, 50vw' -%}
+      {%- endcapture -%}
+      {%- if cards != blank -%}
+        <ul class="mt-8 grid grid-cols-2 gap-3">{{ cards }}</ul>
       {%- elsif request.design_mode -%}
         <p class="form-message mt-8 text-granite">Choose a collection in this section's settings to show products here.</p>
       {%- endif -%}
 
       {%- if s.button_label != blank -%}
-        <a href="{{ s.button_link | default: s.collection.url | default: routes.all_products_collection_url }}" class="btn-ink mt-8">{{ s.button_label }} {% render 'icon', name: 'arrow' %}</a>
+        {%- capture btn_link -%}{%- render 'safe-link', url: s.button_link, fallback: '' -%}{%- endcapture -%}
+        <a href="{{ btn_link | default: s.collection.url | default: routes.all_products_collection_url }}" class="btn-ink mt-8">{{ s.button_label }} {% render 'icon', name: 'arrow' %}</a>
       {%- endif -%}
     </div>
   </div>
@@ -49,6 +48,8 @@
     { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs across tees in black and white, regular and boxy, plus the washed crop top.</p>" },
     { "type": "collection", "id": "collection", "label": "Collection" },
     { "type": "range", "id": "products_to_show", "label": "Products to show", "min": 0, "max": 4, "step": 2, "default": 2 },
+    { "type": "text", "id": "fallback_tag", "label": "Without a collection, use products tagged", "default": "summer-edition" },
+    { "type": "text", "id": "fallback_keyword", "label": "…or products whose title contains", "default": "summer edition" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop Summer Edition" },
     { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to the collection." },
     { "type": "select", "id": "effect", "label": "Falling effect", "default": "petals", "options": [{ "value": "petals", "label": "Cherry-blossom petals" }, { "value": "snow", "label": "Snow" }, { "value": "none", "label": "None" }] },

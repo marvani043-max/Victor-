@@ -16,7 +16,7 @@
 
     <title>
       {{ page_title }}
-      {%- if current_tags %} &ndash; {{ 'general.tagged' | t: tags: current_tags | join: ', ' }}{% endif -%}
+      {%- if current_tags -%}{%- assign tag_list = current_tags | join: ', ' %} &ndash; {{ 'general.tagged' | t: tags: tag_list }}{%- endif -%}
       {%- if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif -%}
       {%- unless page_title contains shop.name %} | {{ shop.name }}{% endunless -%}
     </title>

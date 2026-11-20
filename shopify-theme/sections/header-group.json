@@ -17,9 +17,14 @@
         "logo_text": "Peak Side",
         "cta_label": "Shop now",
         "cta_link": "",
-        "transparent_home": true
+        "transparent_home": true,
+        "show_search": false,
+        "show_account": false
       }
     }
   },
-  "order": ["announcement", "header"]
+  "order": [
+    "announcement",
+    "header"
+  ]
 }

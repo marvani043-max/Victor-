@@ -36,10 +36,12 @@
       {%- if s.text != blank -%}<p class="max-w-md text-[15px] leading-relaxed text-bone/85 sm:text-[17px]">{{ s.text }}</p>{%- endif -%}
       <div class="flex flex-wrap gap-3">
         {%- if s.button_1_label != blank -%}
-          <a href="{{ s.button_1_link | default: routes.all_products_collection_url }}" class="btn-bone px-5 sm:px-6">{{ s.button_1_label }} {% render 'icon', name: 'arrow' %}</a>
+          {%- capture b1 -%}{%- render 'safe-link', url: s.button_1_link, fallback: routes.all_products_collection_url -%}{%- endcapture -%}
+          <a href="{{ b1 | default: routes.all_products_collection_url }}" class="btn-bone px-5 sm:px-6">{{ s.button_1_label }} {% render 'icon', name: 'arrow' %}</a>
         {%- endif -%}
-        {%- if s.button_2_label != blank -%}
-          <a href="{{ s.button_2_link | default: routes.root_url }}" class="btn border border-bone/50 px-5 text-bone hover:border-bone hover:bg-bone hover:text-ink sm:px-6">{{ s.button_2_label }}</a>
+        {%- capture b2 -%}{%- render 'safe-link', url: s.button_2_link, fallback: '' -%}{%- endcapture -%}
+        {%- if s.button_2_label != blank and b2 != blank -%}
+          <a href="{{ b2 }}" class="btn border border-bone/50 px-5 text-bone hover:border-bone hover:bg-bone hover:text-ink sm:px-6">{{ s.button_2_label }}</a>
         {%- endif -%}
       </div>
     </div>

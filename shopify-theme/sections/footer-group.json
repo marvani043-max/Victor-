@@ -7,23 +7,34 @@
       "blocks": {
         "menu_shop": {
           "type": "menu",
-          "settings": { "heading": "Shop", "menu": "main-menu" }
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
         },
         "menu_help": {
           "type": "menu",
-          "settings": { "heading": "Help", "menu": "footer" }
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
         }
       },
-      "block_order": ["menu_shop", "menu_help"],
+      "block_order": [
+        "menu_shop",
+        "menu_help"
+      ],
       "settings": {
         "heading_1": "Mountains",
         "heading_2": "meet",
         "heading_accent": "everyday.",
-        "show_newsletter": true,
+        "show_newsletter": false,
         "newsletter_text": "Drops, restocks and the odd trail report. No spam.",
-        "show_payment_icons": true
+        "show_payment_icons": false
       }
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer"
+  ]
 }

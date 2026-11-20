@@ -1,0 +1,20 @@
+{%- comment -%}
+  Outputs a link only if its page/collection exists in this store, otherwise the fallback.
+  Stops buttons pointing at pages the client hasn't created yet from leading to a 404.
+  Params: url, fallback
+{%- endcomment -%}
+{%- liquid
+  assign out = url
+  if url contains '/pages/'
+    assign h = url | split: '/pages/' | last | split: '?' | first | split: '#' | first
+    if pages[h].handle == blank
+      assign out = fallback
+    endif
+  elsif url contains '/collections/'
+    assign h = url | split: '/collections/' | last | split: '/' | first | split: '?' | first
+    if h != 'all' and collections[h].handle == blank
+      assign out = fallback
+    endif
+  endif
+  echo out
+-%}

@@ -9,8 +9,9 @@
       {%- if s.eyebrow != blank -%}<p class="label mt-8 text-granite">{{ s.eyebrow }}</p>{%- endif -%}
       <blockquote id="Heading-{{ section.id }}" class="display-wide mt-5 text-3xl leading-[1.08] sm:text-[2.6rem]">{{ s.quote }}</blockquote>
       {%- if s.text != blank -%}<p class="mt-6 max-w-md text-[16px] leading-relaxed text-ink/75">{{ s.text }}</p>{%- endif -%}
+      {%- capture link -%}{%- render 'safe-link', url: s.button_link, fallback: routes.all_products_collection_url -%}{%- endcapture -%}
       {%- if s.button_label != blank -%}
-        <a href="{{ s.button_link | default: routes.root_url }}" class="btn-line mt-8 self-start">{{ s.button_label }} {% render 'icon', name: 'arrow' %}</a>
+        <a href="{{ link | default: routes.all_products_collection_url }}" class="btn-line mt-8 self-start">{{ s.button_label }} {% render 'icon', name: 'arrow' %}</a>
       {%- endif -%}
     </div>
   </div>

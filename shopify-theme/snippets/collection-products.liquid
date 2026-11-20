@@ -1,0 +1,45 @@
+{%- comment -%}
+  Renders up to `limit` product cards as <li> items. Source: the chosen collection; if none is
+  chosen (or it is empty), products from the whole store tagged `tag` or whose title contains
+  `keyword`; if still nothing, the first products in the store when `fill` is true.
+  Params: collection, tag, keyword, limit, fill, li_class, reveal, show_best_seller, sizes
+{%- endcomment -%}
+{%- liquid
+  assign shown = 0
+  assign kw = keyword | downcase | strip
+  assign use_collection = false
+  if collection != blank and collection.products_count > 0
+    assign use_collection = true
+  endif
+-%}
+{%- if use_collection -%}
+  {%- for product in collection.products limit: limit -%}
+    <li class="{{ li_class }}"{% if reveal %} data-reveal style="--delay: {{ forloop.index0 | times: 0.06 }}s"{% endif %}>{% render 'product-card', product: product, show_best_seller: show_best_seller, sizes: sizes %}</li>
+    {%- assign shown = shown | plus: 1 -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- for product in collections.all.products -%}
+    {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+    {%- liquid
+      assign match = false
+      if tag != blank and product.tags contains tag
+        assign match = true
+      endif
+      if kw != blank
+        assign t = product.title | downcase
+        if t contains kw
+          assign match = true
+        endif
+      endif
+    -%}
+    {%- if match -%}
+      <li class="{{ li_class }}"{% if reveal %} data-reveal style="--delay: {{ shown | times: 0.06 }}s"{% endif %}>{% render 'product-card', product: product, show_best_seller: show_best_seller, sizes: sizes %}</li>
+      {%- assign shown = shown | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if shown == 0 and fill -%}
+    {%- for product in collections.all.products limit: limit -%}
+      <li class="{{ li_class }}"{% if reveal %} data-reveal style="--delay: {{ forloop.index0 | times: 0.06 }}s"{% endif %}>{% render 'product-card', product: product, show_best_seller: show_best_seller, sizes: sizes %}</li>
+    {%- endfor -%}
+  {%- endif -%}
+{%- endif -%}

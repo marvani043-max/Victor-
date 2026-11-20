@@ -14,7 +14,9 @@ import manifestJson from "../src/data/image-manifest.json";
 
 const ROOT = path.resolve(".");
 const THEME = path.join(ROOT, "shopify-theme");
-const OUT = path.join(ROOT, "shopify-preview");
+// BARE=1 simulates a store straight after upload: no tags, no pages, no collections.
+const BARE = process.env.BARE === "1";
+const OUT = path.join(ROOT, BARE ? "shopify-preview-bare" : "shopify-preview");
 const M = manifestJson as Record<string, { w: number; h: number; widths: number[] }>;
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, "img"), { recursive: true });
@@ -84,9 +86,9 @@ function toShopify(p: PSProduct) {
   });
   const first = variants.find((v) => v.available) ?? variants[0];
   const spin = p.colorways[0].spin;
-  const tags = [...(TAGS[p.slug] ?? [])];
-  if (p.bestSeller) tags.push("best-seller");
-  if (p.comingSoon) tags.push("coming-soon");
+  const tags = BARE ? [] : [...(TAGS[p.slug] ?? [])];
+  if (p.bestSeller && !BARE) tags.push("best-seller");
+  if (p.comingSoon && !BARE) tags.push("coming-soon");
   const prod = {
     id: nextId++,
     handle: p.slug,
@@ -146,7 +148,7 @@ const coll = (handle: string, title: string, list: typeof products) => ({
     { value: "price-descending", name: "Price, high to low" },
   ],
 });
-const collections: Record<string, unknown> = {
+const collections: Record<string, unknown> = BARE ? { all: coll("all", "Shop all", products) } : {
   all: coll("all", "Shop all", products),
   "summer-edition": coll("summer-edition", "Summer Edition", products.filter((p) => catalogue.find((c) => c.slug === p.handle)?.collection === "Summer Edition")),
   "winter-drop": coll("winter-drop", "Winter Drop", products.filter((p) => p.tags.includes("coming-soon"))),
@@ -285,7 +287,8 @@ async function renderSection(id: string, type: string, data: any, globals: Recor
     return { id: bid, type: b.type, settings: buildSettings(def?.settings, b.settings), shopify_attributes: "" };
   });
   const section = { id, settings: buildSettings(schema.settings, data.settings), blocks, shopify_attributes: "" };
-  const html = await engine.parseAndRender(body, { ...globals, section });
+  // Shopify exposes store-wide objects (settings, collections, shop…) inside snippets too.
+  const html = await engine.parseAndRender(body, { ...globals, section }, { globals });
   const cls = schema.class ? ` ${schema.class}` : "";
   return `<${schema.tag ?? "div"} id="shopify-section-${id}" class="shopify-section${cls}">${html}</${schema.tag ?? "div"}>`;
 }
@@ -314,6 +317,7 @@ async function renderPage(file: string, templateName: string, extra: Record<stri
     settings,
     collections,
     linklists,
+    pages: BARE ? {} : { "our-story": { handle: "our-story", url: "page-story.html" }, faq: { handle: "faq", url: "page-faq.html" } },
     cart: { item_count: 2, currency: { iso_code: "USD" }, items: [], total_price: 8690 },
     request: { design_mode: false, page_type: templateName, locale: { iso_code: "en" }, origin: "https://www.peak-side.com" },
     template: { name: templateName },
@@ -327,7 +331,7 @@ async function renderPage(file: string, templateName: string, extra: Record<stri
   const sections = [];
   for (const id of tpl.order) sections.push(await renderSection(id, tpl.sections[id].type, tpl.sections[id], globals));
   const layout = fs.readFileSync(path.join(THEME, "layout", `${tpl.layout ?? "theme"}.liquid`), "utf8");
-  const html = await engine.parseAndRender(layout, { ...globals, content_for_layout: sections.join("\n") });
+  const html = await engine.parseAndRender(layout, { ...globals, content_for_layout: sections.join("\n") }, { globals });
   fs.writeFileSync(path.join(OUT, file), html);
 }
 

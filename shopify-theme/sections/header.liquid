@@ -34,16 +34,18 @@
     </nav>
 
     <div class="flex items-center gap-3 sm:gap-4">
+      {%- if section.settings.show_search -%}
       <a href="{{ routes.search_url }}" class="hidden p-1 transition-opacity hover:opacity-60 sm:block" aria-label="{{ 'accessibility.search' | t }}">
         {%- render 'icon', name: 'search', class: 'h-5 w-5' -%}
       </a>
-      {%- if shop.customer_accounts_enabled -%}
+      {%- endif -%}
+      {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
         <a href="{{ routes.account_url }}" class="hidden p-1 transition-opacity hover:opacity-60 sm:block" aria-label="{{ 'accessibility.account' | t }}">
           {%- render 'icon', name: 'account', class: 'h-5 w-5' -%}
         </a>
       {%- endif -%}
       {%- if settings.social_instagram_link != blank -%}
-        <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hidden p-1 transition-opacity hover:opacity-60 xl:block">
+        <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hidden p-1 transition-opacity hover:opacity-60 sm:block">
           {%- render 'icon', name: 'instagram', class: 'h-4 w-4' -%}
         </a>
       {%- endif -%}
@@ -82,8 +84,10 @@
     {%- endif -%}
   </nav>
   <div class="wrap flex flex-wrap items-center justify-between gap-4 py-6" style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom))">
-    <a href="{{ routes.search_url }}" class="label flex items-center gap-2">{% render 'icon', name: 'search', class: 'h-4 w-4' %} {{ 'accessibility.search' | t }}</a>
-    {%- if shop.customer_accounts_enabled -%}
+    {%- if section.settings.show_search -%}
+      <a href="{{ routes.search_url }}" class="label flex items-center gap-2">{% render 'icon', name: 'search', class: 'h-4 w-4' %} {{ 'accessibility.search' | t }}</a>
+    {%- endif -%}
+    {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
       <a href="{{ routes.account_url }}" class="label flex items-center gap-2">{% render 'icon', name: 'account', class: 'h-4 w-4' %} {{ 'accessibility.account' | t }}</a>
     {%- endif -%}
     {%- if settings.social_instagram_link != blank -%}
@@ -102,7 +106,9 @@
     { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Peak Side" },
     { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop now" },
     { "type": "url", "id": "cta_link", "label": "Button link" },
-    { "type": "checkbox", "id": "transparent_home", "label": "Clear header over the home page hero", "default": true }
+    { "type": "checkbox", "id": "transparent_home", "label": "Clear header over the home page hero", "default": true },
+    { "type": "checkbox", "id": "show_search", "label": "Show search icon", "default": false },
+    { "type": "checkbox", "id": "show_account", "label": "Show account icon", "default": false }
   ]
 }
 {% endschema %}
