@@ -1,0 +1,38 @@
+<section class="section story" aria-labelledby="StoryHeading-{{ section.id }}">
+  <div class="page-width story__grid{% if section.settings.image_right %} story__grid--flip{% endif %}">
+    <div class="story__media">
+      {%- if section.settings.image != blank -%}
+        {% render 'image', image: section.settings.image, alt: section.settings.alt, sizes: '(min-width: 990px) 50vw, 100vw', class: 'story__img', widths: '540,720,960,1200,1600' %}
+      {%- else -%}
+        <div class="story__empty mono">Image</div>
+      {%- endif -%}
+    </div>
+    <div class="story__copy">
+      <p class="kicker mono">{{ section.settings.kicker | escape }}</p>
+      <{{ section.settings.heading_tag }} class="h2" id="StoryHeading-{{ section.id }}">{{ section.settings.heading | escape }}</{{ section.settings.heading_tag }}>
+      <div class="rte">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <a class="button button--secondary" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with story",
+  "class": "section-story",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "alt", "label": "Image description (alt text)" },
+    { "type": "checkbox", "id": "image_right", "label": "Image on the right", "default": false },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "05 — The story" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Started by someone who'd rather be outside." },
+    { "type": "select", "id": "heading_tag", "label": "Heading level", "options": [{ "value": "h1", "label": "H1 (use once per page, at the top)" }, { "value": "h2", "label": "H2" }], "default": "h2" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Peak Side began with a love of being outside and a long-held ambition to start a clothing brand.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Read the story" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Image with story" }]
+}
+{% endschema %}

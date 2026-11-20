@@ -1,0 +1,98 @@
+{%- assign col = section.settings.collection -%}
+<section class="section fit-guide" aria-labelledby="FitGuideHeading-{{ section.id }}">
+  <div class="page-width">
+    <div class="section-head">
+      <p class="kicker mono">{{ section.settings.kicker | escape }}</p>
+      <h1 class="h1" id="FitGuideHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h1>
+      <div class="rte section-head__text">{{ section.settings.text }}</div>
+    </div>
+
+    <div class="fit-guide__grid">
+      <div class="fit-guide__measure">
+        <h2 class="h3">{{ section.settings.measure_heading | escape }}</h2>
+        <ol class="measure-steps" role="list">
+          {%- for block in section.blocks -%}
+            <li class="measure-step" {{ block.shopify_attributes }}>
+              <span class="measure-step__num mono" aria-hidden="true">{{ forloop.index }}</span>
+              <div>
+                <p class="measure-step__title">{{ block.settings.title | escape }}</p>
+                <p>{{ block.settings.text | escape }}</p>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ol>
+      </div>
+
+      <div class="fit-guide__table">
+        <h2 class="h3">{{ section.settings.chart_heading | escape }}</h2>
+        {%- if section.settings.chart != blank -%}
+          <div class="rte size-chart">{{ section.settings.chart }}</div>
+        {%- else -%}
+          <p>{{ section.settings.chart_missing | escape }}</p>
+          {% render 'content-placeholder', text: 'Measured size chart (chest, length, sleeve) per product type, in inches and cm.' %}
+          {%- if settings.contact_page != blank -%}
+            <a class="link" href="{{ settings.contact_page.url }}">{{ section.settings.ask_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if col != blank -%}
+      <h2 class="h3 fit-guide__by-piece">{{ section.settings.by_piece_heading | escape }}</h2>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="{{ section.settings.by_piece_heading | escape }}">
+        <table class="fit-table">
+          <thead><tr><th scope="col">Piece</th><th scope="col">Cut</th><th scope="col">Sizes</th><th scope="col">Fit note from Peak Side</th></tr></thead>
+          <tbody>
+            {%- for p in col.products limit: 50 -%}
+              {%- liquid
+                assign fit = p.metafields.custom.fit_profile.value
+                assign sizes = ''
+                for option in p.options_with_values
+                  assign on = option.name | downcase
+                  if on == 'size'
+                    assign sizes = option.values | map: 'name' | join: ', '
+                  endif
+                endfor
+              -%}
+              <tr>
+                <th scope="row"><a class="link" href="{{ p.url }}">{{ p.title }}</a></th>
+                <td>{% if fit != blank %}{%- capture fit_key -%}fit.{{ fit }}{%- endcapture -%}{{ fit_key | t }}{% else %}<span class="muted">Not specified</span>{% endif %}</td>
+                <td class="mono">{{ sizes | default: '—' }}</td>
+                <td>{{ p.metafields.custom.fit_note.value | default: '—' }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fit guide",
+  "class": "section-fit-guide",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Fit guide" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Find your size" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Measure a top you already like the fit of, then compare it with the chart. Each piece's cut and Peak Side's own fit notes are listed below.</p>" },
+    { "type": "text", "id": "measure_heading", "label": "Measuring heading", "default": "How to measure a top you own" },
+    { "type": "text", "id": "chart_heading", "label": "Chart heading", "default": "Size chart" },
+    { "type": "richtext", "id": "chart", "label": "Size chart", "info": "Paste a table with measured chest, length and sleeve per size. Leave empty until measured." },
+    { "type": "textarea", "id": "chart_missing", "label": "Text when no chart yet", "default": "A measured size chart is on its way. Until then, the cut and fit notes below are the best guide, and you can ask for a specific measurement." },
+    { "type": "text", "id": "ask_label", "label": "Ask link", "default": "Ask for a measurement" },
+    { "type": "text", "id": "by_piece_heading", "label": "Table heading", "default": "Cut and fit notes by piece" },
+    { "type": "collection", "id": "collection", "label": "Collection for the table" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Measuring step",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Chest" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Lay the top flat and measure straight across, armpit to armpit." }
+      ]
+    }
+  ]
+}
+{% endschema %}

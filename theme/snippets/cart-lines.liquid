@@ -1,0 +1,26 @@
+{%- comment -%} Cart line items. Quantity changes and removals go to Shopify's /cart/change.js. Params: context ('drawer' | 'page') {%- endcomment -%}
+<ul class="cart-lines" role="list">
+  {%- for item in cart.items -%}
+    <li class="cart-line" data-line="{{ forloop.index }}" data-key="{{ item.key }}">
+      <a class="cart-line__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+        {%- if item.image -%}{%- capture cl_class -%}cart-line__img{% if item.image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}{% render 'image', image: item.image, alt: '', sizes: '96px', class: cl_class, widths: '180,240' %}{%- endif -%}
+      </a>
+      <div class="cart-line__body">
+        <a class="cart-line__title link" href="{{ item.url }}">{{ item.product.title }}</a>
+        {%- unless item.product.has_only_default_variant -%}
+          <p class="cart-line__variant mono">{{ item.variant.title }}</p>
+        {%- endunless -%}
+        <p class="cart-line__price">{{ item.final_line_price | money }}</p>
+        <div class="cart-line__actions">
+          <div class="qty" data-qty>
+            <button type="button" class="qty__btn" data-qty-minus aria-label="{{ 'products.decrease_quantity' | t }}: {{ item.product.title | escape }}">{% render 'icon', name: 'minus' %}</button>
+            <label class="visually-hidden" for="Qty-{{ context }}-{{ forloop.index }}">{{ 'cart.quantity_for' | t: title: item.product.title }}</label>
+            <input class="qty__input" id="Qty-{{ context }}-{{ forloop.index }}" name="updates[]" type="number" inputmode="numeric" min="0" value="{{ item.quantity }}" data-line-qty="{{ forloop.index }}">
+            <button type="button" class="qty__btn" data-qty-plus aria-label="{{ 'products.increase_quantity' | t }}: {{ item.product.title | escape }}">{% render 'icon', name: 'plus' %}</button>
+          </div>
+          <button type="button" class="link cart-line__remove" data-line-remove="{{ forloop.index }}">{{ 'cart.remove' | t }}<span class="visually-hidden"> {{ item.product.title }}</span></button>
+        </div>
+      </div>
+    </li>
+  {%- endfor -%}
+</ul>

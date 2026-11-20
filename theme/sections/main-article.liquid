@@ -1,0 +1,13 @@
+<article class="section">
+  <div class="page-width page-width--narrow">
+    <p class="mono muted">{{ article.published_at | date: '%d %b %Y' }}</p>
+    <h1 class="h1">{{ article.title | escape }}</h1>
+    {%- if article.image -%}{% render 'image', image: article.image, alt: article.image.alt, sizes: '(min-width: 990px) 760px, 100vw', class: 'article__img', priority: true %}{%- endif -%}
+    <div class="rte">{{ article.content }}</div>
+    <p><a class="link" href="{{ blog.url }}">{{ 'blog.back' | t }}</a></p>
+  </div>
+</article>
+
+{% schema %}
+{ "name": "Article", "class": "section-main-article" }
+{% endschema %}

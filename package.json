@@ -1,32 +1,24 @@
 {
-  "name": "peak-side-web",
+  "name": "peak-side-shopify-theme",
   "version": "1.0.0",
   "private": true,
-  "description": "Peak Side storefront front-end by Marvani. Checkout is handled by the existing Peak Side store.",
+  "description": "Peak Side custom Shopify Online Store 2.0 theme by Marvani Marketing, with a local Liquid preview server for design review and automated tests.",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "npx serve out",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "images": "node scripts/process-images.mjs"
-  },
-  "dependencies": {
-    "@fontsource-variable/archivo": "5.3.0",
-    "@fontsource/ibm-plex-mono": "5.3.0",
-    "framer-motion": "^12.43.0",
-    "next": "^15.5.29",
-    "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "dev": "node dev/server.mjs",
+    "fonts": "node dev/copy-fonts.mjs",
+    "theme:check": "node dev/theme-check.mjs",
+    "contrast": "node dev/contrast.mjs",
+    "products:csv": "node dev/export-products-csv.mjs",
+    "test": "node dev/tests/run.mjs",
+    "screenshots": "node dev/tests/screenshots.mjs",
+    "package": "node dev/package-theme.mjs"
   },
   "devDependencies": {
-    "@types/node": "22.18.0",
-    "@types/react": "19.1.12",
-    "@types/react-dom": "19.1.9",
-    "autoprefixer": "10.4.21",
-    "postcss": "8.5.6",
-    "sharp": "0.34.3",
-    "tailwindcss": "3.4.17",
-    "typescript": "5.9.2"
+    "@fontsource-variable/overpass": "5.2.5",
+    "@fontsource/overpass-mono": "5.2.5",
+    "@shopify/theme-check-node": "3.22.0",
+    "axe-core": "4.10.3",
+    "liquidjs": "10.21.1"
   }
 }

@@ -1,76 +1,86 @@
-# Peak Side: storefront front-end
+# Peak Side: custom Shopify theme ("Field Tag")
 
-A custom brand storefront for **Peak Side**, built by Marvani. Visitors browse, filter and explore products here.
-Size selection, cart and payment are handed off to the existing Peak Side store on Wix, at
-`peak-side.com/product-page/<slug>`.
+An original Shopify Online Store 2.0 theme for **Peak Side**, a Reno, Nevada clothing brand. Built by Marvani Marketing.
+The products are the main subject:
+- a **Garment Explorer** on every product (colourway → front, back, detail or worn → numbered details)
+- honest fit information
+- Trail & Town photos tagged with what's being worn
+
+Products, checkout, payments and analytics stay in Shopify admin.
+
+> **Status: built and tested locally. Not launch-ready.** Several items are marked **DO NOT PUBLISH UNTIL RESOLVED** in
+> [`docs/05-RISK-REGISTER.md`](docs/05-RISK-REGISTER.md): photo licences and model releases, product image rights, fibre content, care and country of origin, and the placeholder email.
 
 ## Quick start
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
-npm run build      # static export to ./out
-npm start          # serve ./out locally
-npm run typecheck
+npm run dev            # local preview at http://localhost:4173 (real theme files, mock data)
+npm test               # 31 end-to-end checks (Playwright + axe-core) → dev/tests/results.json
+npm run theme:check    # Shopify Theme Check
+npm run contrast       # WCAG contrast for every colour token pair → docs/contrast-report.md
+npm run products:csv   # docs/import/products.csv, redirects.csv, garment-details.json
+npm run screenshots    # docs/screenshots/*.jpg
+npm run package        # dist/peak-side-field-tag-theme.zip, ready to upload to Shopify
 ```
 
-Requires Node 20 or later.
+Requires Node 20 or later. Playwright with Chromium must be available for `npm test` and `npm run screenshots`.
 
-## Configuration
+The preview server is a development tool, not Shopify. It renders `theme/` with LiquidJS and imitates the cart, filter, section-rendering and form endpoints.
+Checkout, email delivery and analytics are **simulated**, and every page carries a "LOCAL PREVIEW" banner.
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | `https://www.peak-side.com` | Canonical URLs, sitemap, Open Graph, JSON-LD |
-| `NEXT_PUBLIC_STORE_URL` | `https://www.peak-side.com` | Where "Choose size & checkout" sends shoppers |
-| `NEXT_PUBLIC_NOINDEX` | unset | Set to `1` for client-preview builds so search engines ignore them |
+## Installing on Shopify
 
-> **Domain plan.** If this site replaces the Wix site on `peak-side.com`, move the Wix store to a subdomain
-> (for example `shop.peak-side.com`) and set `NEXT_PUBLIC_STORE_URL` to match. Otherwise the checkout links point at this site.
+Follow [`docs/07-HANDOFF-CHECKLIST.md`](docs/07-HANDOFF-CHECKLIST.md) §B:
+1. Metafield and metaobject definitions.
+2. CSV import.
+3. Photos, using the alt-text convention.
+4. Collections, pages and menus.
+5. Search & Discovery filters.
+6. Theme upload.
+7. Privacy settings.
+8. Redirects.
+9. Real-store testing.
 
-## Deploying
-
-The build is a fully static export (`out/`), so it can be hosted anywhere.
-
-- **Vercel / Netlify / Cloudflare Pages:** build command `npm run build`, output directory `out`.
-- Set the two environment variables above in the host's dashboard.
-
-## Claude Artifact preview
-
-`npx tsx scripts/build-artifact-preview.ts` builds `preview/`: a single-page version of the site (same data, photos and design) for sharing as a Claude Artifact. It carries a "Design preview by Marvani" bar so it can't be mistaken for the official store.
-
-## Where things live
+## Repository layout
 
 ```
-src/data/site.ts        Business facts: email, Instagram, promo code, policies, store URL, optional hero video
-src/data/products.ts    All 15 products: price, stock, sizes, colourways, images, store slug
-src/data/faq.ts         FAQ (restates the published policy only)
-src/components/         Header, Hero, Lookbook, ShopGrid, ProductDetail, ProductCard, ...
-src/app/                Routes: /, /shop, /shop/[slug], /story, /shipping-returns, sitemap, robots
-scripts/process-images.mjs  Turns original photos into responsive WebP files in public/images
-docs/                   Creative direction and Higgsfield asset brief
+theme/                      The Shopify theme (this is what gets uploaded)
+  layout/                   theme.liquid, password.liquid
+  templates/                JSON templates: index, product, collection, page.story, page.contact, page.fit-guide, …
+  sections/                 hero (opening screen), facts-strip, collection-tiles, featured-collection, fit-finder,
+                            lookbook (Trail & Town), story-split, faq, main-product, main-collection, cart-drawer, …
+  snippets/                 garment-explorer, product-card, facets, fit-scale, restock-form, image, icon, …
+  assets/                   base.css (design tokens first), global.js, explorer.js, product.js, OFL fonts + licences
+  config/, locales/         Theme settings and UI strings
+dev/                        Local preview server, mock catalogue, tests, exporters (not uploaded)
+  data/products.mjs         The 15 products: copy, colours, sizes, fit, detail-marker positions
+  images/                   Preview-only copies of the current store photos (NOT CLEARED, see asset register)
+docs/                       Strategy, design system, interactions, asset register, risk register,
+                            analytics & data inventory, handoff checklist, test report, screenshots, import files
 ```
 
-### Updating products
+## Documentation
 
-Products are hand-maintained in `src/data/products.ts`. To change price or stock, edit the entry and redeploy.
-`storeSlug` must match the product's URL on the Wix store.
+| Doc | Contents |
+| --- | --- |
+| [01 Strategy and direction](docs/01-STRATEGY-AND-DIRECTION.md) | Discovery answers, assumptions, three concepts, chosen direction, originality notes, sitemap |
+| [02 Design system](docs/02-DESIGN-SYSTEM.md) | Three palettes with contrast, tokens, type, grid, motion |
+| [03 Interactions](docs/03-INTERACTIONS.md) | Spec table for every interactive feature (written before coding) |
+| [04 Asset register](docs/04-ASSET-REGISTER.md) | Every asset, its licence basis and clearance status |
+| [05 Risk register](docs/05-RISK-REGISTER.md) | Pre-launch items, owners, next actions |
+| [06 Analytics and privacy](docs/06-ANALYTICS-AND-PRIVACY.md) | Where to see visitor numbers, event dictionary, data inventory |
+| [07 Handoff checklist](docs/07-HANDOFF-CHECKLIST.md) | Agency–client confirmations and Shopify setup steps |
+| [08 Test report](docs/08-TEST-REPORT.md) | What was tested, results, what remains untested |
 
-### Adding images
+## What's real and what isn't
 
-1. Put the originals in a folder, named starting with an ID (for example `abc12345.jpg`).
-2. Add `"my-image-name": ["abc12345", "photo" | "studio"]` to `MAP` in `scripts/process-images.mjs`.
-3. Run `SRC=/path/to/folder npm run images`, then reference `"my-image-name"` in the data files.
-
-## What's real and what's a placeholder
-
-Everything shown was taken from the live store on **15 Nov 2026**: products, prices, stock, sizes, colours,
-descriptions, the founder's About text, the shipping and returns policy, the email, Instagram and the promo code.
-No reviews, awards, statistics or history were invented.
-
-Clearly marked placeholders, shown on the page with a pink rule, still need Peak Side's input:
-
-- Fabric composition, weight and care, for every product
-- A measured size chart
-- Founding year, home region and how the pieces are made (Story page)
-
-See `docs/CREATIVE-DIRECTION.md` for the full launch checklist.
+- **Real (from the research PDF and Peak Side's store):**
+  - product names, prices, sizes, colours and stock status as of 14 Nov 2026
+  - the store's own product copy and fit notes
+  - the shipping and returns policy wording
+  - Reno, Nevada and worldwide shipping (client)
+  - the tagline
+- **Written new:** product descriptions and site copy (drafts for client approval). No claims, promo codes, reviews, badges, scarcity or invented history.
+- **Not supplied, and not invented:** fibre content, weight, care, country of origin, measured size charts, the founder's details. These show as clearly marked placeholders while "Show missing-content placeholders" is on.
+- **Placeholder:** contact email `hello@peak-side.com`.

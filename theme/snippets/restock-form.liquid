@@ -1,0 +1,51 @@
+{%- comment -%}
+  Restock request: a real Shopify contact form. Shopify emails it to the store's sender address.
+  The success message only appears after Shopify confirms the submission (form.posted_successfully?).
+  Params: product, form_id
+{%- endcomment -%}
+{%- liquid
+  assign size_option = nil
+  for option in product.options_with_values
+    assign on = option.name | downcase
+    if on == 'size'
+      assign size_option = option
+    endif
+  endfor
+-%}
+<div class="restock" id="Restock">
+  <h2 class="restock__title">{{ 'products.restock_heading' | t }}</h2>
+  {%- form 'contact', id: form_id, class: 'restock__form', novalidate: 'novalidate', data-validate: '', data-track: 'restock_requested' -%}
+    {%- if form.posted_successfully? -%}
+      <div class="form-status form-status--success" role="status" tabindex="-1" data-form-status>
+        {% render 'icon', name: 'check' %}<p>{{ 'products.restock_success' | t }}</p>
+      </div>
+    {%- else -%}
+      <p class="restock__intro">{{ 'products.restock_intro' | t }}</p>
+      {% render 'form-errors', form: form %}
+      <input type="hidden" name="contact[Topic]" value="Restock request">
+      <input type="hidden" name="contact[Product]" value="{{ product.title | escape }}">
+      <input type="hidden" name="contact[body]" value="Restock request: {{ product.title | escape }}">
+      <div class="field-row">
+        {%- if size_option -%}
+          <div class="field">
+            <label class="field__label" for="{{ form_id }}-size">{{ 'forms.size' | t }}</label>
+            <div class="select">
+              <select id="{{ form_id }}-size" name="contact[Size]" class="field__input">
+                {%- for value in size_option.values -%}<option value="{{ value.name | escape }}">{{ value.name }}</option>{%- endfor -%}
+              </select>
+              {% render 'icon', name: 'chevron' %}
+            </div>
+          </div>
+        {%- endif -%}
+        <div class="field field--grow">
+          <label class="field__label" for="{{ form_id }}-email">{{ 'forms.email' | t }} <span class="field__req">({{ 'forms.required' | t | downcase }})</span></label>
+          <input id="{{ form_id }}-email" class="field__input" type="email" name="contact[email]" autocomplete="email" required aria-describedby="{{ form_id }}-email-error" value="{{ form.email | escape }}">
+          <p class="field__error" id="{{ form_id }}-email-error" hidden></p>
+        </div>
+      </div>
+      <button type="submit" class="button button--secondary button--full" data-submit>
+        <span data-submit-label>{{ 'products.restock_submit' | t }}</span>
+      </button>
+    {%- endif -%}
+  {%- endform -%}
+</div>

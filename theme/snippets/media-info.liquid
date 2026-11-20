@@ -1,0 +1,34 @@
+{%- comment -%}
+  Classifies a product media item by colourway and view from its alt text.
+  Convention: alt text names the colour and the view, e.g. "Black, back view", "Pink, worn on the trail", "Navy, detail of the zipper".
+  Output: "<colour-handle>|<view>", where view is front | back | detail | worn. Colour is blank when no colour name is found.
+  Params: media, product
+{%- endcomment -%}
+{%- liquid
+  assign alt_d = media.alt | downcase
+  assign color_handle = ''
+  assign best_len = 0
+  for option in product.options_with_values
+    assign on = option.name | downcase
+    if on == 'color' or on == 'colour'
+      for v in option.values
+        assign vd = v.name | downcase
+        if alt_d contains vd
+          if vd.size > best_len
+            assign best_len = vd.size
+            assign color_handle = v.name | handle
+          endif
+        endif
+      endfor
+    endif
+  endfor
+  assign view = 'front'
+  if alt_d contains 'worn' or alt_d contains 'on model' or alt_d contains 'lifestyle'
+    assign view = 'worn'
+  elsif alt_d contains 'detail' or alt_d contains 'close-up'
+    assign view = 'detail'
+  elsif alt_d contains 'back'
+    assign view = 'back'
+  endif
+  echo color_handle | append: '|' | append: view
+-%}

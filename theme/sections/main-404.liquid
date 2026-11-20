@@ -1,0 +1,15 @@
+<section class="section not-found">
+  <div class="page-width page-width--narrow">
+    <p class="kicker mono">404</p>
+    <h1 class="display not-found__title">Off the trail.</h1>
+    <p>{{ 'general.page_not_found' | t }}. The page may have moved, or the link may be mistyped.</p>
+    <div class="not-found__actions">
+      <a class="button button--primary" href="{{ routes.all_products_collection_url }}">{{ 'general.back_to_shop' | t }} {% render 'icon', name: 'arrow' %}</a>
+      <a class="button button--secondary" href="{{ routes.search_url }}">{{ 'general.search' | t }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "404", "class": "section-404" }
+{% endschema %}

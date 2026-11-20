@@ -1,0 +1,39 @@
+<section class="section search-page" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <h1 class="h1">{% if search.performed %}{{ 'search.results_for' | t: terms: search.terms }}{% else %}{{ 'search.title' | t }}{% endif %}</h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <label class="visually-hidden" for="SearchPage-q">{{ 'general.search' | t }}</label>
+      <input class="field__input" type="search" id="SearchPage-q" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search_placeholder' | t }}">
+      <input type="hidden" name="type" value="product">
+      <button class="button button--primary" type="submit">{{ 'search.submit' | t }}</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        {%- if search.results_count == 0 -%}
+          <p class="empty-state__title">{{ 'search.no_results' | t: terms: search.terms }}</p>
+        {%- else -%}
+          <div class="collection__layout">
+            {% render 'facets', results: search, section_id: section.id, terms: search.terms %}
+            <div class="collection__results" id="ProductGridContainer-{{ section.id }}" data-results>
+              <ul class="product-grid product-grid--collection" role="list">
+                {%- for item in search.results -%}
+                  {%- if item.object_type == 'product' -%}
+                    <li>{% render 'product-card', product: item, heading_level: 2 %}</li>
+                  {%- else -%}
+                    <li class="search-result"><a class="link" href="{{ item.url }}">{{ item.title }}</a></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+              {% render 'pagination', paginate: paginate %}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Search results", "class": "section-main-search" }
+{% endschema %}

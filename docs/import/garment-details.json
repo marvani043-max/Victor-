@@ -1,0 +1,427 @@
+[
+  {
+    "product": "oversized-faded-hoodie-front-logo",
+    "alt_text_convention": [
+      "Black, front view",
+      "Black, back view",
+      "Pink, front view",
+      "Pink, worn against a graffiti wall"
+    ],
+    "garment_details": [
+      {
+        "label": "PKS script on the chest",
+        "note": "Small, hand-drawn script. Front only.",
+        "view": "front",
+        "x": 70,
+        "y": 30
+      },
+      {
+        "label": "Front pocket",
+        "note": "A roomy front pocket below the chest.",
+        "view": "front",
+        "x": 48,
+        "y": 64
+      },
+      {
+        "label": "Faded wash",
+        "note": "Lighter across the shoulders, deeper toward the hem.",
+        "view": "front",
+        "x": 82,
+        "y": 58
+      },
+      {
+        "label": "Clean back",
+        "note": "No print on the back of this version.",
+        "view": "back",
+        "x": 50,
+        "y": 46
+      }
+    ]
+  },
+  {
+    "product": "oversized-faded-hoodie-front-back",
+    "alt_text_convention": [
+      "Black, front view",
+      "Black, back view with PEAK SIDE lettering",
+      "Pink, front view",
+      "Black, worn: back lettering against a graffiti wall"
+    ],
+    "garment_details": [
+      {
+        "label": "PKS script on the chest",
+        "note": "Small, hand-drawn script.",
+        "view": "front",
+        "x": 70,
+        "y": 30
+      },
+      {
+        "label": "Faded wash",
+        "note": "Lighter across the shoulders, deeper toward the hem.",
+        "view": "front",
+        "x": 82,
+        "y": 58
+      },
+      {
+        "label": "PEAK SIDE across the back",
+        "note": "Large hand-drawn lettering.",
+        "view": "back",
+        "x": 74,
+        "y": 38
+      }
+    ]
+  },
+  {
+    "product": "double-zip-hoodie",
+    "alt_text_convention": [
+      "Black, front view",
+      "Black, back view",
+      "Navy Blue, front view",
+      "Navy Blue, back view",
+      "Flower Gray, front view",
+      "Flower Gray, back view",
+      "Black, worn in a graffiti tunnel",
+      "Navy Blue, worn in a graffiti tunnel",
+      "Flower Gray, worn against a graffiti wall"
+    ],
+    "garment_details": [
+      {
+        "label": "Two-way zipper",
+        "note": "Opens from the top or the bottom.",
+        "view": "front",
+        "x": 50,
+        "y": 70
+      },
+      {
+        "label": "PKS script on the chest",
+        "note": "Small, hand-drawn script.",
+        "view": "front",
+        "x": 67,
+        "y": 36
+      },
+      {
+        "label": "Plain back",
+        "note": "No print on the back.",
+        "view": "back",
+        "x": 50,
+        "y": 52
+      }
+    ]
+  },
+  {
+    "product": "white-globe-hoodie",
+    "alt_text_convention": [
+      "White, front view, laid flat",
+      "White, back view, laid flat"
+    ],
+    "garment_details": [
+      {
+        "label": "Globe graphic on the chest",
+        "note": "Small graphic on the chest.",
+        "view": "front",
+        "x": 63,
+        "y": 22
+      },
+      {
+        "label": "Globe-and-lettering back print",
+        "note": "Large print across the back.",
+        "view": "back",
+        "x": 66,
+        "y": 36
+      }
+    ]
+  },
+  {
+    "product": "peak-side-crewneck",
+    "alt_text_convention": [
+      "Grey, front view, laid flat",
+      "Grey, back view, laid flat"
+    ],
+    "garment_details": [
+      {
+        "label": "Chest graphic",
+        "note": "Small pink-and-white print.",
+        "view": "front",
+        "x": 70,
+        "y": 27
+      },
+      {
+        "label": "PEAK SIDE WEAR back print",
+        "note": "Large lettering across the back.",
+        "view": "back",
+        "x": 74,
+        "y": 37
+      }
+    ]
+  },
+  {
+    "product": "summer-edition-tee-black",
+    "alt_text_convention": [
+      "Black, front view",
+      "Black, back view",
+      "Black, detail of the Summer Edition graphic",
+      "Black, worn below a waterfall",
+      "Black, worn: back print in a graffiti tunnel"
+    ],
+    "garment_details": [
+      {
+        "label": "Summer Edition graphic",
+        "note": "Cherry-blossom branches around the Peak Side oval.",
+        "view": "front",
+        "x": 63,
+        "y": 21
+      },
+      {
+        "label": "Full-size back print",
+        "note": "The same graphic, large across the back.",
+        "view": "back",
+        "x": 70,
+        "y": 27
+      }
+    ]
+  },
+  {
+    "product": "summer-edition-boxy-tee-black",
+    "alt_text_convention": [
+      "Faded Black, front view",
+      "Faded Black, back view",
+      "Faded Black, detail of the Summer Edition graphic",
+      "Faded Black, worn: back print beside a waterfall"
+    ],
+    "garment_details": [
+      {
+        "label": "Summer Edition graphic",
+        "note": "Small on the chest.",
+        "view": "front",
+        "x": 64,
+        "y": 21
+      },
+      {
+        "label": "Light fade",
+        "note": "A slight fade across the body.",
+        "view": "front",
+        "x": 26,
+        "y": 66
+      },
+      {
+        "label": "Full-size back print",
+        "note": "Blossom and oval, large across the back.",
+        "view": "back",
+        "x": 70,
+        "y": 27
+      }
+    ]
+  },
+  {
+    "product": "summer-edition-tee-white",
+    "alt_text_convention": [
+      "White, front view",
+      "White, back view",
+      "White, worn at a canyon overlook",
+      "White, worn on a granite boulder"
+    ],
+    "garment_details": [
+      {
+        "label": "Summer Edition graphic",
+        "note": "Small on the chest.",
+        "view": "front",
+        "x": 64,
+        "y": 21
+      },
+      {
+        "label": "Full-size back print",
+        "note": "Large across the back.",
+        "view": "back",
+        "x": 70,
+        "y": 27
+      }
+    ]
+  },
+  {
+    "product": "summer-edition-boxy-tee-white",
+    "alt_text_convention": [
+      "White, front view",
+      "White, back view",
+      "White, worn: back print at night",
+      "White, worn: back print in a graffiti tunnel"
+    ],
+    "garment_details": [
+      {
+        "label": "Summer Edition graphic",
+        "note": "Small on the chest.",
+        "view": "front",
+        "x": 64,
+        "y": 21
+      },
+      {
+        "label": "Full-size back print",
+        "note": "Large across the back.",
+        "view": "back",
+        "x": 70,
+        "y": 27
+      }
+    ]
+  },
+  {
+    "product": "off-shoulder-crop-top-black",
+    "alt_text_convention": [
+      "Black, front view",
+      "Black, back view",
+      "Black, worn against a graffiti wall",
+      "Black, worn by two friends in a graffiti tunnel"
+    ],
+    "garment_details": [
+      {
+        "label": "Wide off-shoulder neckline",
+        "note": "Made to sit off the shoulder.",
+        "view": "front",
+        "x": 50,
+        "y": 22
+      },
+      {
+        "label": "Peak Side oval",
+        "note": "Small blossom graphic on the chest.",
+        "view": "front",
+        "x": 62,
+        "y": 35
+      },
+      {
+        "label": "Cropped length",
+        "note": "Sits above the waist.",
+        "view": "front",
+        "x": 50,
+        "y": 76
+      }
+    ]
+  },
+  {
+    "product": "off-shoulder-crop-top-white",
+    "alt_text_convention": [
+      "White, front view",
+      "White, back view",
+      "White, worn in a graffiti tunnel",
+      "White, worn against a graffiti wall"
+    ],
+    "garment_details": [
+      {
+        "label": "Wide off-shoulder neckline",
+        "note": "Made to sit off the shoulder.",
+        "view": "front",
+        "x": 50,
+        "y": 22
+      },
+      {
+        "label": "Peak Side oval",
+        "note": "Small blossom graphic on the chest.",
+        "view": "front",
+        "x": 62,
+        "y": 35
+      },
+      {
+        "label": "Cropped length",
+        "note": "Sits above the waist.",
+        "view": "front",
+        "x": 50,
+        "y": 76
+      }
+    ]
+  },
+  {
+    "product": "washed-crop-top-grey",
+    "alt_text_convention": [
+      "Classic Black, front view",
+      "Classic Black, back view"
+    ],
+    "garment_details": [
+      {
+        "label": "Peak Side oval",
+        "note": "Blossom graphic on the chest.",
+        "view": "front",
+        "x": 62,
+        "y": 46
+      },
+      {
+        "label": "Contrast stitching",
+        "note": "Lighter stitching on the seams.",
+        "view": "front",
+        "x": 34,
+        "y": 30
+      },
+      {
+        "label": "Washed finish",
+        "note": "A worn-in, uneven charcoal.",
+        "view": "front",
+        "x": 22,
+        "y": 64
+      }
+    ]
+  },
+  {
+    "product": "heavyweight-double-zip-up-navy",
+    "alt_text_convention": [
+      "Navy, front view, laid flat",
+      "Navy, detail of the stitched PKS script"
+    ],
+    "garment_details": [
+      {
+        "label": "Stitched PKS script",
+        "note": "On the chest. See the detail photo.",
+        "view": "front",
+        "x": 68,
+        "y": 33
+      },
+      {
+        "label": "Two-way zipper",
+        "note": "Opens from the top or the bottom.",
+        "view": "front",
+        "x": 51,
+        "y": 62
+      }
+    ]
+  },
+  {
+    "product": "heavyweight-double-zip-up-grey",
+    "alt_text_convention": [
+      "Grey, front view, laid flat",
+      "Grey, detail of the stitched PKS script"
+    ],
+    "garment_details": [
+      {
+        "label": "Stitched PKS script",
+        "note": "On the chest. See the detail photo.",
+        "view": "front",
+        "x": 68,
+        "y": 33
+      },
+      {
+        "label": "Two-way zipper",
+        "note": "Opens from the top or the bottom.",
+        "view": "front",
+        "x": 51,
+        "y": 62
+      }
+    ]
+  },
+  {
+    "product": "heavyweight-double-zip-up-dark-grey",
+    "alt_text_convention": [
+      "Dark Grey, front view, laid flat",
+      "Dark Grey, detail of the stitched PKS script"
+    ],
+    "garment_details": [
+      {
+        "label": "Stitched PKS script",
+        "note": "On the chest. See the detail photo.",
+        "view": "front",
+        "x": 68,
+        "y": 33
+      },
+      {
+        "label": "Two-way zipper",
+        "note": "Opens from the top or the bottom.",
+        "view": "front",
+        "x": 51,
+        "y": 62
+      }
+    ]
+  }
+]

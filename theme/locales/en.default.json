@@ -1,0 +1,168 @@
+{
+  "general": {
+    "skip_to_content": "Skip to content",
+    "menu": "Menu",
+    "close": "Close",
+    "close_menu": "Close menu",
+    "search": "Search",
+    "search_placeholder": "Search hoodies, tees, crop tops…",
+    "account": "Account",
+    "home": "Home",
+    "based_in": "Based in {{ location }}",
+    "breadcrumbs": "Breadcrumbs",
+    "motion_label": "Reduce motion",
+    "motion_hint": "Turns off non-essential movement on this site.",
+    "loading": "Loading…",
+    "error_generic": "Something went wrong. Please try again.",
+    "view_all": "View all",
+    "pieces": {
+      "one": "{{ count }} piece",
+      "other": "{{ count }} pieces"
+    },
+    "from_price": "from {{ price }}",
+    "new_window": "Opens in a new window",
+    "page_not_found": "Page not found",
+    "back_to_shop": "Back to the shop",
+    "country_region": "Country / region",
+    "update_country": "Update country",
+    "announcement": "Store announcement"
+  },
+  "products": {
+    "add_to_bag": "Add to bag",
+    "adding": "Adding…",
+    "added": "Added to your bag",
+    "sold_out": "Sold out",
+    "sold_out_size": "{{ size }}, sold out",
+    "unavailable": "Unavailable",
+    "in_stock": "In stock",
+    "low_stock": "Only a few left in this size",
+    "choose_option": "Choose a {{ option }}",
+    "quantity": "Quantity",
+    "decrease_quantity": "Decrease quantity",
+    "increase_quantity": "Increase quantity",
+    "views_label": "Product views",
+    "view_front": "Front",
+    "view_back": "Back",
+    "view_detail": "Detail",
+    "view_worn": "Worn",
+    "showing_view": "Showing {{ view }} view, {{ color }}",
+    "details_heading": "Look closer",
+    "details_hint": "Tap a number on the photo or choose a detail below.",
+    "detail_marker": "Detail {{ number }}: {{ label }}",
+    "zoom": "Zoom image",
+    "zoom_close": "Close zoom",
+    "fit_heading": "How it fits",
+    "fit_not_set": "Fit not specified yet.",
+    "brand_fit_note": "Fit note from Peak Side",
+    "size_guide": "Size guide",
+    "fabric_heading": "Fabric & care",
+    "shipping_heading": "Shipping",
+    "returns_heading": "Returns",
+    "description_heading": "About this piece",
+    "restock_heading": "Want this back in stock?",
+    "restock_intro": "Leave your email and size. Your request goes straight to Peak Side.",
+    "restock_submit": "Request restock",
+    "restock_success": "Thanks, your restock request was sent to Peak Side.",
+    "related_heading": "Wear it with",
+    "price_regular": "Price",
+    "tax_note": "Taxes and shipping calculated at checkout.",
+    "worn_in_photo": "Worn in this photo",
+    "view_product": "View {{ title }}",
+    "view_short": "View"
+  },
+  "fit": {
+    "cropped": "Cropped",
+    "regular": "Regular",
+    "boxy": "Boxy",
+    "oversized": "Oversized",
+    "scale_label": "Fit scale",
+    "this_piece": "This piece"
+  },
+  "collections": {
+    "filter_and_sort": "Filter & sort",
+    "filters": "Filters",
+    "sort_by": "Sort by",
+    "apply": "Apply",
+    "clear_all": "Clear all",
+    "remove_filter": "Remove filter: {{ label }}",
+    "results": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "empty": "No products match these filters.",
+    "empty_collection": "This collection is empty.",
+    "price_from": "From",
+    "price_to": "To",
+    "show_results": "Show results",
+    "colours": {
+      "one": "{{ count }} colour",
+      "other": "{{ count }} colours"
+    },
+    "updating": "Updating results…"
+  },
+  "cart": {
+    "title": "Your bag",
+    "empty": "Your bag is empty.",
+    "continue_shopping": "Continue shopping",
+    "checkout": "Check out",
+    "subtotal": "Subtotal",
+    "remove": "Remove",
+    "quantity_for": "Quantity for {{ title }}",
+    "updating": "Updating your bag…",
+    "count": {
+      "one": "{{ count }} item",
+      "other": "{{ count }} items"
+    },
+    "open_bag": "Open bag, {{ count }} items",
+    "note": "Order note",
+    "view_cart": "View bag"
+  },
+  "forms": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "topic": "What's it about?",
+    "message": "Message",
+    "size": "Size",
+    "send": "Send message",
+    "sending": "Sending…",
+    "required": "Required",
+    "optional": "optional",
+    "contact_success": "Thanks, your message was sent. Peak Side replies by email.",
+    "error_summary": "Please fix the highlighted fields.",
+    "error_email": "Enter an email address like name@example.com.",
+    "error_required": "Please fill in this field.",
+    "error_message_short": "Please add a few more words so we can help.",
+    "newsletter_label": "Email address",
+    "newsletter_submit": "Sign up",
+    "newsletter_success": "You're signed up. Check your inbox for future drops.",
+    "topics": {
+      "order": "An order I placed",
+      "fit": "Fit and sizing",
+      "restock": "Restock request",
+      "other": "Something else"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "results_for": "Results for “{{ terms }}”",
+    "no_results": "No results for “{{ terms }}”. Try a product type like hoodie, tee or crop top.",
+    "submit": "Search"
+  },
+  "blog": {
+    "read_more": "Read more",
+    "back": "Back to the journal"
+  },
+  "password": {
+    "title": "Opening soon",
+    "enter": "Enter store password",
+    "password": "Password",
+    "submit": "Enter"
+  },
+  "gift_card": {
+    "title": "Your gift card",
+    "code": "Gift card code",
+    "balance": "Balance",
+    "print": "Print"
+  }
+}

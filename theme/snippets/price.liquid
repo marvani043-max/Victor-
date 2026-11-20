@@ -1,0 +1,17 @@
+{%- comment -%} Params: product, variant (optional), class {%- endcomment -%}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign show_range = false
+  if variant == blank and product.price_varies
+    assign show_range = true
+  endif
+-%}
+<span class="price{% if class %} {{ class }}{% endif %}{% unless target.available %} price--sold-out{% endunless %}" data-price>
+  <span class="visually-hidden">{{ 'products.price_regular' | t }}</span>
+  {%- if show_range -%}
+    {%- assign min_price = product.price_min | money -%}
+    {{ 'general.from_price' | t: price: min_price }}
+  {%- else -%}
+    {{ target.price | money }}
+  {%- endif -%}
+</span>

@@ -1,0 +1,26 @@
+{%- comment -%} Echoes a swatch colour for an option value. Uses Shopify's native swatch when set, else a fallback by name. Params: value {%- endcomment -%}
+{%- liquid
+  if value.swatch.color
+    echo value.swatch.color
+  else
+    assign n = value.name | default: label | default: value | downcase
+    case n
+      when 'black', 'classic black'
+        echo '#1F1F1E'
+      when 'faded black'
+        echo '#2C2C2B'
+      when 'white'
+        echo '#F7F6F2'
+      when 'navy', 'navy blue'
+        echo '#26324F'
+      when 'grey', 'gray', 'flower gray', 'heather grey'
+        echo '#B9B8B4'
+      when 'dark grey', 'dark gray', 'charcoal'
+        echo '#4B4A48'
+      when 'pink'
+        echo '#E85A97'
+      else
+        echo '#CFCAC0'
+    endcase
+  endif
+-%}

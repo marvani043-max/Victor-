@@ -1,0 +1,68 @@
+{%- comment -%}
+  Real Shopify contact form. Shopify emails submissions to the store's sender address.
+  Success is only shown after Shopify confirms (form.posted_successfully?). Shopify's storefront spam protection (CAPTCHA) applies when enabled in Online Store → Preferences.
+{%- endcomment -%}
+<section class="section contact" aria-labelledby="ContactHeading-{{ section.id }}">
+  <div class="page-width contact__grid">
+    <div class="contact__intro">
+      <p class="kicker mono">{{ section.settings.kicker | escape }}</p>
+      <h1 class="h1" id="ContactHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h1>
+      <div class="rte">{{ section.settings.text }}</div>
+      {%- if settings.contact_email != blank -%}
+        <p class="contact__email">{{ section.settings.email_label | escape }} <a class="link" href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a></p>
+      {%- endif -%}
+      <p class="muted contact__privacy">{{ section.settings.privacy_note | escape }}</p>
+    </div>
+
+    {%- form 'contact', id: 'ContactForm', class: 'contact__form', novalidate: 'novalidate', data-validate: '', data-track: 'contact_submitted' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="form-status form-status--success" role="status" tabindex="-1" data-form-status>
+          {% render 'icon', name: 'check' %}<p>{{ 'forms.contact_success' | t }}</p>
+        </div>
+      {%- else -%}
+        {% render 'form-errors', form: form %}
+        <div class="field">
+          <label class="field__label" for="ContactForm-name">{{ 'forms.name' | t }}</label>
+          <input class="field__input" id="ContactForm-name" type="text" name="contact[name]" autocomplete="name" value="{{ form.name | escape }}">
+        </div>
+        <div class="field">
+          <label class="field__label" for="ContactForm-email">{{ 'forms.email' | t }} <span class="field__req">({{ 'forms.required' | t | downcase }})</span></label>
+          <input class="field__input" id="ContactForm-email" type="email" name="contact[email]" autocomplete="email" required aria-describedby="ContactForm-email-error" value="{{ form.email | escape }}">
+          <p class="field__error" id="ContactForm-email-error" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="ContactForm-topic">{{ 'forms.topic' | t }}</label>
+          <div class="select">
+            <select class="field__input" id="ContactForm-topic" name="contact[Topic]" data-topic-select>
+              <option value="Order">{{ 'forms.topics.order' | t }}</option>
+              <option value="Fit and sizing">{{ 'forms.topics.fit' | t }}</option>
+              <option value="Restock request">{{ 'forms.topics.restock' | t }}</option>
+              <option value="Other" selected>{{ 'forms.topics.other' | t }}</option>
+            </select>
+            {% render 'icon', name: 'chevron' %}
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label" for="ContactForm-body">{{ 'forms.message' | t }} <span class="field__req">({{ 'forms.required' | t | downcase }})</span></label>
+          <textarea class="field__input" id="ContactForm-body" name="contact[body]" rows="6" required data-minlength="10" aria-describedby="ContactForm-body-error">{{ form.body }}</textarea>
+          <p class="field__error" id="ContactForm-body-error" hidden></p>
+        </div>
+        <button type="submit" class="button button--primary" data-submit><span data-submit-label>{{ 'forms.send' | t }}</span></button>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "class": "section-contact",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Contact" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Ask about an order, fit or a restock" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Include your order number if your question is about an order.</p>" },
+    { "type": "text", "id": "email_label", "label": "Email label", "default": "Prefer email?" },
+    { "type": "textarea", "id": "privacy_note", "label": "Privacy note", "default": "We use what you send only to answer your message. It is not added to any mailing list.", "info": "Must match your actual practice and privacy policy." }
+  ]
+}
+{% endschema %}

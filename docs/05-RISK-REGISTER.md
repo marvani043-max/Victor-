@@ -1,0 +1,38 @@
+# Pre-launch risk register
+
+This register is a design and engineering precaution, not legal advice. Nothing here means the site is "legally approved", "compliant" or "secure".
+Items marked **DO NOT PUBLISH THIS ITEM UNTIL RESOLVED** must not go live in their current state.
+
+**Responsible people:**
+- **PS:** Peak Side (store owner)
+- **MM:** Marvani Marketing
+- **PH:** photographer
+- **Legal:** qualified attorney
+- **Tax:** accountant or tax adviser
+
+| # | Item | Why it needs attention | Evidence available | Status | Responsible | Next action |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Lifestyle and campaign photos | People are identifiable, and the photos are used commercially. They need a photographer's licence and model releases. | Client says: professional photographer, everyone 18+. No documents seen. | needs verification. **DO NOT PUBLISH THIS ITEM UNTIL RESOLVED** | PS, PH | Get the written licence (web, social, ads; transferable to Peak Side) and signed releases. File copies with Marvani. |
+| 2 | Studio product cut-outs | They may be supplier or manufacturer template images, and the right to use them is unknown. | None | NOT CLEARED. **DO NOT PUBLISH THIS ITEM UNTIL RESOLVED** | PS | Confirm the source and permission, or reshoot every product on one seamless ground. |
+| 3 | Fibre content, care and country of origin | US textile labelling rules expect accurate fibre content and origin on online listings. None was supplied, and the site does not invent it. | Shown as placeholders in the preview | needs verification. **DO NOT PUBLISH THIS ITEM UNTIL RESOLVED** (product pages) | PS, Legal | Fill `custom.fabric_care` from the garment labels for all 15 products. Legal to confirm the labelling. |
+| 4 | Placeholder email `hello@peak-side.com` | The mailbox may not exist. Messages could be lost. | Theme setting | replace. **DO NOT PUBLISH THIS ITEM UNTIL RESOLVED** | PS | Create the mailbox (or choose the address), then update Theme settings → Contact. |
+| 5 | Privacy notice, cookie consent and tracking | Peak Side sells worldwide, so EU/UK, US-state (including Nevada) and other privacy rules may apply. The privacy policy must describe the real data practices. | `06-ANALYTICS-AND-PRIVACY.md` data inventory. The custom pixel is supplied but **not activated**. | professional review | PS, Legal | Write the privacy policy in Shopify (Settings → Policies) from the real data inventory. Enable Shopify's cookie banner (Customer privacy) for the regions sold to. Activate GA4 only after that. |
+| 6 | Young audience; "anyone can buy" | The brand appeals to teens. Children's privacy rules (for example COPPA, for under-13s), email-marketing consent and age questions may apply. | Discovery answers | professional review | PS, Legal | Decide age policy and wording for the newsletter and terms. Don't knowingly collect data from under-13s without legal advice. |
+| 7 | Shipping, returns and international terms | The policy text was carried over from the Wix site. Worldwide shipping needs duties, rates and return rules for international orders. | Research PDF (Described) | needs verification | PS | Confirm the 2–5 day processing time, the 30-day returns and the 7-day damage window. Configure Shopify Markets, rates and duties. Update the theme settings text to match. |
+| 8 | "Shipping worldwide" on the site | This is a factual claim and must be true at launch. | Client answer | needs verification | PS | Confirm Markets and shipping zones actually cover the countries you mean. Otherwise change the wording. |
+| 9 | Trademark: "Peak Side", PKS mark, "MOUNTAINS MEET EVERYDAY" | No search done. Other "Peak"-named outdoor brands exist in the category. | None | professional review | PS, Legal | Get a clearance search before investing in the marks, packaging or ads. |
+| 10 | Graffiti artwork in town photos | This is third-party art, and it's prominent in the lookbook and story images. | Photos | professional review | PS, Legal | Ask counsel whether the use is incidental. Consider tighter crops or trail images for the biggest placements. |
+| 11 | Product statements and descriptions | New copy (for example "two-way zipper", "faded wash", fit notes) must match the real products. | Store copy plus photos | needs verification | PS | Approve every description and detail marker. Correct anything that's wrong. |
+| 12 | Story page copy | Draft wording about the founder and community | Store "About" text (Described) | needs verification | PS | The founder approves or rewrites. No age or personal details unless they choose to share them. |
+| 13 | Prices, sizes, colours, stock | Snapshot from 14 Nov 2026 | Research PDF | needs verification | PS | Check each product after the CSV import. Set real stock levels. Products import as **draft** with 0 stock. |
+| 14 | Size chart | Fit is the main buying question, and no measured chart exists. | None | needs verification | PS | Measure the garments. Add the chart to the fit guide page and `custom.size_chart`. |
+| 15 | Product photo consistency | Studio cut-outs mixed with floor flat-lays look uneven; the White Globe Hoodie's front photo is a point-of-view shot. | Photos | replace (recommended) | PS, PH | Reshoot front, back and detail for each colourway on one ground, plus one on-model shot. |
+| 16 | Detail-marker and lookbook-tag positions | Positions were set from the current photos, and a reshoot will move them. | Metaobject data, theme editor | needs verification | MM, PS | Re-check every marker after the final photos are uploaded. |
+| 17 | Old Wix URLs and domain move | Search rankings and links to the old URLs. DNS and email records when the domain moves. | `docs/import/redirects.csv` | needs verification | MM, PS | Import the redirects. Plan the DNS cut-over without breaking email. Keep Wix active until it's verified. |
+| 18 | Sales tax and duties | Nevada and other US-state sales tax, plus international duties and VAT | None | professional review | PS, Tax | Set up Shopify Tax and duties with an adviser. |
+| 19 | Accessibility | Only automated checks (axe-core) and scripted keyboard tests were run. No manual screen-reader or real-device testing was done. | `08-TEST-REPORT.md` | needs verification | MM | Manual pass with VoiceOver on iOS and macOS, NVDA on Windows, and TalkBack. Fix what turns up. |
+| 20 | Security and accounts | Shopify hosts checkout and payments (no card data touches the theme). Store accounts need protecting. | Theme contains no secrets or API keys | needs verification | PS, MM | Enable 2-step verification for all staff, Shopify's storefront spam protection (CAPTCHA) for forms, and least-privilege staff or collaborator access. |
+| 21 | Reviews and social proof | None exist, and none were invented. | — | verified (none shown) | PS | Add a reviews app only to show genuine reviews, with the incentive disclosure the app supports. |
+| 22 | AI-assisted code and copy | Theme and copy were drafted with an AI coding assistant. | Asset register #9, #10 | needs verification | MM | Human review of copy and code. Check the AI provider's commercial terms. Note this in the client agreement if required. |
+| 23 | Theme-editor image references | `index.json` and `page.story.json` point at image file names that only exist once uploaded. | Templates | needs verification | MM | After uploading cleared photos, re-pick the images in the theme editor. |
+| 24 | Analytics configuration | The GA4 ID isn't set. Custom events publish, but nothing collects them until a pixel is set up. | `docs/analytics/custom-pixel.js` | needs external integration | PS, MM | Do this only after item 5. |

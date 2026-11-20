@@ -1,0 +1,89 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "kicker": "Peak Side · Reno, Nevada",
+        "heading": "Mountains|meet|everyday.",
+        "text": "Hoodies, tees and crop tops for days that start on a trail and end in town.",
+        "collection": "all",
+        "button_label": "Shop the range",
+        "button_link": "shopify://collections/all",
+        "button2_label": "Find your fit",
+        "button2_link": "#fit",
+        "product": "oversized-faded-hoodie-front-logo",
+        "explorer_label": "Switch colour · flip it · tap the numbers"
+      }
+    },
+    "facts": {
+      "type": "facts-strip",
+      "blocks": {
+        "f1": { "type": "fact", "settings": { "title": "Ships in 2–5 business days", "text": "Tracking is emailed as soon as your order is on its way." } },
+        "f2": { "type": "fact", "settings": { "title": "30-day returns", "text": "Unworn and unwashed, with the tags still on.", "link_label": "Return policy", "link": "shopify://policies/refund-policy" } },
+        "f3": { "type": "fact", "settings": { "title": "Shipping worldwide", "text": "Rates and delivery times are shown at checkout." } },
+        "f4": { "type": "fact", "settings": { "title": "Questions about fit?", "text": "Ask before you buy, about sizing, an order or a restock.", "link_label": "Contact Peak Side", "link": "shopify://pages/contact" } }
+      },
+      "block_order": ["f1", "f2", "f3", "f4"],
+      "settings": { "label": "Shipping, returns and help" }
+    },
+    "tiles": {
+      "type": "collection-tiles",
+      "blocks": {
+        "t1": { "type": "collection", "settings": { "collection": "hoodies" } },
+        "t2": { "type": "collection", "settings": { "collection": "zip-ups" } },
+        "t3": { "type": "collection", "settings": { "collection": "tees" } },
+        "t4": { "type": "collection", "settings": { "collection": "crop-tops" } },
+        "t5": { "type": "collection", "settings": { "collection": "crewnecks" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4", "t5"],
+      "settings": { "kicker": "01 — Shop by type", "heading": "What are you after?" }
+    },
+    "range": {
+      "type": "featured-collection",
+      "settings": { "kicker": "02 — The range", "heading": "Every piece", "text": "Sold-out pieces stay listed so you can request a restock.", "collection": "all", "limit": 8 }
+    },
+    "fit": {
+      "type": "fit-finder",
+      "settings": { "collection": "all", "default_index": 4 }
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "blocks": {
+        "l1": { "type": "look", "settings": { "image": "shopify://shop_images/trail-overlook.jpg", "alt": "White Summer Edition tee seen from behind at a canyon overlook", "place": "trail", "caption": "Back print, canyon view.", "product_1": "summer-edition-tee-white", "x_1": 52, "y_1": 34 } },
+        "l2": { "type": "look", "settings": { "image": "shopify://shop_images/tunnel-pink-hoodie.jpg", "alt": "Two friends against a graffiti wall, one in a pink faded hoodie, one showing PEAK SIDE lettering on the back of a black hoodie", "place": "town", "caption": "Pink and black, front and back.", "product_1": "oversized-faded-hoodie-front-back", "x_1": 70, "y_1": 50, "product_2": "oversized-faded-hoodie-front-logo", "x_2": 26, "y_2": 46 } },
+        "l3": { "type": "look", "settings": { "image": "shopify://shop_images/trail-falls-front.jpg", "alt": "Black Summer Edition tee worn on the rocks below a waterfall", "place": "trail", "caption": "Granite and spray.", "product_1": "summer-edition-tee-black", "x_1": 30, "y_1": 52 } },
+        "l4": { "type": "look", "settings": { "image": "shopify://shop_images/tunnel-crop-duo-2.jpg", "alt": "Two friends in black off-shoulder crop tops in front of a graffiti wall", "place": "town", "caption": "Off-shoulder, sized down.", "product_1": "off-shoulder-crop-top-black", "x_1": 36, "y_1": 52 } },
+        "l5": { "type": "look", "settings": { "image": "shopify://shop_images/tunnel-zip-navy.jpg", "alt": "Navy double zip hoodie worn in a graffiti tunnel at dusk", "place": "town", "caption": "Navy double zip, two-way zipper.", "product_1": "double-zip-hoodie", "x_1": 47, "y_1": 50 } },
+        "l6": { "type": "look", "settings": { "image": "shopify://shop_images/night-boxy-trio.jpg", "alt": "Three friends at night showing the boxy Summer Edition tee's back print", "place": "town", "caption": "Boxy tee, full back print.", "product_1": "summer-edition-boxy-tee-white", "x_1": 21, "y_1": 34 } }
+      },
+      "block_order": ["l1", "l2", "l3", "l4", "l5", "l6"],
+      "settings": {}
+    },
+    "story": {
+      "type": "story-split",
+      "settings": {
+        "image": "shopify://shop_images/tunnel-crew.jpg",
+        "alt": "A group of friends in Peak Side tees, crop tops and hoodies lined up in front of a graffiti tunnel",
+        "kicker": "05 — The story",
+        "heading": "Started by someone who'd rather be outside.",
+        "text": "<p>Peak Side began with a love of being outside and a long-held ambition to build a clothing brand.</p><p>It has grown into a community of friends and customers who wear it on the trail, in town and everywhere in between.</p>",
+        "button_label": "Read the story",
+        "button_link": "shopify://pages/story"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "How long until my order ships?", "answer": "<p>Orders are typically processed within 2–5 business days. Once it ships you'll get an email with tracking. Delivery time after that depends on your location and the shipping method you choose at checkout.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Do you ship outside the US?", "answer": "<p>Yes. Peak Side ships worldwide. Shipping options, costs and any duties for your country are shown at checkout before you pay.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "Can I return or exchange something?", "answer": "<p>Yes, within 30 days of delivery. Items need to be unworn, unwashed, in original condition and with the original tags attached. Sale and final-sale items can't be returned or exchanged.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "Who pays for return shipping?", "answer": "<p>Return shipping is paid by the customer, unless the item arrived damaged or defective, or the wrong item was sent.</p>" } },
+        "q5": { "type": "question", "settings": { "question": "My item arrived damaged or it's the wrong one.", "answer": "<p>Contact Peak Side within 7 days of delivery with your order number and photos of the item.</p>" } },
+        "q6": { "type": "question", "settings": { "question": "How do the crop tops and boxy tees fit?", "answer": "<p>For the off-shoulder crop tops, Peak Side recommends sizing down. The boxy Summer Edition tees are the same design as the regular tees in a boxier cut, so stay true to size.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6"],
+      "settings": { "kicker": "06 — Help", "heading": "Before you buy", "contact_label": "Ask a question" }
+    }
+  },
+  "order": ["hero", "facts", "tiles", "range", "fit", "lookbook", "story", "faq"]
+}

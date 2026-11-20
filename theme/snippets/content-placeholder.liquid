@@ -1,0 +1,7 @@
+{%- comment -%} Obvious development placeholder for missing product facts. Shown only while "Show missing-content placeholders" is on. Params: text {%- endcomment -%}
+{%- if settings.show_content_placeholders -%}
+  <p class="placeholder-note" data-placeholder>
+    <span class="placeholder-note__flag mono">To be supplied</span>
+    {{ text }}
+  </p>
+{%- endif -%}

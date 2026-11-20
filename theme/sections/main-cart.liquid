@@ -1,0 +1,30 @@
+<section class="section cart-page" data-cart-page data-section-id="{{ section.id }}">
+  <div class="page-width page-width--narrow" data-cart-inner>
+    <h1 class="h1">{{ 'cart.title' | t }}</h1>
+    <div class="drawer__status" role="status" data-cart-status></div>
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" class="cart-page__form">
+        {% render 'cart-lines', context: 'page' %}
+        <div class="field cart-page__note">
+          <label class="field__label" for="CartNote">{{ 'cart.note' | t }} <span class="field__req">({{ 'forms.optional' | t }})</span></label>
+          <textarea class="field__input" id="CartNote" name="note" rows="3">{{ cart.note }}</textarea>
+        </div>
+        <div class="cart-page__foot">
+          <p class="cart-total"><span>{{ 'cart.subtotal' | t }}</span><span class="cart-total__value">{{ cart.total_price | money }}</span></p>
+          <p class="muted">{{ 'products.tax_note' | t }}</p>
+          <noscript><button type="submit" name="update" class="button button--secondary">Update</button></noscript>
+          <button type="submit" name="checkout" class="button button--primary button--full">{{ 'cart.checkout' | t }} {% render 'icon', name: 'arrow' %}</button>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="empty-state">
+        <p class="empty-state__title">{{ 'cart.empty' | t }}</p>
+        <a class="button button--primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Cart", "class": "section-main-cart" }
+{% endschema %}

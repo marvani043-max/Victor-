@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code | default: 'en' }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#F7F5F0">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- capture seo_title -%}
+      {%- if request.page_type == 'index' -%}
+        {{ shop.name }}: hoodies, tees and crop tops from {{ settings.brand_location }}
+      {%- else -%}
+        {{ page_title }}
+        {%- if current_tags %} – {{ current_tags | join: ', ' }}{% endif -%}
+        {%- if current_page != 1 %} – Page {{ current_page }}{% endif -%}
+        {%- unless page_title contains shop.name %} | {{ shop.name }}{% endunless -%}
+      {%- endif -%}
+    {%- endcapture -%}
+    <title>{{ seo_title | strip }}</title>
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {{ 'overpass-latin-wght-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    <style>
+      /* Overpass and Overpass Mono: SIL Open Font License 1.1. Licence files: assets/license-overpass-ofl.txt, assets/license-overpass-mono-ofl.txt */
+      @font-face {
+        font-family: 'Overpass';
+        src: url('{{ 'overpass-latin-wght-normal.woff2' | asset_url }}') format('woff2');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Overpass Mono';
+        src: url('{{ 'overpass-mono-latin-400-normal.woff2' | asset_url }}') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Overpass Mono';
+        src: url('{{ 'overpass-mono-latin-600-normal.woff2' | asset_url }}') format('woff2');
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <script>
+      document.documentElement.classList.replace('no-js', 'js');
+      try {
+        if (localStorage.getItem('ps-motion') === 'reduce') document.documentElement.dataset.motion = 'reduce';
+      } catch (e) {}
+      window.PeakSide = {
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }}
+        },
+        moneyFormat: {{ shop.money_format | json }},
+        publishEvents: {{ settings.publish_interaction_events | json }},
+        strings: {
+          adding: {{ 'products.adding' | t | json }},
+          addToBag: {{ 'products.add_to_bag' | t | json }},
+          soldOut: {{ 'products.sold_out' | t | json }},
+          unavailable: {{ 'products.unavailable' | t | json }},
+          inStock: {{ 'products.in_stock' | t | json }},
+          added: {{ 'products.added' | t | json }},
+          errorGeneric: {{ 'general.error_generic' | t | json }},
+          errorEmail: {{ 'forms.error_email' | t | json }},
+          errorRequired: {{ 'forms.error_required' | t | json }},
+          errorMessageShort: {{ 'forms.error_message_short' | t | json }},
+          errorSummary: {{ 'forms.error_summary' | t | json }},
+          updating: {{ 'collections.updating' | t | json }},
+          cartUpdating: {{ 'cart.updating' | t | json }},
+          sending: {{ 'forms.sending' | t | json }}
+        }
+      };
+    </script>
+    <script src="{{ 'global.js' | asset_url }}" defer></script>
+
+    {{ content_for_header }}
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | append: routes.root_url | json }}
+        {%- if settings.social_instagram != blank -%},
+        "sameAs": [{{ settings.social_instagram | json }}]
+        {%- endif %}
+      }
+    </script>
+  </head>
+
+  <body class="template-{{ template.name | handle }}">
+    <a class="skip-link" href="#MainContent">{{ 'general.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% section 'cart-drawer' %}
+
+    <div class="visually-hidden" aria-live="polite" aria-atomic="true" id="LiveRegion"></div>
+  </body>
+</html>

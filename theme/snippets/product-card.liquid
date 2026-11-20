@@ -1,0 +1,90 @@
+{%- comment -%}
+  Product card. Params: product (required), sizes, priority (bool), heading_level (default 3)
+  The image and title are links; colour swatches are buttons that swap the card photo (no nested controls inside links).
+{%- endcomment -%}
+{%- liquid
+  assign h = heading_level | default: 3
+  assign color_option = nil
+  for option in product.options_with_values
+    assign on = option.name | downcase
+    if on == 'color' or on == 'colour'
+      assign color_option = option
+    endif
+  endfor
+  assign first_color = ''
+  if color_option
+    assign first_color = color_option.values.first.name | handle
+  endif
+  assign front = product.featured_media
+  assign back = nil
+  for media in product.media
+    capture info
+      render 'media-info', media: media, product: product
+    endcapture
+    assign parts = info | split: '|'
+    assign m_color = parts[0]
+    assign m_view = parts[1]
+    if m_color == first_color or m_color == blank
+      if m_view == 'back' and back == nil
+        assign back = media
+      endif
+    endif
+  endfor
+  assign card_sizes = sizes | default: '(min-width: 990px) 25vw, 50vw'
+  assign fit = product.metafields.custom.fit_profile.value
+-%}
+<article class="card{% unless product.available %} card--sold-out{% endunless %}" data-card>
+  <a class="card__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+    {%- if front -%}
+      {%- capture front_class -%}card__img card__img--front{% if back and settings.card_show_back_on_hover %} has-back{% endif %}{% if front.preview_image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}
+      {% render 'image', image: front.preview_image, alt: '', sizes: card_sizes, class: front_class, priority: priority, widths: '360,540,720,960' %}
+      {%- if back and settings.card_show_back_on_hover -%}
+        {%- capture back_class -%}card__img card__img--back{% if back.preview_image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}
+        {% render 'image', image: back.preview_image, alt: '', sizes: card_sizes, class: back_class, widths: '360,540,720,960' %}
+      {%- endif -%}
+    {%- else -%}
+      <span class="card__placeholder">{{ product.title }}</span>
+    {%- endif -%}
+    {%- unless product.available -%}
+      <span class="badge badge--sold-out">{{ 'products.sold_out' | t }}</span>
+    {%- endunless -%}
+  </a>
+  <div class="card__body">
+    <p class="card__spec mono">
+      {{- product.type -}}
+      {%- if fit != blank -%}{%- capture fit_key -%}fit.{{ fit }}{%- endcapture %} · {{ fit_key | t }}{%- endif -%}
+    </p>
+    <h{{ h }} class="card__title">
+      <a href="{{ product.url }}" class="card__link">{{ product.title }}</a>
+    </h{{ h }}>
+    <p class="card__price">{% render 'price', product: product %}{% unless product.available %} <span class="card__status">· {{ 'products.sold_out' | t }}</span>{% endunless %}</p>
+    {%- if color_option and color_option.values.size > 1 -%}
+      <div class="card__swatches" role="group" aria-label="{{ 'collections.colours' | t: count: color_option.values.size }}: {{ product.title | escape }}">
+        {%- for value in color_option.values -%}
+          {%- liquid
+            assign v_handle = value.name | handle
+            assign v_media = nil
+            for media in product.media
+              capture info
+                render 'media-info', media: media, product: product
+              endcapture
+              assign parts = info | split: '|'
+              if parts[0] == v_handle and parts[1] == 'front' and v_media == nil
+                assign v_media = media
+              endif
+            endfor
+          -%}
+          <button
+            type="button"
+            class="swatch swatch--sm"
+            aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+            {% if v_media %}data-src="{{ v_media.preview_image | image_url: width: 720 }}"{% endif %}
+            style="--swatch: {% render 'swatch-color', value: value %}"
+          >
+            <span class="visually-hidden">{{ value.name }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</article>

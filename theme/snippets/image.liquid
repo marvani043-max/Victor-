@@ -1,0 +1,32 @@
+{%- comment -%}
+  Responsive image with reserved dimensions.
+  Params: image (required), alt, sizes, class, loading ('lazy' | 'eager'), widths (comma list), priority (bool)
+{%- endcomment -%}
+{%- liquid
+  assign widths = widths | default: '360,540,720,960,1200,1600'
+  assign width_list = widths | split: ','
+  assign alt_text = alt | default: image.alt | escape
+  assign load = loading | default: 'lazy'
+  if priority
+    assign load = 'eager'
+  endif
+  assign max_w = image.width | default: 1600
+-%}
+{%- capture srcset -%}
+  {%- for w in width_list -%}
+    {%- assign wn = w | plus: 0 -%}
+    {%- if wn <= max_w -%}{{ image | image_url: width: wn }} {{ wn }}w,{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<img
+  src="{{ image | image_url: width: 960 }}"
+  srcset="{{ srcset | remove_last: ',' }}"
+  sizes="{{ sizes | default: '100vw' }}"
+  width="{{ image.width }}"
+  height="{{ image.height }}"
+  alt="{{ alt_text }}"
+  loading="{{ load }}"
+  decoding="{% if priority %}sync{% else %}async{% endif %}"
+  {% if priority %}fetchpriority="high"{% endif %}
+  {% if class %}class="{{ class }}"{% endif %}
+>

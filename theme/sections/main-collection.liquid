@@ -1,0 +1,46 @@
+{%- paginate collection.products by section.settings.per_page -%}
+<section class="section collection" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <nav class="breadcrumbs mono" aria-label="{{ 'general.breadcrumbs' | t }}">
+      <a class="link" href="{{ routes.root_url }}">{{ 'general.home' | t }}</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ collection.title | escape }}</span>
+    </nav>
+    <div class="collection__head">
+      <h1 class="h1 collection__title">{{ collection.title | escape }}</h1>
+      {%- if collection.description != blank -%}<div class="rte collection__desc">{{ collection.description }}</div>{%- endif -%}
+    </div>
+
+    <div class="collection__layout">
+      {% render 'facets', results: collection, section_id: section.id %}
+
+      <div class="collection__results" id="ProductGridContainer-{{ section.id }}" data-results>
+        {%- if collection.products.size > 0 -%}
+          <ul class="product-grid product-grid--collection" role="list">
+            {%- for product in collection.products -%}
+              <li>{%- assign eager = false -%}{%- if forloop.index <= 2 -%}{%- assign eager = true -%}{%- endif -%}
+                {% render 'product-card', product: product, priority: eager, heading_level: 2 %}</li>
+            {%- endfor -%}
+          </ul>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <div class="empty-state">
+            <p class="empty-state__title">{% if collection.filters.size > 0 and collection.all_products_count > 0 %}{{ 'collections.empty' | t }}{% else %}{{ 'collections.empty_collection' | t }}{% endif %}</p>
+            <a class="button button--secondary" href="{{ collection.url }}" data-facet-remove>{{ 'collections.clear_all' | t }}</a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "class": "section-main-collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "paragraph", "content": "Filters come from Shopify's Search & Discovery app. Recommended filters: Availability, Product type, Color, Size, Price, and a product metafield filter for custom.fit_profile (label: Fit)." }
+  ]
+}
+{% endschema %}

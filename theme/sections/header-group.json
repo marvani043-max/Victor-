@@ -1,0 +1,9 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": { "type": "announcement-bar", "settings": { "text": "Based in Reno, Nevada · Shipping worldwide" } },
+    "header": { "type": "header", "settings": { "menu": "main-menu", "secondary_menu": "footer" } }
+  },
+  "order": ["announcement", "header"]
+}

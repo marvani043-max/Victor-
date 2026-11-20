@@ -1,0 +1,21 @@
+{% layout none %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code | default: 'en' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{{ 'gift_card.title' | t }} · {{ shop.name }}</title>
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+  </head>
+  <body class="template-gift-card">
+    <main class="section page-width page-width--narrow">
+      <p class="wordmark wordmark--lg" aria-hidden="true">{{ shop.name | upcase }}</p>
+      <h1 class="h1">{{ 'gift_card.title' | t }}</h1>
+      <p><strong>{{ 'gift_card.balance' | t }}:</strong> {{ gift_card.balance | money }}</p>
+      <p><strong>{{ 'gift_card.code' | t }}:</strong> <span class="mono">{{ gift_card.code | format_code }}</span></p>
+      <p><a class="button button--primary" href="{{ shop.url }}">{{ shop.name }}</a></p>
+    </main>
+  </body>
+</html>

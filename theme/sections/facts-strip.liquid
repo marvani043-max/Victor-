@@ -1,0 +1,39 @@
+<section class="facts" aria-label="{{ section.settings.label | escape }}">
+  <ul class="page-width facts__list" role="list">
+    {%- for block in section.blocks -%}
+      <li class="facts__item" {{ block.shopify_attributes }}>
+        <span class="facts__num mono" aria-hidden="true">{{ forloop.index | prepend: '0' }}</span>
+        <p class="facts__title">{{ block.settings.title | escape }}</p>
+        {%- if block.settings.text != blank -%}<p class="facts__text">{{ block.settings.text | escape }}</p>{%- endif -%}
+        {%- if block.settings.link != blank and block.settings.link_label != blank -%}
+          <a class="link facts__link" href="{{ block.settings.link }}">{{ block.settings.link_label | escape }}</a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Facts strip",
+  "class": "section-facts",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Accessible label", "default": "Shipping, returns and help" },
+    { "type": "paragraph", "content": "Facts only: shipping, returns, contact. Each must match your published policies. No promo codes or invented claims." }
+  ],
+  "blocks": [
+    {
+      "type": "fact",
+      "name": "Fact",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Fact" },
+        { "type": "text", "id": "text", "label": "Text" },
+        { "type": "text", "id": "link_label", "label": "Link label" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [{ "name": "Facts strip" }]
+}
+{% endschema %}

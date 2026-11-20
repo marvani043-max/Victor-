@@ -1,0 +1,22 @@
+{
+  "current": {
+    "logo_width": 120,
+    "brand_location": "Reno, Nevada",
+    "contact_email": "hello@peak-side.com",
+    "social_instagram": "https://www.instagram.com/peak.side",
+    "social_instagram_handle": "@peak.side",
+    "card_show_back_on_hover": true,
+    "show_content_placeholders": true,
+    "publish_interaction_events": true,
+    "fit_guide_page": "fit-guide",
+    "contact_page": "contact"
+  },
+  "presets": {
+    "Default": {
+      "logo_width": 120,
+      "brand_location": "Reno, Nevada",
+      "show_content_placeholders": true,
+      "publish_interaction_events": true
+    }
+  }
+}

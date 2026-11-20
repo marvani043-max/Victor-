@@ -1,0 +1,28 @@
+{%- comment -%} Loaded by global.js from Shopify's product recommendations endpoint once it's near the viewport. {%- endcomment -%}
+<product-recommendations class="section recommendations" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent=related">
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    <div class="page-width">
+      <div class="section-head">
+        <p class="kicker mono">{{ section.settings.kicker | escape }}</p>
+        <h2 class="h2">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <ul class="product-grid" role="list">
+        {%- for rec in recommendations.products -%}
+          <li>{% render 'product-card', product: rec %}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</product-recommendations>
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "class": "section-recommendations",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "More from Peak Side" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Wear it with" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

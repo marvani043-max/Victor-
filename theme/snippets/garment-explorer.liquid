@@ -1,0 +1,189 @@
+{%- comment -%}
+  GARMENT EXPLORER: the signature interaction.
+  Colourway → view (front / back / detail / worn) → numbered detail markers → details list.
+  Params:
+    product (required)
+    explorer_id: unique id (section id)
+    own_swatches: true to render colour controls inside the explorer (home page). On product pages the variant picker drives it.
+    priority: load the first image eagerly
+    sizes: image sizes attribute
+    compact: true for a shorter details list (labels only; notes stay available to screen readers)
+  Data:
+    Media alt text names colour + view (see snippets/media-info.liquid).
+    product.metafields.custom.details: list of "garment_detail" metaobjects with fields label, note, view (front|back), x, y (0–100, % of the image).
+  Without JavaScript every image is shown in a stacked gallery and the details list stays readable.
+{%- endcomment -%}
+{%- liquid
+  assign color_option = nil
+  assign color_index = 0
+  for option in product.options_with_values
+    assign on = option.name | downcase
+    if on == 'color' or on == 'colour'
+      assign color_option = option
+      assign color_index = forloop.index
+    endif
+  endfor
+  assign current_color = ''
+  if color_option
+    assign current_color = color_option.selected_value | handle
+  endif
+  assign details = product.metafields.custom.details.value
+  assign stage_sizes = sizes | default: '(min-width: 990px) 55vw, 100vw'
+  assign view_list = 'front,back,detail,worn' | split: ','
+-%}
+<script src="{{ 'explorer.js' | asset_url }}" defer></script>
+<garment-explorer
+  class="explorer{% if compact %} explorer--compact{% endif %}"
+  id="Explorer-{{ explorer_id }}"
+  data-color="{{ current_color }}"
+  data-product="{{ product.handle }}"
+  {% if color_option %}data-color-index="{{ color_index }}"{% endif %}
+>
+  <div class="explorer__stage">
+    <div class="explorer__frame" data-stage>
+      {%- assign shown_first = false -%}
+      {%- for media in product.media -%}
+        {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+        {%- capture info -%}{%- render 'media-info', media: media, product: product -%}{%- endcapture -%}
+        {%- liquid
+          assign parts = info | split: '|'
+          assign m_color = parts[0]
+          assign m_view = parts[1]
+          assign is_initial = false
+          if shown_first == false
+            if m_color == current_color or m_color == blank or current_color == blank
+              assign is_initial = true
+              assign shown_first = true
+            endif
+          endif
+          assign eager = false
+          if is_initial and priority
+            assign eager = true
+          endif
+          assign has_markers = false
+          if details != blank
+            if m_view == 'front' or m_view == 'back'
+              assign has_markers = true
+            endif
+          endif
+        -%}
+        <figure
+          class="explorer__slide"
+          data-slide
+          data-color="{{ m_color }}"
+          data-view="{{ m_view }}"
+          data-media-id="{{ media.id }}"
+          data-zoom-src="{{ media.preview_image | image_url: width: 1800 }}"
+          {% if is_initial %}data-active{% endif %}
+        >
+          {%- if m_view == 'worn' or m_view == 'detail' -%}
+            {% render 'image', image: media.preview_image, sizes: stage_sizes, class: 'explorer__img explorer__img--cover', priority: eager, alt: media.alt %}
+          {%- else -%}
+            <div class="explorer__fit">
+              <div class="explorer__canvas" style="--ratio: {{ media.preview_image.aspect_ratio | default: 1 }}">
+                {%- capture contain_class -%}explorer__img explorer__img--contain{% if media.preview_image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}
+                {% render 'image', image: media.preview_image, sizes: stage_sizes, class: contain_class, priority: eager, alt: media.alt %}
+                {%- if has_markers -%}
+                  <div class="explorer__markers">
+                    {%- for detail in details -%}
+                      {%- liquid
+                        assign d_view = detail.view.value | default: detail.view | default: 'front' | downcase
+                        assign d_label = detail.label.value | default: detail.label
+                        assign d_x = detail.x.value | default: detail.x | default: 50
+                        assign d_y = detail.y.value | default: detail.y | default: 50
+                      -%}
+                      {%- if d_view == m_view -%}
+                        <button
+                          type="button"
+                          class="marker"
+                          data-marker="{{ forloop.index }}"
+                          style="--x: {{ d_x }}%; --y: {{ d_y }}%;"
+                          aria-label="{{ 'products.detail_marker' | t: number: forloop.index, label: d_label }}"
+                          aria-controls="Detail-{{ explorer_id }}-{{ forloop.index }}"
+                          aria-pressed="false"
+                        >{{ forloop.index }}</button>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </figure>
+      {%- endfor -%}
+      {%- if product.media.size == 0 -%}
+        <div class="explorer__empty">{{ product.title }}</div>
+      {%- endif -%}
+    </div>
+    <p class="explorer__corner explorer__corner--view mono" aria-hidden="true" data-view-label>{{ 'products.view_front' | t }}</p>
+    {%- if color_option -%}
+      <p class="explorer__corner explorer__corner--color mono" aria-hidden="true" data-color-label>{{ color_option.selected_value }}</p>
+    {%- endif -%}
+    <button type="button" class="explorer__zoom icon-button" data-zoom aria-haspopup="dialog">
+      {% render 'icon', name: 'zoom' %}<span class="visually-hidden">{{ 'products.zoom' | t }}</span>
+    </button>
+  </div>
+
+  <div class="explorer__controls">
+    {%- if own_swatches and color_option and color_option.values.size > 1 -%}
+      <fieldset class="swatch-group">
+        <legend class="mono label">{{ color_option.name }}: <span data-color-name>{{ color_option.selected_value }}</span></legend>
+        <div class="swatch-group__list">
+          {%- for value in color_option.values -%}
+            <label class="swatch-option">
+              <input
+                type="radio"
+                class="visually-hidden"
+                name="explorer-color-{{ explorer_id }}"
+                value="{{ value.name | handle }}"
+                data-color-name="{{ value.name | escape }}"
+                {% if value.name == color_option.selected_value %}checked{% endif %}
+              >
+              <span class="swatch" style="--swatch: {% render 'swatch-color', value: value %}" aria-hidden="true"></span>
+              <span class="visually-hidden">{{ value.name }}</span>
+            </label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endif -%}
+
+    <div class="view-switch" role="group" aria-label="{{ 'products.views_label' | t }}" data-views>
+      {%- for v in view_list -%}
+        {%- capture v_key -%}products.view_{{ v }}{%- endcapture -%}
+        <button type="button" class="view-switch__btn mono" data-view-btn="{{ v }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ v_key | t }}</button>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if details != blank -%}
+    <div class="explorer__details">
+      <h2 class="mono label">{{ 'products.details_heading' | t }}</h2>
+      <p class="explorer__hint">{{ 'products.details_hint' | t }}</p>
+      <ol class="detail-list" role="list">
+        {%- for detail in details -%}
+          {%- liquid
+            assign d_view = detail.view.value | default: detail.view | default: 'front' | downcase
+            assign d_label = detail.label.value | default: detail.label
+            assign d_note = detail.note.value | default: detail.note
+          -%}
+          <li class="detail-list__item" id="Detail-{{ explorer_id }}-{{ forloop.index }}" data-detail="{{ forloop.index }}" data-detail-view="{{ d_view }}">
+            <button type="button" class="detail-list__btn" data-detail-btn="{{ forloop.index }}">
+              <span class="detail-list__num" aria-hidden="true">{{ forloop.index }}</span>
+              <span class="detail-list__text">
+                <span class="detail-list__label">{{ d_label }}</span>
+                {%- if d_note != blank -%}<span class="detail-list__note">{{ d_note }}</span>{%- endif -%}
+              </span>
+            </button>
+          </li>
+        {%- endfor -%}
+      </ol>
+    </div>
+  {%- endif -%}
+
+  <dialog class="zoom-dialog" data-zoom-dialog aria-label="{{ 'products.zoom' | t }}">
+    <button type="button" class="zoom-dialog__close icon-button" data-zoom-close>
+      {% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'products.zoom_close' | t }}</span>
+    </button>
+    <div class="zoom-dialog__body" tabindex="0"><img alt="" width="1400" height="1400" data-zoom-img></div>
+  </dialog>
+</garment-explorer>

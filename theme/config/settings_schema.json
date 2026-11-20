@@ -1,0 +1,133 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Peak Side Field Tag",
+    "theme_version": "1.0.0",
+    "theme_author": "Marvani Marketing",
+    "theme_documentation_url": "https://www.peak-side.com",
+    "theme_support_url": "https://www.peak-side.com"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image",
+        "info": "Optional. Without a logo the header shows the PEAK SIDE wordmark in the theme font."
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 60,
+        "max": 240,
+        "step": 4,
+        "unit": "px",
+        "label": "Logo width",
+        "default": 120
+      },
+      {
+        "type": "text",
+        "id": "brand_location",
+        "label": "Where the brand is based",
+        "default": "Reno, Nevada"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32 × 32 px PNG recommended."
+      }
+    ]
+  },
+  {
+    "name": "Contact",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The contact and restock forms send to the store's sender email (Settings → Notifications). The address below is only what visitors see."
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Public email address",
+        "default": "hello@peak-side.com",
+        "info": "Placeholder. Replace with a real, monitored mailbox before launch."
+      },
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "default": "https://www.instagram.com/peak.side"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_handle",
+        "label": "Instagram handle",
+        "default": "@peak.side"
+      }
+    ]
+  },
+  {
+    "name": "Products",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "card_show_back_on_hover",
+        "label": "Product cards: show back view on hover",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "shipping_summary",
+        "label": "Shipping summary (next to Add to bag)",
+        "default": "Orders are processed within 2–5 business days. Tracking is emailed when your order ships.",
+        "info": "Must match your shipping policy."
+      },
+      {
+        "type": "text",
+        "id": "returns_summary",
+        "label": "Returns summary (next to Add to bag)",
+        "default": "Returns and exchanges within 30 days of delivery on unworn, unwashed items with tags attached. Sale and final-sale items excluded.",
+        "info": "Must match your refund policy."
+      },
+      {
+        "type": "page",
+        "id": "fit_guide_page",
+        "label": "Fit guide page"
+      },
+      {
+        "type": "page",
+        "id": "contact_page",
+        "label": "Contact page"
+      }
+    ]
+  },
+  {
+    "name": "Content review",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_content_placeholders",
+        "label": "Show missing-content placeholders",
+        "default": true,
+        "info": "Shows clearly marked boxes where product facts are still missing (fabric, care, size chart). Turn off only after every product's facts are filled in."
+      }
+    ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Page views, visitors, top products, traffic sources and sales are in Shopify Analytics automatically. The setting below also sends theme interaction events (Garment Explorer, fit guide, filters, lookbook, restock requests) to Shopify Customer Events, where a custom pixel can read them. Events follow your Customer privacy settings."
+      },
+      {
+        "type": "checkbox",
+        "id": "publish_interaction_events",
+        "label": "Publish interaction events",
+        "default": true
+      }
+    ]
+  }
+]

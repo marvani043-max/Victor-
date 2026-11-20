@@ -1,0 +1,35 @@
+<cart-drawer>
+  <dialog class="drawer cart-drawer" id="CartDrawer" aria-labelledby="CartDrawerTitle" data-cart-drawer>
+    <div class="drawer__inner" data-cart-inner data-cart-count-value="{{ cart.item_count }}">
+      <div class="drawer__head">
+        <h2 class="drawer__title" id="CartDrawerTitle">{{ 'cart.title' | t }} <span class="mono drawer__count">({{ cart.item_count }})</span></h2>
+        <button type="button" class="icon-button" data-cart-close>
+          {% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span>
+        </button>
+      </div>
+      <div class="drawer__status" role="status" data-cart-status></div>
+      {%- if cart.item_count > 0 -%}
+        <div class="drawer__body">
+          {% render 'cart-lines', context: 'drawer' %}
+        </div>
+        <div class="drawer__foot">
+          <p class="cart-total"><span>{{ 'cart.subtotal' | t }}</span><span class="cart-total__value">{{ cart.total_price | money }}</span></p>
+          <p class="muted cart-total__note">{{ 'products.tax_note' | t }}</p>
+          <form action="{{ routes.cart_url }}" method="post">
+            <button type="submit" name="checkout" class="button button--primary button--full">{{ 'cart.checkout' | t }} {% render 'icon', name: 'arrow' %}</button>
+          </form>
+          <a class="link drawer__view-cart" href="{{ routes.cart_url }}">{{ 'cart.view_cart' | t }}</a>
+        </div>
+      {%- else -%}
+        <div class="drawer__empty">
+          <p>{{ 'cart.empty' | t }}</p>
+          <a class="button button--primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </dialog>
+</cart-drawer>
+
+{% schema %}
+{ "name": "Cart drawer", "class": "section-cart-drawer" }
+{% endschema %}

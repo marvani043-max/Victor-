@@ -1,0 +1,98 @@
+{%- comment -%}
+  TRAIL & TOWN: campaign photos with numbered markers for what's being worn.
+  Every look also lists its products as plain links under the photo, so nothing depends on finding a marker.
+{%- endcomment -%}
+<section class="section lookbook" aria-labelledby="LookbookHeading-{{ section.id }}">
+  <div class="page-width">
+    <div class="section-head section-head--split">
+      <div>
+        <p class="kicker mono">{{ section.settings.kicker | escape }}</p>
+        <h2 class="section-head__title h2" id="LookbookHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <p class="section-head__text">{{ section.settings.text | escape }}</p>
+    </div>
+
+    <ul class="lookbook__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign look_n = forloop.index -%}
+        <li class="look look--{{ block.settings.place }}" {{ block.shopify_attributes }}>
+          <look-tags class="look__frame">
+            {%- if block.settings.image != blank -%}
+              {% render 'image', image: block.settings.image, alt: block.settings.alt, sizes: '(min-width: 990px) 33vw, (min-width: 600px) 50vw, 100vw', class: 'look__img', widths: '360,540,720,960,1200' %}
+            {%- else -%}
+              <div class="look__empty mono">Image</div>
+            {%- endif -%}
+            <span class="look__place mono">{{ block.settings.place | upcase }}</span>
+            {%- for i in (1..3) -%}
+              {%- liquid
+                assign p_key = 'product_' | append: i
+                assign x_key = 'x_' | append: i
+                assign y_key = 'y_' | append: i
+                assign p = block.settings[p_key]
+              -%}
+              {%- if p != blank -%}
+                <button type="button" class="marker marker--look" style="--x: {{ block.settings[x_key] }}%; --y: {{ block.settings[y_key] }}%;"
+                  aria-expanded="false" aria-controls="LookCard-{{ section.id }}-{{ look_n }}-{{ i }}" data-look-marker
+                  aria-label="{{ i }}: {{ p.title | escape }}">{{ i }}</button>
+                <div class="look-card" id="LookCard-{{ section.id }}-{{ look_n }}-{{ i }}" hidden data-look-card style="--x: {{ block.settings[x_key] }}%; --y: {{ block.settings[y_key] }}%;">
+                  <p class="look-card__title">{{ p.title }}</p>
+                  <p class="look-card__meta mono">{% render 'price', product: p %} · {% if p.available %}{{ 'products.in_stock' | t }}{% else %}{{ 'products.sold_out' | t }}{% endif %}</p>
+                  <a class="link" href="{{ p.url }}" data-track-look="{{ p.handle }}">{{ 'products.view_short' | t }}<span class="visually-hidden"> {{ p.title }}</span>{% render 'icon', name: 'arrow' %}</a>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </look-tags>
+          <div class="look__caption">
+            {%- if block.settings.caption != blank -%}<p class="look__text">{{ block.settings.caption | escape }}</p>{%- endif -%}
+            <p class="look__worn mono">{{ 'products.worn_in_photo' | t }}</p>
+            <ol class="look__list" role="list">
+              {%- for i in (1..3) -%}
+                {%- assign p_key = 'product_' | append: i -%}
+                {%- assign p = block.settings[p_key] -%}
+                {%- if p != blank -%}
+                  <li><span class="look__num" aria-hidden="true">{{ i }}</span><a class="link" href="{{ p.url }}">{{ p.title }}</a> <span class="mono">{% render 'price', product: p %}</span></li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ol>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trail & Town",
+  "class": "section-lookbook",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "04 — Trail & Town" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Same clothes, two backdrops." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Tap a number to see what's being worn, or use the list under each photo." },
+    { "type": "paragraph", "content": "Use only photos with a written photographer licence and signed model releases on file." }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "alt", "label": "Photo description (alt text)", "info": "Describe what's shown, e.g. 'White Summer Edition tee worn at a canyon overlook'." },
+        { "type": "select", "id": "place", "label": "Place", "options": [{ "value": "trail", "label": "Trail" }, { "value": "town", "label": "Town" }], "default": "trail" },
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "product", "id": "product_1", "label": "Product 1" },
+        { "type": "range", "id": "x_1", "label": "Marker 1: across (%)", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "y_1", "label": "Marker 1: down (%)", "min": 0, "max": 100, "step": 1, "default": 45 },
+        { "type": "product", "id": "product_2", "label": "Product 2" },
+        { "type": "range", "id": "x_2", "label": "Marker 2: across (%)", "min": 0, "max": 100, "step": 1, "default": 30 },
+        { "type": "range", "id": "y_2", "label": "Marker 2: down (%)", "min": 0, "max": 100, "step": 1, "default": 45 },
+        { "type": "product", "id": "product_3", "label": "Product 3" },
+        { "type": "range", "id": "x_3", "label": "Marker 3: across (%)", "min": 0, "max": 100, "step": 1, "default": 70 },
+        { "type": "range", "id": "y_3", "label": "Marker 3: down (%)", "min": 0, "max": 100, "step": 1, "default": 45 }
+      ]
+    }
+  ],
+  "max_blocks": 9,
+  "presets": [{ "name": "Trail & Town" }]
+}
+{% endschema %}

@@ -1,0 +1,10 @@
+{%- comment -%} Server-side errors returned by Shopify for a form. Params: form {%- endcomment -%}
+{%- if form.errors -%}
+  <div class="form-status form-status--error" role="alert" tabindex="-1" data-form-status>
+    {% render 'icon', name: 'error' %}
+    <div>
+      <p class="form-status__title">{{ 'forms.error_summary' | t }}</p>
+      {{ form.errors | default_errors }}
+    </div>
+  </div>
+{%- endif -%}

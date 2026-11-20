@@ -1,0 +1,22 @@
+{%- comment -%} Hang-tag spec chips: type · fit · size range. Params: product, class {%- endcomment -%}
+{%- liquid
+  assign fit = product.metafields.custom.fit_profile.value
+  assign size_values = ''
+  for option in product.options_with_values
+    assign on = option.name | downcase
+    if on == 'size'
+      assign first_size = option.values.first.name
+      assign last_size = option.values.last.name
+      if option.values.size > 1
+        assign size_values = first_size | append: '–' | append: last_size
+      else
+        assign size_values = first_size
+      endif
+    endif
+  endfor
+-%}
+<ul class="spec-tags{% if class %} {{ class }}{% endif %}" role="list">
+  {%- if product.type != blank -%}<li class="tag">{{ product.type }}</li>{%- endif -%}
+  {%- if fit != blank -%}{%- capture fit_key -%}fit.{{ fit }}{%- endcapture -%}<li class="tag">{{ fit_key | t }}</li>{%- endif -%}
+  {%- if size_values != blank -%}<li class="tag">{{ size_values }}</li>{%- endif -%}
+</ul>

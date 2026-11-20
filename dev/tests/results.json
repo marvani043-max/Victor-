@@ -1,0 +1,193 @@
+{
+  "ranAt": "2026-11-20T00:47:22.019Z",
+  "passed": 31,
+  "failed": 0,
+  "results": [
+    {
+      "group": "Layout",
+      "name": "25 pages at mobile 360: 200, no overflow, one h1, img alt+dimensions, no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Layout",
+      "name": "25 pages at tablet 768: 200, no overflow, one h1, img alt+dimensions, no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Layout",
+      "name": "25 pages at desktop 1440: 200, no overflow, one h1, img alt+dimensions, no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Layout",
+      "name": "404 page returns 404 with useful links",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Links",
+      "name": "All internal links resolve (no 4xx/5xx, no \"#\" placeholders)",
+      "ok": true,
+      "detail": "37 unique hrefs checked"
+    },
+    {
+      "group": "Accessibility",
+      "name": "axe-core: 8 key pages at mobile 360, zero violations",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Accessibility",
+      "name": "axe-core: 8 key pages at desktop 1440, zero violations",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Accessibility",
+      "name": "Skip link is the first Tab stop and moves focus to main content",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Accessibility",
+      "name": "Visible focus indicator on links, buttons and inputs",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Garment Explorer",
+      "name": "Colour swatch swaps the photo set; unavailable views are hidden",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Garment Explorer",
+      "name": "Detail markers and list stay in sync; list item switches view when needed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Garment Explorer",
+      "name": "Keyboard: arrow keys move between views; markers are buttons with names",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Garment Explorer",
+      "name": "Zoom opens a modal dialog, Esc closes it and returns focus",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Product",
+      "name": "Variant picker: colour updates explorer, price/stock text and URL",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Product",
+      "name": "Add to bag: loading state, drawer opens only after confirmation, count updates; quantity and remove work",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Product",
+      "name": "Sold-out product: button disabled with text, restock form shown; server rejects sold-out adds",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Product",
+      "name": "Mobile: sticky buy bar appears after the main button scrolls away",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Product",
+      "name": "Size guide opens as a dialog with the fit scale and brand fit note",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Forms",
+      "name": "Restock form: inline error on bad email; success only after the (simulated) Shopify response",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Forms",
+      "name": "Contact form: required fields validated client-side and server-side",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Forms",
+      "name": "Newsletter: separate marketing consent text; success only after response",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Filters",
+      "name": "Filtering updates grid without reload, announces count, adds removable chip, updates URL",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Filters",
+      "name": "Mobile filter drawer: opens as a dialog, traps focus, Esc closes and returns focus",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Navigation",
+      "name": "Mobile menu: dialog opens, aria-expanded updates, Esc closes and returns focus",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Navigation",
+      "name": "Header search panel opens and focuses the field; search returns results",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Fit finder",
+      "name": "Choosing a cut shows its explanation and matching products",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Trail & Town",
+      "name": "Marker opens a product card; Esc closes it; list under photo always present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Motion",
+      "name": "prefers-reduced-motion: durations become 0 and explorer swaps instantly",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Motion",
+      "name": "Site motion toggle: sets data-motion, persists across pages",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Analytics",
+      "name": "Interactions publish named custom events through Shopify.analytics.publish",
+      "ok": true,
+      "detail": "ps_explorer_colour_changed, ps_explorer_view_changed, ps_explorer_detail_opened, ps_fit_selected"
+    },
+    {
+      "group": "Performance",
+      "name": "Cumulative layout shift during load (measured, not a Lighthouse score)",
+      "ok": true,
+      "detail": "/ @360: 0.000; / @1440: 0.000; /products/double-zip-hoodie @360: 0.002; /products/double-zip-hoodie @1440: 0.000; /collections/all @360: 0.000; /collections/all @1440: 0.000"
+    }
+  ]
+}

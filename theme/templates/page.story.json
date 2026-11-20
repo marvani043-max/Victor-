@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "intro": {
+      "type": "story-split",
+      "settings": {
+        "image": "shopify://shop_images/trail-ridge.jpg",
+        "alt": "Wearing the white Summer Edition tee on a granite boulder above the treeline",
+        "kicker": "The story",
+        "heading_tag": "h1",
+        "heading": "Started by someone who'd rather be outside.",
+        "text": "<p>Peak Side began with a love of being outside and a long-held ambition to build a clothing brand.</p><p>Peak Side makes hoodies, tees and crop tops that work on a trail and still look right back in town. Mountains meet everyday.</p>",
+        "button_label": "Shop the range",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "community": {
+      "type": "story-split",
+      "settings": {
+        "image": "shopify://shop_images/tunnel-crew.jpg",
+        "alt": "A group of friends in Peak Side tees, crop tops and hoodies lined up in front of a graffiti tunnel",
+        "image_right": true,
+        "kicker": "Reno, Nevada",
+        "heading": "Built around the people who wear it.",
+        "text": "<p>What started as one person's project has grown into a community of friends and customers who wear Peak Side on the trail, at school and everywhere in between.</p>",
+        "button_label": "Follow on Instagram",
+        "button_link": "https://www.instagram.com/peak.side"
+      }
+    }
+  },
+  "order": ["intro", "community"]
+}

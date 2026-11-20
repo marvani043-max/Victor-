@@ -1,0 +1,25 @@
+<section class="section">
+  <div class="page-width">
+    <h1 class="h1">{{ page_title | escape }}</h1>
+    <ul class="tiles__list tiles__list--page" role="list">
+      {%- for col in collections -%}
+        {%- if col.products_count == 0 -%}{%- continue -%}{%- endif -%}
+        {%- assign tile_image = col.featured_image | default: col.products.first.featured_media.preview_image -%}
+        <li class="tile">
+          <a class="tile__link" href="{{ col.url }}">
+            <span class="tile__media">{%- if tile_image -%}{%- capture tile_class -%}tile__img{% if tile_image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}{% render 'image', image: tile_image, alt: '', sizes: '(min-width: 990px) 25vw, 50vw', class: tile_class, widths: '360,540,720' %}{%- endif -%}</span>
+            <span class="tile__body">
+              <span class="tile__title">{{ col.title | escape }}</span>
+              <span class="tile__meta mono">{{ 'general.pieces' | t: count: col.products_count }}</span>
+            </span>
+            {% render 'icon', name: 'arrow' %}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Collections list", "class": "section-list-collections" }
+{% endschema %}

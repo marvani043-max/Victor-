@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "main": {
+      "type": "fit-guide",
+      "blocks": {
+        "s1": { "type": "step", "settings": { "title": "Chest", "text": "Lay the top flat. Measure straight across from armpit to armpit, then double it for the full chest." } },
+        "s2": { "type": "step", "settings": { "title": "Length", "text": "Measure from the highest point of the shoulder, next to the collar, straight down to the hem." } },
+        "s3": { "type": "step", "settings": { "title": "Sleeve", "text": "Measure from the shoulder seam to the end of the cuff." } },
+        "s4": { "type": "step", "settings": { "title": "Compare", "text": "Compare your numbers with the chart, then check the cut: boxy and oversized pieces are meant to measure bigger than a regular tee." } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"],
+      "settings": { "collection": "all" }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "Between two sizes?", "answer": "<p>Check the piece's cut and fit note. For the off-shoulder crop tops, Peak Side recommends sizing down. If you're still unsure, ask for a specific measurement before ordering.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Can I exchange for a different size?", "answer": "<p>Yes, within 30 days of delivery, if the item is unworn, unwashed and has its tags attached.</p>" } }
+      },
+      "block_order": ["q1", "q2"],
+      "settings": { "kicker": "Sizing help", "heading": "Still unsure?", "contact_label": "Ask about a measurement" }
+    }
+  },
+  "order": ["main", "faq"]
+}

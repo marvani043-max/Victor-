@@ -1,0 +1,18 @@
+{%- comment -%} Fit scale: where this piece sits from cropped to oversized. Params: fit (cropped|regular|boxy|oversized|blank) {%- endcomment -%}
+{%- assign fits = 'cropped,regular,boxy,oversized' | split: ',' -%}
+<div class="fit-scale-wrap">
+  {%- if fit != blank -%}
+    <ol class="fit-scale" aria-label="{{ 'fit.scale_label' | t }}" role="list">
+      {%- for f in fits -%}
+        {%- capture f_key -%}fit.{{ f }}{%- endcapture -%}
+        <li class="fit-scale__stop{% if f == fit %} is-current{% endif %}"{% if f == fit %} aria-current="true"{% endif %}>
+          <span class="fit-scale__tick" aria-hidden="true"></span>
+          <span class="fit-scale__name">{{ f_key | t }}</span>
+          {%- if f == fit -%}<span class="fit-scale__this mono">{{ 'fit.this_piece' | t }}</span>{%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+  {%- else -%}
+    <p class="muted">{{ 'products.fit_not_set' | t }}</p>
+  {%- endif -%}
+</div>
