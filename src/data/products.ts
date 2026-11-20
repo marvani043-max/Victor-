@@ -9,6 +9,8 @@ export type Colorway = {
   name: string;
   swatch: string;
   images: string[];
+  /** Studio front/back shots (image names) used for the 360° viewer and card flip. */
+  spin?: { front: string; back: string };
 };
 
 export type Product = {
@@ -56,7 +58,7 @@ export const products: Product[] = [
       "Oversized pullover with a sun-faded wash that darkens toward the hem. The PKS script sits small on the chest; the back is left clean.",
     sizes: ["S", "M", "L", "XL", "2XL"],
     colorways: [
-      { name: "Black", swatch: "#2A2A2A", images: ["hoodie-faded-black-front", "hoodie-faded-black-back"] },
+      { name: "Black", swatch: "#2A2A2A", images: ["hoodie-faded-black-front", "hoodie-faded-black-back"], spin: { front: "hoodie-faded-black-front", back: "hoodie-faded-black-back" } },
       { name: "Pink", swatch: "#EC5C9B", images: ["hoodie-faded-pink-front", "hoodie-faded-pink-alt", "tunnel-pink-hoodie"] },
     ],
     lifestyle: "tunnel-pink-hoodie",
@@ -73,7 +75,7 @@ export const products: Product[] = [
       "The same oversized, sun-faded hoodie with logos on both sides: PKS script on the chest and hand-drawn PEAK SIDE lettering across the back.",
     sizes: ["S", "M", "L", "XL", "2XL"],
     colorways: [
-      { name: "Black", swatch: "#2A2A2A", images: ["hoodie-both-black-front", "hoodie-both-black-back", "tunnel-pink-hoodie"] },
+      { name: "Black", swatch: "#2A2A2A", images: ["hoodie-both-black-front", "hoodie-both-black-back", "tunnel-pink-hoodie"], spin: { front: "hoodie-both-black-front", back: "hoodie-both-black-back" } },
       { name: "Pink", swatch: "#EC5C9B", images: ["hoodie-both-pink-front"] },
     ],
     lifestyle: "tunnel-pink-hoodie",
@@ -88,9 +90,9 @@ export const products: Product[] = [
     summary: "Boxy full-zip hoodie with a two-way zipper and the PKS script on the chest. Three colourways.",
     sizes: ["S", "M", "L", "XL", "2XL"],
     colorways: [
-      { name: "Black", swatch: "#232323", images: ["zip-black-front", "zip-black-back", "tunnel-zip-black", "tunnel-zip-black-2"] },
-      { name: "Navy Blue", swatch: "#2E4462", images: ["zip-navy-front", "zip-navy-back", "tunnel-zip-navy", "tunnel-zip-navy-2"] },
-      { name: "Flower Gray", swatch: "#C9C9C7", images: ["zip-grey-front", "zip-grey-back", "tunnel-zip-grey"] },
+      { name: "Black", swatch: "#232323", images: ["zip-black-front", "zip-black-back", "tunnel-zip-black", "tunnel-zip-black-2"], spin: { front: "zip-black-front", back: "zip-black-back" } },
+      { name: "Navy Blue", swatch: "#2E4462", images: ["zip-navy-front", "zip-navy-back", "tunnel-zip-navy", "tunnel-zip-navy-2"], spin: { front: "zip-navy-front", back: "zip-navy-back" } },
+      { name: "Flower Gray", swatch: "#C9C9C7", images: ["zip-grey-front", "zip-grey-back", "tunnel-zip-grey"], spin: { front: "zip-grey-front", back: "zip-grey-back" } },
     ],
     lifestyle: "tunnel-zip-black",
   },
@@ -135,7 +137,8 @@ export const products: Product[] = [
       {
         name: "Black",
         swatch: BLACK,
-        images: ["tee-black-front", "tee-black-alt", "tunnel-tee-black-front", "tunnel-tee-black-back", "trail-falls-front", "detail-graphic-black-2", "portrait-tee-black"],
+        spin: { front: "tee-black-alt", back: "tee-black-front" },
+        images: ["tee-black-alt", "tee-black-front", "tunnel-tee-black-front", "tunnel-tee-black-back", "trail-falls-front", "detail-graphic-black-2", "portrait-tee-black"],
       },
     ],
     lifestyle: "trail-falls-front",
@@ -157,7 +160,8 @@ export const products: Product[] = [
       {
         name: "Faded Black",
         swatch: "#2C2C2B",
-        images: ["tee-black-boxy-front", "tee-black-boxy-alt", "trail-falls-back", "trail-falls-wide", "detail-graphic-black", "tee-black-boxy-flat"],
+        spin: { front: "tee-black-boxy-alt", back: "tee-black-boxy-front" },
+        images: ["tee-black-boxy-alt", "tee-black-boxy-front", "trail-falls-back", "trail-falls-wide", "detail-graphic-black", "tee-black-boxy-flat"],
       },
     ],
     lifestyle: "trail-falls-back",
@@ -177,6 +181,7 @@ export const products: Product[] = [
       {
         name: "White",
         swatch: WHITE,
+        spin: { front: "tee-white-front", back: "tee-white-back" },
         images: ["tee-white-front", "tee-white-back", "trail-overlook", "trail-ridge", "trail-path", "tunnel-tee-white-back-2"],
       },
     ],
@@ -199,6 +204,7 @@ export const products: Product[] = [
       {
         name: "White",
         swatch: WHITE,
+        spin: { front: "tee-white-boxy-front", back: "tee-white-boxy-back" },
         images: ["tee-white-boxy-front", "tee-white-boxy-back", "night-boxy-trio", "tunnel-tee-white-back", "tunnel-tee-white-back-3"],
       },
     ],
@@ -220,6 +226,7 @@ export const products: Product[] = [
       {
         name: "Black",
         swatch: BLACK,
+        spin: { front: "crop-black-front", back: "crop-black-plain" },
         images: ["crop-black-front", "crop-black-plain", "tunnel-crop-duo-2", "tunnel-crop-black", "tunnel-crop-sit", "tunnel-crop-black-2"],
       },
     ],
@@ -240,6 +247,7 @@ export const products: Product[] = [
       {
         name: "White",
         swatch: WHITE,
+        spin: { front: "crop-white-front", back: "crop-white-plain" },
         images: ["crop-white-front", "crop-white-plain", "tunnel-crop-white", "tunnel-crop-white-3", "tunnel-crop-white-2"],
       },
     ],
@@ -257,7 +265,7 @@ export const products: Product[] = [
       "An over-shoulder crop top that's part of the Summer Edition, and a great piece that goes with almost every outfit.",
     summary: "Washed charcoal cropped tee with contrast stitching and the Peak Side oval on the chest.",
     sizes: ["S", "M", "L"],
-    colorways: [{ name: "Classic Black", swatch: "#4A4947", images: ["crop-grey-front", "crop-grey-back"] }],
+    colorways: [{ name: "Classic Black", swatch: "#4A4947", images: ["crop-grey-front", "crop-grey-back"], spin: { front: "crop-grey-front", back: "crop-grey-back" } }],
   },
   {
     slug: "navy-double-zip-up",

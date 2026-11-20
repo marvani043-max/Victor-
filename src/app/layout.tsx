@@ -4,6 +4,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
+import InteractiveLoader from "@/components/InteractiveLoader";
 import { SITE_URL, site, NOINDEX, BASE_PATH } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main">{children}</main>
           <Footer />
         </MotionProvider>
+        <InteractiveLoader />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
       </body>
     </html>

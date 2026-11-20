@@ -34,6 +34,27 @@ The build is a fully static export (`out/`), so it can be hosted anywhere.
 - **Vercel / Netlify / Cloudflare Pages:** build command `npm run build`, output directory `out`.
 - Set the two environment variables above in the host's dashboard.
 
+## Interactive features
+
+All in `src/interactive/index.ts`: framework-free custom elements, shared by the Next.js site and the Claude preview.
+
+| Element | What it does | Where |
+| --- | --- | --- |
+| `<ps-spin>` | Drag-to-spin garment viewer (front and back studio shots, momentum, light, Front/Back buttons, arrow keys) | Product pages, showcase |
+| `<ps-showcase>` | "Spin the drop" picker: flick through every spinnable colourway | Home |
+| `<ps-fit>` | "Trail or Tunnel?" three-question fit finder that recommends a real in-stock product | Home |
+| `<ps-petals>` | Cherry-blossom petals that drift, blow away from the cursor and burst on tap | Home, Summer Edition |
+| `[data-tilt]` | Product cards tilt toward the cursor; spinnable cards flip to show the back | Everywhere |
+
+Everything pauses off-screen and respects reduced-motion settings (no auto-spin, no petals).
+
+**Adding a spinnable product:** add `spin: { front, back }` (studio image names) to the colourway in
+`src/data/products.ts`, add the names to `scripts/make-cutouts.py`, then run
+`SRC=/path/to/originals python3 scripts/make-cutouts.py`.
+
+**True 360°:** the viewer currently turns between real front and back photos. For a full turntable spin,
+shoot 24–36 frames per garment on a turntable against white. The viewer can be extended to step through those frames.
+
 ## Claude Artifact preview
 
 `npx tsx scripts/build-artifact-preview.ts` builds `preview/`: a single-page version of the site (same data, photos and design) for sharing as a Claude Artifact. It carries a "Design preview by Marvani" bar so it can't be mistaken for the official store.

@@ -10,6 +10,8 @@ import { products, CATEGORIES, bestSellers, relatedTo, formatPrice, categoryLabe
 import { site, storeProductUrl, restockMailto } from "../src/data/site";
 import { FAQ } from "../src/data/faq";
 import manifestJson from "../src/data/image-manifest.json";
+import { spinItems, fitFinderData, jsonForScript } from "../src/data/interactive";
+import { buildSync } from "esbuild";
 
 type Entry = { w: number; h: number; kind: string; widths: number[] };
 const M = manifestJson as Record<string, Entry>;
@@ -54,12 +56,23 @@ const card = (p: Product, showBest = true) => {
     p.colorways.length > 1
       ? `<div class="mt-2 flex items-center gap-1.5">${p.colorways.map((c) => `<span title="${c.name}" class="h-2.5 w-2.5 rounded-full ring-1 ring-ink/15" style="background:${c.swatch}"></span>`).join("")}<span class="label ml-1 text-[10px] text-granite">${p.colorways.length} colours</span></div>`
       : "";
+  const spin = p.colorways[0].spin;
+  const media = spin
+    ? `<div data-tilt class="flip-stage relative aspect-[4/5] overflow-hidden bg-stone">
+    <div class="flip-inner">${img(`${spin.front}-cut`, "", "flip-face cut-shadow h-full w-full object-contain p-[9%]")}${img(`${spin.back}-cut`, "", "flip-face flip-back cut-shadow h-full w-full object-contain p-[9%]")}</div>
+    <span class="label absolute bottom-3 right-3 bg-bone/90 px-2 py-1 text-[10px] text-ink">360°</span>
+    <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">${badges}</div>
+  </div>`
+    : "";
   return `<a href="#product-${p.slug}" class="group block" aria-label="${esc(p.name)}, ${formatPrice(p.price)}${p.inStock ? "" : ", sold out"}">
-  <div class="relative aspect-[4/5] overflow-hidden ${studio ? "bg-stone" : "bg-coal"}">
+  ${
+    media ||
+    `<div data-tilt class="relative aspect-[4/5] overflow-hidden ${studio ? "bg-stone" : "bg-coal"}">
     ${img(first, "", `absolute inset-0 h-full w-full transition-[transform,opacity] duration-700 ease-out ${studio ? "object-contain p-[8%] group-hover:scale-[1.04]" : "object-cover group-hover:scale-[1.03]"} ${hover ? "group-hover:opacity-0" : ""} ${p.inStock ? "" : "grayscale-[35%]"}`)}
     ${hover ? img(hover, "", "absolute inset-0 h-full w-full scale-[1.06] object-cover opacity-0 transition-[transform,opacity] duration-700 ease-out group-hover:scale-100 group-hover:opacity-100", { blend: false }) : ""}
     <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">${badges}</div>
-  </div>
+  </div>`
+  }
   <div class="mt-3 flex items-start justify-between gap-3">
     <div class="min-w-0"><h3 class="text-[15px] font-medium leading-snug">${esc(p.name)}</h3>${dots}</div>
     <p class="shrink-0 font-mono text-[13px] ${p.inStock ? "" : "text-granite line-through decoration-1"}">${formatPrice(p.price)}</p>
@@ -263,7 +276,11 @@ ${[0, 1, 2, 3]
   <a href="#shop" class="btn-line mt-10 w-full sm:hidden">Shop all ${products.length} pieces ${arrow}</a>
 </section>
 
-<section class="pb-24 sm:pb-32"><h2 class="sr-only">Shop by category</h2>
+<section class="border-y border-ink/10 bg-bone py-20 sm:py-28" aria-label="Spin the drop"><div class="wrap">
+  <ps-showcase><script type="application/json">${jsonForScript({ items: spinItems((p) => `#product-${p.slug}`, pick) })}</script></ps-showcase>
+</div></section>
+
+<section class="pb-24 pt-24 sm:pb-32 sm:pt-32"><h2 class="sr-only">Shop by category</h2>
   <div class="wrap grid gap-3 md:grid-cols-3">
   ${[
     ["Hoodies & zips", "#shop-hoodies", "tunnel-zip-black", "Black double zip hoodie worn against graffiti", "Oversized, faded, heavyweight"],
@@ -298,13 +315,25 @@ ${[0, 1, 2, 3]
   </div>
 </section>
 
-<section class="overflow-hidden py-24 sm:py-32">
+<section class="py-20 sm:py-28" aria-labelledby="fit-title">
+  <div class="wrap grid gap-10 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <p class="label text-granite">Fit finder</p>
+      <h2 id="fit-title" class="display mt-4 text-6xl sm:text-8xl">Trail or <span class="text-bloom">tunnel?</span></h2>
+      <p class="mt-5 max-w-sm text-[16px] leading-relaxed text-ink/75">Three taps and we'll point you to the piece that fits your day, your weather and the way you like to wear it.</p>
+    </div>
+    <div class="lg:col-span-8"><ps-fit><script type="application/json">${jsonForScript(fitFinderData((p) => `#product-${p.slug}`, pick))}</script></ps-fit></div>
+  </div>
+</section>
+
+<section class="relative overflow-hidden bg-[#F6EEF0] py-24 sm:py-32"><ps-petals></ps-petals>
   <div class="wrap grid items-center gap-12 lg:grid-cols-12">
     <div class="relative lg:col-span-6"><div class="relative aspect-[4/5] overflow-hidden bg-coal">${img("detail-graphic-black", "Close-up of the cherry-blossom Peak Side graphic on a faded black tee", "h-full w-full object-cover")}</div></div>
     <div class="lg:col-span-5 lg:col-start-8">
       <p class="label text-granite">The graphic</p>
       <h2 class="display mt-4 text-7xl sm:text-8xl lg:text-[7.5rem]">Summer <span class="text-bloom">Edition</span></h2>
       <p class="mt-6 max-w-md text-[17px] leading-relaxed text-ink/80">Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs across tees in black and white, regular and boxy, plus the washed crop top.</p>
+      <p class="label mt-5 text-bloom">Move your cursor or tap to shake the blossom</p>
       <div class="mt-8 grid grid-cols-2 gap-3">${["black-boxy-summer-edition-tee", "white-boxy-summer-edition-tee"].map((s) => card(getProduct(s)!, false)).join("")}</div>
       <a href="#shop-tees" class="btn-ink mt-8">Shop Summer Edition ${arrow}</a>
     </div>
@@ -404,12 +433,23 @@ const productView = (p: Product) => {
   const galleries = p.colorways
     .map((c, ci) => {
       const alt = (n: string, i: number) => `${p.name} in ${c.name}${M[n].kind === "studio" ? (i === 1 ? ", back view" : ", product view") : ", worn"}`;
-      const mobile = `<div class="relative -mx-4 sm:-mx-6 lg:hidden"><div class="rail no-scrollbar flex snap-x snap-mandatory overflow-x-auto" tabindex="0" aria-label="Product images">
+      const spinTag = c.spin
+        ? `<ps-spin class="absolute inset-0" front="${pick(`${c.spin.front}-cut`, 960)}" back="${pick(`${c.spin.back}-cut`, 960)}" label="${esc(`${p.name} in ${c.name}`)}" word="${esc(categoryLabel(p.category))}"></ps-spin>`
+        : "";
+      const toggle = c.spin
+        ? `<div role="tablist" aria-label="Gallery view" class="mb-3 inline-flex border border-ink/15 p-1 lg:hidden">
+          <button type="button" role="tab" aria-selected="true" data-gview="spin" class="gview label px-4 py-2.5 transition-colors">360° spin</button>
+          <button type="button" role="tab" aria-selected="false" data-gview="photos" class="gview label px-4 py-2.5 transition-colors">Photos (${c.images.length})</button>
+        </div><div class="gpanel-spin relative -mx-4 aspect-[4/5] sm:-mx-6 lg:hidden">${spinTag}</div>`
+        : "";
+      const mobile = `${toggle}<div class="gpanel-photos relative -mx-4 sm:-mx-6 lg:hidden"${c.spin ? " hidden" : ""}><div class="rail no-scrollbar flex snap-x snap-mandatory overflow-x-auto" tabindex="0" aria-label="Product images">
         ${c.images.map((n, i) => `<div class="relative aspect-[4/5] w-full shrink-0 snap-center ${M[n].kind === "studio" ? "bg-stone" : "bg-coal"}">${img(n, alt(n, i), `absolute inset-0 h-full w-full ${M[n].kind === "studio" ? "object-contain p-[10%]" : "object-cover"}`)}</div>`).join("")}
         </div><div class="pointer-events-none absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">${c.images.map((_, i) => `<span class="dot h-[3px] ${i === 0 ? "w-6 bg-ink" : "w-3 bg-ink/25"} transition-all duration-300"></span>`).join("")}</div></div>`;
-      const desk = `<div class="hidden grid-cols-2 gap-3 lg:grid">${c.images
-        .map((n, i) => {
-          const full = i === 0 || (c.images.length % 2 === 0 && i === c.images.length - 1);
+      const deskImages = c.spin ? c.images.filter((n) => n !== c.spin!.front) : c.images;
+      const desk = `<div class="hidden grid-cols-2 gap-3 lg:grid">${c.spin ? `<div class="relative col-span-2 aspect-[5/6]">${spinTag}</div>` : ""}${deskImages
+        .map((n, j) => {
+          const i = c.images.indexOf(n);
+          const full = c.spin ? deskImages.length % 2 === 1 && j === deskImages.length - 1 : i === 0 || (c.images.length % 2 === 0 && i === c.images.length - 1);
           const st = M[n].kind === "studio";
           return `<div class="relative overflow-hidden ${full ? "col-span-2 aspect-[5/6]" : "aspect-[4/5]"} ${st ? "bg-stone" : "bg-coal"}">${img(n, alt(n, i), `absolute inset-0 h-full w-full ${st ? "object-contain p-[9%]" : "object-cover"}`, { big: full })}</div>`;
         })
@@ -641,6 +681,16 @@ const script = `
         v.querySelector('.cw-name').textContent = s.dataset.name;
       });
     });
+    v.querySelectorAll('[data-cw]').forEach(function(g){
+      g.querySelectorAll('.gview').forEach(function(b){
+        b.addEventListener('click', function(){
+          var spin = b.dataset.gview==='spin';
+          g.querySelectorAll('.gview').forEach(function(x){ x.setAttribute('aria-selected', x===b); });
+          var sp=g.querySelector('.gpanel-spin'), ph=g.querySelector('.gpanel-photos');
+          if(sp) sp.hidden=!spin; if(ph) ph.hidden=spin;
+        });
+      });
+    });
     v.querySelectorAll('.rail').forEach(function(r){
       r.addEventListener('scroll', function(){
         var k=Math.round(r.scrollLeft/r.clientWidth);
@@ -679,6 +729,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .cat-btn[aria-pressed="true"]{background:#11110F;color:#F3F0EA}.cat-btn[aria-pressed="false"]:hover{background:#E6E2DA}
 .cat-btn .cat-n{color:#6F6C66}.cat-btn[aria-pressed="true"] .cat-n{color:#F2A3C4}
 .swatch[aria-pressed="true"]{border-color:#11110F}.swatch[aria-pressed="false"]{border-color:rgba(17,17,15,.15)}
+.gview[aria-selected="true"]{background:#11110F;color:#F3F0EA}
 .look-tab{transition:background-color .4s,color .4s}.look-tab[aria-selected="true"]{background:#F3F0EA;color:#11110F}
 .mask-pks{-webkit-mask:url(images/mark-pks-480.webp) center/contain no-repeat;mask:url(images/mark-pks-480.webp) center/contain no-repeat;background:currentColor}
 .hero-panel{flex:1 1 0;transition:flex-grow .9s cubic-bezier(.22,1,.36,1)}
@@ -698,11 +749,15 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .preview-bar strong{font-weight:500}
 `;
 
+const interactiveJs = buildSync({ entryPoints: ["src/interactive/index.ts"], bundle: true, format: "iife", minify: true, write: false, target: "es2020" })
+  .outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
+
 const page = `<title>Peak Side Preview</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="robots" content="noindex, nofollow">
 <style>/*__CSS__*/</style>
 ${body}
+<script>${interactiveJs}</script>
 <script>${script}</script>
 `;
 

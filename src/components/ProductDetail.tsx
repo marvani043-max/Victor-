@@ -7,6 +7,7 @@ import { Arrow, ArrowUpRight } from "./Icons";
 import { type Product, formatPrice, categoryLabel } from "@/data/products";
 import { site, storeProductUrl, restockMailto } from "@/data/site";
 import Link from "next/link";
+import { imageSrc } from "./Img";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const [ci, setCi] = useState(0);
@@ -16,11 +17,26 @@ export default function ProductDetail({ product }: { product: Product }) {
   const rail = useRef<HTMLDivElement>(null);
   const cta = useRef<HTMLDivElement>(null);
   const [showBar, setShowBar] = useState(false);
+  const spin = colorway.spin;
+  const [mview, setMview] = useState<"spin" | "photos">(spin ? "spin" : "photos");
 
   useEffect(() => {
     setSlide(0);
     rail.current?.scrollTo({ left: 0 });
-  }, [ci]);
+    setMview(product.colorways[ci].spin ? "spin" : "photos");
+  }, [ci, product]);
+
+  const spinEl = spin ? (
+    <ps-spin
+      front={imageSrc(`${spin.front}-cut`, 1200)}
+      back={imageSrc(`${spin.back}-cut`, 1200)}
+      label={`${product.name} in ${colorway.name}`}
+      word={categoryLabel(product.category)}
+      className="absolute inset-0"
+    />
+  ) : null;
+  // On desktop the spin viewer replaces the first (front) studio shot.
+  const deskImages = spin ? images.filter((n) => n !== spin.front) : images;
 
   useEffect(() => {
     const el = cta.current;
@@ -57,8 +73,25 @@ export default function ProductDetail({ product }: { product: Product }) {
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
         {/* Gallery */}
         <div className="lg:col-span-7">
-          {/* Mobile: swipe rail */}
-          <div className="relative -mx-4 sm:-mx-6 lg:hidden">
+          {/* Mobile: 360° viewer or swipe rail */}
+          {spin && (
+            <div role="tablist" aria-label="Gallery view" className="mb-3 inline-flex border border-ink/15 p-1 lg:hidden">
+              {(["spin", "photos"] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  role="tab"
+                  aria-selected={mview === v}
+                  onClick={() => setMview(v)}
+                  className={`label px-4 py-2.5 transition-colors ${mview === v ? "bg-ink text-bone" : ""}`}
+                >
+                  {v === "spin" ? "360° spin" : `Photos (${images.length})`}
+                </button>
+              ))}
+            </div>
+          )}
+          {spin && mview === "spin" && <div className="relative -mx-4 aspect-[4/5] sm:-mx-6 lg:hidden">{spinEl}</div>}
+          <div className={`relative -mx-4 sm:-mx-6 lg:hidden ${spin && mview === "spin" ? "hidden" : ""}`}>
             <div ref={rail} onScroll={onScroll} className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto" aria-label="Product images" tabIndex={0}>
               {images.map((name, i) => {
                 const studio = imageMeta(name)?.kind === "studio";
@@ -85,9 +118,11 @@ export default function ProductDetail({ product }: { product: Product }) {
               transition={{ duration: 0.35 }}
               className="hidden grid-cols-2 gap-3 lg:grid"
             >
-              {images.map((name, i) => {
+              {spin && <div className="relative col-span-2 aspect-[5/6]">{spinEl}</div>}
+              {deskImages.map((name, j) => {
+                const i = images.indexOf(name);
                 const studio = imageMeta(name)?.kind === "studio";
-                const full = i === 0 || (images.length % 2 === 0 && i === images.length - 1);
+                const full = spin ? deskImages.length % 2 === 1 && j === deskImages.length - 1 : i === 0 || (images.length % 2 === 0 && i === images.length - 1);
                 return (
                   <div key={name} className={`relative overflow-hidden ${full ? "col-span-2 aspect-[5/6]" : "aspect-[4/5]"} ${studio ? "bg-stone" : "bg-coal"}`}>
                     <Img

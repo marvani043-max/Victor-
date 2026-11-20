@@ -7,7 +7,11 @@ import Reveal from "@/components/Reveal";
 import Img from "@/components/Img";
 import { Arrow, ArrowUpRight, Instagram, Ridge } from "@/components/Icons";
 import { bestSellers, products, formatPrice } from "@/data/products";
-import { site, restockMailto } from "@/data/site";
+import { site, restockMailto, BASE_PATH } from "@/data/site";
+import { spinItems, fitFinderData, jsonForScript } from "@/data/interactive";
+import { imageSrc } from "@/components/Img";
+
+const hrefFor = (p: { slug: string }) => `${BASE_PATH}/shop/${p.slug}/`;
 
 const minPrice = Math.min(...products.map((p) => p.price));
 
@@ -87,6 +91,15 @@ export default function Home() {
         </Link>
       </section>
 
+      {/* Spin the drop: 360° showcase */}
+      <section className="border-y border-ink/10 bg-bone py-20 sm:py-28" aria-label="Spin the drop">
+        <div className="wrap">
+          <ps-showcase>
+            <script type="application/json" dangerouslySetInnerHTML={{ __html: jsonForScript({ items: spinItems(hrefFor, imageSrc) }) }} />
+          </ps-showcase>
+        </div>
+      </section>
+
       {/* Collections */}
       <section aria-labelledby="col-title" className="pb-24 sm:pb-32">
         <h2 id="col-title" className="sr-only">
@@ -120,8 +133,29 @@ export default function Home() {
 
       <Lookbook />
 
+      {/* Fit finder */}
+      <section className="py-20 sm:py-28" aria-labelledby="fit-title">
+        <div className="wrap grid gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <p className="label text-granite">Fit finder</p>
+            <h2 id="fit-title" className="display mt-4 text-6xl sm:text-8xl">
+              Trail or <span className="text-bloom">tunnel?</span>
+            </h2>
+            <p className="mt-5 max-w-sm text-[16px] leading-relaxed text-ink/75">
+              Three taps and we&apos;ll point you to the piece that fits your day, your weather and the way you like to wear it.
+            </p>
+          </div>
+          <div className="lg:col-span-8">
+            <ps-fit>
+              <script type="application/json" dangerouslySetInnerHTML={{ __html: jsonForScript(fitFinderData(hrefFor, imageSrc)) }} />
+            </ps-fit>
+          </div>
+        </div>
+      </section>
+
       {/* Summer Edition graphic */}
-      <section className="overflow-hidden py-24 sm:py-32" aria-labelledby="se-title">
+      <section className="relative overflow-hidden bg-[#F6EEF0] py-24 sm:py-32" aria-labelledby="se-title">
+        <ps-petals />
         <div className="wrap grid items-center gap-12 lg:grid-cols-12">
           <Reveal className="relative lg:col-span-6">
             <div className="relative aspect-[4/5] overflow-hidden bg-coal">
@@ -138,6 +172,7 @@ export default function Home() {
                 Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs
                 across tees in black and white, regular and boxy, plus the washed crop top.
               </p>
+              <p className="label mt-5 text-bloom">Move your cursor or tap to shake the blossom</p>
             </Reveal>
             <Reveal delay={0.1} className="mt-8 grid grid-cols-2 gap-3">
               {["black-boxy-summer-edition-tee", "white-boxy-summer-edition-tee"].map((slug) => {

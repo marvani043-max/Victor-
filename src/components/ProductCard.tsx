@@ -8,9 +8,21 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
   const first = product.colorways[0].images[0];
   const hover = product.lifestyle ?? product.colorways[0].images[1];
   const studio = imageMeta(first)?.kind === "studio";
+  const spin = product.colorways[0].spin;
   return (
     <Link href={`/shop/${product.slug}/`} className="group block" aria-label={`${product.name}, ${formatPrice(product.price)}${product.inStock ? "" : ", sold out"}`}>
-      <div className={`relative aspect-[4/5] overflow-hidden ${studio ? "bg-stone" : "bg-coal"}`}>
+      {spin ? (
+        // Garment cut-out that tilts toward the cursor and flips to show the back on hover.
+        <div data-tilt className="flip-stage relative aspect-[4/5] overflow-hidden bg-stone">
+          <div className="flip-inner">
+            <Img name={`${spin.front}-cut`} alt="" sizes={sizes} priority={priority} className="flip-face cut-shadow h-full w-full object-contain p-[9%]" />
+            <Img name={`${spin.back}-cut`} alt="" sizes={sizes} className="flip-face flip-back cut-shadow h-full w-full object-contain p-[9%]" />
+          </div>
+          <span className="label absolute bottom-3 right-3 bg-bone/90 px-2 py-1 text-[10px] text-ink">360°</span>
+          <Badges product={product} showBestSeller={showBestSeller} />
+        </div>
+      ) : (
+      <div data-tilt className={`relative aspect-[4/5] overflow-hidden ${studio ? "bg-stone" : "bg-coal"}`}>
         <Img
           name={first}
           alt=""
@@ -29,14 +41,9 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
             className="absolute inset-0 h-full w-full scale-[1.06] object-cover opacity-0 transition-[transform,opacity] duration-700 ease-out group-hover:scale-100 group-hover:opacity-100"
           />
         )}
-        <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-          {!product.inStock && <span className="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>}
-          {product.badge && <span className="label bg-sakura px-2 py-1 text-[10px] text-ink">{product.badge}</span>}
-          {showBestSeller && product.inStock && product.bestSeller && !product.badge && (
-            <span className="label bg-bone/90 px-2 py-1 text-[10px] text-ink">Best seller</span>
-          )}
-        </div>
+        <Badges product={product} showBestSeller={showBestSeller} />
       </div>
+      )}
       <div className="mt-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-[15px] font-medium leading-snug">{product.name}</h3>
@@ -52,5 +59,17 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
         <p className={`shrink-0 font-mono text-[13px] ${product.inStock ? "" : "text-granite line-through decoration-1"}`}>{formatPrice(product.price)}</p>
       </div>
     </Link>
+  );
+}
+
+function Badges({ product, showBestSeller }: { product: Product; showBestSeller: boolean }) {
+  return (
+    <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+      {!product.inStock && <span className="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>}
+      {product.badge && <span className="label bg-sakura px-2 py-1 text-[10px] text-ink">{product.badge}</span>}
+      {showBestSeller && product.inStock && product.bestSeller && !product.badge && (
+        <span className="label bg-bone/90 px-2 py-1 text-[10px] text-ink">Best seller</span>
+      )}
+    </div>
   );
 }

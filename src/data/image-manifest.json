@@ -877,5 +877,269 @@
    1600
   ],
   "color": "rgb(8,8,8)"
+ },
+ "hoodie-faded-black-front-cut": {
+  "w": 1296,
+  "h": 1296,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "hoodie-faded-black-back-cut": {
+  "w": 1296,
+  "h": 1296,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "hoodie-both-black-front-cut": {
+  "w": 1296,
+  "h": 1296,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "hoodie-both-black-back-cut": {
+  "w": 1296,
+  "h": 1296,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "zip-black-front-cut": {
+  "w": 1374,
+  "h": 1374,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "zip-black-back-cut": {
+  "w": 1374,
+  "h": 1374,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "zip-navy-front-cut": {
+  "w": 1374,
+  "h": 1374,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "zip-navy-back-cut": {
+  "w": 1374,
+  "h": 1374,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "zip-grey-front-cut": {
+  "w": 1373,
+  "h": 1373,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "zip-grey-back-cut": {
+  "w": 1374,
+  "h": 1374,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-black-alt-cut": {
+  "w": 1277,
+  "h": 1277,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-black-front-cut": {
+  "w": 1276,
+  "h": 1276,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-black-boxy-alt-cut": {
+  "w": 1260,
+  "h": 1260,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-black-boxy-front-cut": {
+  "w": 1266,
+  "h": 1266,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-white-front-cut": {
+  "w": 1318,
+  "h": 1318,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-white-back-cut": {
+  "w": 1318,
+  "h": 1318,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-white-boxy-front-cut": {
+  "w": 1258,
+  "h": 1258,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "tee-white-boxy-back-cut": {
+  "w": 1258,
+  "h": 1258,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "crop-black-front-cut": {
+  "w": 1335,
+  "h": 1335,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "crop-black-plain-cut": {
+  "w": 1336,
+  "h": 1336,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "crop-white-front-cut": {
+  "w": 1334,
+  "h": 1334,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "crop-white-plain-cut": {
+  "w": 1334,
+  "h": 1334,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "crop-grey-front-cut": {
+  "w": 1425,
+  "h": 1425,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "crop-grey-back-cut": {
+  "w": 1412,
+  "h": 1412,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
  }
 }
