@@ -29,33 +29,39 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* Winter Drop: new pieces, featured first */}
-      <section className="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
-        <ps-petals snow="" />
-        <div className="wrap relative">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="label text-sakura">New · Coming soon</p>
-              <h2 id="winter-title" className="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">
-                The Winter <span className="text-sakura">Drop.</span>
+      {/* Summer Edition graphic */}
+      <section className="relative overflow-hidden bg-[#F6EEF0] py-24 sm:py-32" aria-labelledby="se-title">
+        <ps-petals />
+        <div className="wrap grid items-center gap-12 lg:grid-cols-12">
+          <Reveal className="relative lg:col-span-6">
+            <div className="relative aspect-[4/5] overflow-hidden bg-coal">
+              <Img name="detail-graphic-black" alt="Close-up of the cherry-blossom Peak Side graphic on a faded black tee" sizes="(min-width:1024px) 50vw, 100vw" className="h-full w-full object-cover" />
+            </div>
+          </Reveal>
+          <div className="lg:col-span-5 lg:col-start-8">
+            <Reveal>
+              <p className="label text-granite">The graphic</p>
+              <h2 id="se-title" className="display mt-4 text-7xl sm:text-8xl lg:text-[7.5rem]">
+                Summer <span className="text-bloom">Edition</span>
               </h2>
-            </div>
-            <div className="max-w-sm">
-              <p className="text-[16px] leading-relaxed text-bone/80">
-                Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.
+              <p className="mt-6 max-w-md text-[17px] leading-relaxed text-ink/80">
+                Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs
+                across tees in black and white, regular and boxy, plus the washed crop top.
               </p>
-              <Link href="/shop/" className="btn-bone mt-6">
-                Shop the Winter Drop <Arrow />
+              <p className="label mt-5 text-bloom">Move your cursor or tap to shake the blossom</p>
+            </Reveal>
+            <Reveal delay={0.1} className="mt-8 grid grid-cols-2 gap-3">
+              {["black-boxy-summer-edition-tee", "white-boxy-summer-edition-tee"].map((slug) => {
+                const p = products.find((x) => x.slug === slug)!;
+                return <ProductCard key={slug} product={p} showBestSeller={false} sizes="(min-width:1024px) 20vw, 50vw" />;
+              })}
+            </Reveal>
+            <Reveal delay={0.15}>
+              <Link href="/shop/?c=tees" className="btn-ink mt-8">
+                Shop Summer Edition <Arrow />
               </Link>
-            </div>
+            </Reveal>
           </div>
-          <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">
-            {winter.map((p, i) => (
-              <Reveal as="li" key={p.slug} delay={i * 0.06}>
-                <ProductCard product={p} showBestSeller={false} priority />
-              </Reveal>
-            ))}
-          </ul>
         </div>
       </section>
 
@@ -184,39 +190,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Summer Edition graphic */}
-      <section className="relative overflow-hidden bg-[#F6EEF0] py-24 sm:py-32" aria-labelledby="se-title">
-        <ps-petals />
-        <div className="wrap grid items-center gap-12 lg:grid-cols-12">
-          <Reveal className="relative lg:col-span-6">
-            <div className="relative aspect-[4/5] overflow-hidden bg-coal">
-              <Img name="detail-graphic-black" alt="Close-up of the cherry-blossom Peak Side graphic on a faded black tee" sizes="(min-width:1024px) 50vw, 100vw" className="h-full w-full object-cover" />
-            </div>
-          </Reveal>
-          <div className="lg:col-span-5 lg:col-start-8">
-            <Reveal>
-              <p className="label text-granite">The graphic</p>
-              <h2 id="se-title" className="display mt-4 text-7xl sm:text-8xl lg:text-[7.5rem]">
-                Summer <span className="text-bloom">Edition</span>
+      {/* Winter Drop: new pieces, featured first */}
+      <section className="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
+        <ps-petals snow="" />
+        <div className="wrap relative">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="label text-sakura">New · Coming soon</p>
+              <h2 id="winter-title" className="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">
+                The Winter <span className="text-sakura">Drop.</span>
               </h2>
-              <p className="mt-6 max-w-md text-[17px] leading-relaxed text-ink/80">
-                Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs
-                across tees in black and white, regular and boxy, plus the washed crop top.
+            </div>
+            <div className="max-w-sm">
+              <p className="text-[16px] leading-relaxed text-bone/80">
+                Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.
               </p>
-              <p className="label mt-5 text-bloom">Move your cursor or tap to shake the blossom</p>
-            </Reveal>
-            <Reveal delay={0.1} className="mt-8 grid grid-cols-2 gap-3">
-              {["black-boxy-summer-edition-tee", "white-boxy-summer-edition-tee"].map((slug) => {
-                const p = products.find((x) => x.slug === slug)!;
-                return <ProductCard key={slug} product={p} showBestSeller={false} sizes="(min-width:1024px) 20vw, 50vw" />;
-              })}
-            </Reveal>
-            <Reveal delay={0.15}>
-              <Link href="/shop/?c=tees" className="btn-ink mt-8">
-                Shop Summer Edition <Arrow />
+              <Link href="/shop/" className="btn-bone mt-6">
+                Shop the Winter Drop <Arrow />
               </Link>
-            </Reveal>
+            </div>
           </div>
+          <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">
+            {winter.map((p, i) => (
+              <Reveal as="li" key={p.slug} delay={i * 0.06}>
+                <ProductCard product={p} showBestSeller={false} priority />
+              </Reveal>
+            ))}
+          </ul>
         </div>
       </section>
 

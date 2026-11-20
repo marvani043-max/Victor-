@@ -239,20 +239,17 @@ const home = `
   </div>
 </section>
 
-<section class="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
-  <ps-petals snow></ps-petals>
-  <div class="wrap relative">
-    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <div>
-        <p class="label text-sakura">New · Coming soon</p>
-        <h2 id="winter-title" class="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">The Winter <span class="text-sakura">Drop.</span></h2>
-      </div>
-      <div class="max-w-sm">
-        <p class="text-[16px] leading-relaxed text-bone/80">Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.</p>
-        <a href="#shop" class="btn-bone mt-6">Shop the Winter Drop ${arrow}</a>
-      </div>
+<section class="relative overflow-hidden bg-[#F6EEF0] py-24 sm:py-32"><ps-petals></ps-petals>
+  <div class="wrap grid items-center gap-12 lg:grid-cols-12">
+    <div class="relative lg:col-span-6"><div class="relative aspect-[4/5] overflow-hidden bg-coal">${img("detail-graphic-black", "Close-up of the cherry-blossom Peak Side graphic on a faded black tee", "h-full w-full object-cover")}</div></div>
+    <div class="lg:col-span-5 lg:col-start-8">
+      <p class="label text-granite">The graphic</p>
+      <h2 class="display mt-4 text-7xl sm:text-8xl lg:text-[7.5rem]">Summer <span class="text-bloom">Edition</span></h2>
+      <p class="mt-6 max-w-md text-[17px] leading-relaxed text-ink/80">Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs across tees in black and white, regular and boxy, plus the washed crop top.</p>
+      <p class="label mt-5 text-bloom">Move your cursor or tap to shake the blossom</p>
+      <div class="mt-8 grid grid-cols-2 gap-3">${["black-boxy-summer-edition-tee", "white-boxy-summer-edition-tee"].map((s) => card(getProduct(s)!, false)).join("")}</div>
+      <a href="#shop-tees" class="btn-ink mt-8">Shop Summer Edition ${arrow}</a>
     </div>
-    <ul class="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">${winterDrop().map((p) => `<li>${card(p, false)}</li>`).join("")}</ul>
   </div>
 </section>
 
@@ -346,17 +343,20 @@ ${[0, 1, 2, 3]
   </div>
 </section>
 
-<section class="relative overflow-hidden bg-[#F6EEF0] py-24 sm:py-32"><ps-petals></ps-petals>
-  <div class="wrap grid items-center gap-12 lg:grid-cols-12">
-    <div class="relative lg:col-span-6"><div class="relative aspect-[4/5] overflow-hidden bg-coal">${img("detail-graphic-black", "Close-up of the cherry-blossom Peak Side graphic on a faded black tee", "h-full w-full object-cover")}</div></div>
-    <div class="lg:col-span-5 lg:col-start-8">
-      <p class="label text-granite">The graphic</p>
-      <h2 class="display mt-4 text-7xl sm:text-8xl lg:text-[7.5rem]">Summer <span class="text-bloom">Edition</span></h2>
-      <p class="mt-6 max-w-md text-[17px] leading-relaxed text-ink/80">Cherry-blossom branches wrapped around the Peak Side oval: small on the chest, full-size across the back. It runs across tees in black and white, regular and boxy, plus the washed crop top.</p>
-      <p class="label mt-5 text-bloom">Move your cursor or tap to shake the blossom</p>
-      <div class="mt-8 grid grid-cols-2 gap-3">${["black-boxy-summer-edition-tee", "white-boxy-summer-edition-tee"].map((s) => card(getProduct(s)!, false)).join("")}</div>
-      <a href="#shop-tees" class="btn-ink mt-8">Shop Summer Edition ${arrow}</a>
+<section class="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
+  <ps-petals snow></ps-petals>
+  <div class="wrap relative">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="label text-sakura">New · Coming soon</p>
+        <h2 id="winter-title" class="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">The Winter <span class="text-sakura">Drop.</span></h2>
+      </div>
+      <div class="max-w-sm">
+        <p class="text-[16px] leading-relaxed text-bone/80">Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.</p>
+        <a href="#shop" class="btn-bone mt-6">Shop the Winter Drop ${arrow}</a>
+      </div>
     </div>
+    <ul class="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">${winterDrop().map((p) => `<li>${card(p, false)}</li>`).join("")}</ul>
   </div>
 </section>
 
