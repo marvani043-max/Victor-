@@ -9,7 +9,7 @@ declare module "react" {
       "ps-spin": CustomEl & { front?: string; back?: string; label?: string; word?: string; "no-autoplay"?: string };
       "ps-showcase": CustomEl;
       "ps-fit": CustomEl;
-      "ps-petals": CustomEl;
+      "ps-petals": CustomEl & { snow?: string };
     }
   }
 }

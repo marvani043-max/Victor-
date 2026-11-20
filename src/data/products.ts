@@ -2,8 +2,13 @@
 // Prices, stock, sizes, colours and descriptions are verbatim from the store
 // (with spelling corrected). Names are tidied for display; `storeSlug` keeps the
 // exact store URL so checkout handoff lands on the right product.
+//
+// 20 Nov 2026: removed the three heavyweight zip-ups, the White Globe Hoodie and the
+// crewneck at the client's request, and added the Winter Drop (client-supplied photos).
+// Winter Drop names are descriptive working names; price, sizes and store links are
+// still to be supplied (the new store is password-protected until launch).
 
-export type Category = "hoodies" | "zip-ups" | "tees" | "crop-tops" | "crewnecks";
+export type Category = "hoodies" | "zip-ups" | "tees" | "crop-tops" | "bottoms";
 
 export type Colorway = {
   name: string;
@@ -18,9 +23,12 @@ export type Product = {
   storeSlug: string;
   name: string;
   category: Category;
-  price: number;
+  /** null until the client confirms a price (shown as "Price TBA"). */
+  price: number | null;
   inStock: boolean;
-  collection?: "Summer Edition";
+  /** Announced but not on sale yet (Winter Drop). */
+  comingSoon?: boolean;
+  collection?: "Summer Edition" | "Winter Drop";
   badge?: string;
   bestSeller?: boolean;
   /** Brand-written copy from the store, lightly corrected. */
@@ -39,13 +47,85 @@ export const CATEGORIES: { id: Category; label: string; plural: string }[] = [
   { id: "zip-ups", label: "Zip-up", plural: "Zip-ups" },
   { id: "tees", label: "Tee", plural: "Tees" },
   { id: "crop-tops", label: "Crop top", plural: "Crop tops" },
-  { id: "crewnecks", label: "Crewneck", plural: "Crewnecks" },
+  { id: "bottoms", label: "Sweatpants", plural: "Bottoms" },
 ];
 
 const BLACK = "#1B1B1A";
 const WHITE = "#F7F6F2";
 
 export const products: Product[] = [
+  // ---- Winter Drop (coming soon) ----
+  {
+    slug: "plaid-lined-hoodie-pink",
+    storeSlug: "", // TODO: product link on the new store
+    name: "Plaid-Lined Hoodie — Pink", // TODO: confirm name
+    category: "hoodies",
+    collection: "Winter Drop",
+    price: null, // TODO: confirm price
+    inStock: false,
+    comingSoon: true,
+    summary:
+      "Washed black pullover hoodie with a pink-and-burgundy plaid lining in the hood, matching plaid trim on the pocket and the PKS script on the chest.",
+    sizes: [], // TODO: confirm sizes
+    colorways: [{ name: "Black / Pink Plaid", swatch: "#B4487C", images: ["winter-hoodie-pink-front"] }],
+  },
+  {
+    slug: "plaid-lined-hoodie-grey",
+    storeSlug: "",
+    name: "Plaid-Lined Hoodie — Grey",
+    category: "hoodies",
+    collection: "Winter Drop",
+    price: null,
+    inStock: false,
+    comingSoon: true,
+    summary:
+      "Washed black pullover hoodie with a grey-and-black plaid lining in the hood, matching plaid trim on the pocket and the PKS script on the chest.",
+    sizes: [],
+    colorways: [{ name: "Black / Grey Plaid", swatch: "#9C9C98", images: ["winter-hoodie-grey-front"] }],
+  },
+  {
+    slug: "plaid-panel-sweatpants-grey",
+    storeSlug: "",
+    name: "Plaid Panel Sweatpants — Grey",
+    category: "bottoms",
+    collection: "Winter Drop",
+    price: null,
+    inStock: false,
+    comingSoon: true,
+    summary:
+      "Washed black sweatpants with grey plaid panels down both legs, a plaid back pocket, a drawstring waist and the PKS script on the front.",
+    sizes: [],
+    colorways: [
+      {
+        name: "Black / Grey Plaid",
+        swatch: "#9C9C98",
+        images: ["winter-pants-grey-front", "winter-pants-grey-back"],
+        spin: { front: "winter-pants-grey-front", back: "winter-pants-grey-back" },
+      },
+    ],
+  },
+  {
+    slug: "plaid-panel-sweatpants-pink",
+    storeSlug: "",
+    name: "Plaid Panel Sweatpants — Pink",
+    category: "bottoms",
+    collection: "Winter Drop",
+    price: null,
+    inStock: false,
+    comingSoon: true,
+    summary:
+      "Washed black sweatpants with pink plaid panels down both legs, a plaid back pocket, a drawstring waist and the PKS script on the front.",
+    sizes: [],
+    colorways: [
+      {
+        name: "Black / Pink Plaid",
+        swatch: "#B4487C",
+        images: ["winter-pants-pink-front", "winter-pants-pink-back"],
+        spin: { front: "winter-pants-pink-front", back: "winter-pants-pink-back" },
+      },
+    ],
+  },
+  // ---- Current range ----
   {
     slug: "faded-hoodie-front-logo",
     storeSlug: "oversized-faded-hoodie-with-front-logo-only-1",
@@ -95,32 +175,6 @@ export const products: Product[] = [
       { name: "Flower Gray", swatch: "#C9C9C7", images: ["zip-grey-front", "zip-grey-back", "tunnel-zip-grey"], spin: { front: "zip-grey-front", back: "zip-grey-back" } },
     ],
     lifestyle: "tunnel-zip-black",
-  },
-  {
-    slug: "white-globe-hoodie",
-    storeSlug: "white-globe-hooide",
-    name: "White Globe Hoodie",
-    category: "hoodies",
-    price: 59.95,
-    inStock: true,
-    description:
-      "This hoodie will keep you warm all year round but really shines when snow is on the ground. Known for keeping people warm while skiing and snowboarding, this is my go-to hoodie.",
-    summary: "Off-white pullover with a small globe graphic on the chest and a large globe-and-lettering print on the back.",
-    sizes: ["S", "M", "L"],
-    colorways: [{ name: "White", swatch: WHITE, images: ["globe-front", "globe-back"] }],
-  },
-  {
-    slug: "peak-side-crewneck",
-    storeSlug: "peak-side-crew-neck",
-    name: "Peak Side Crewneck",
-    category: "crewnecks",
-    price: 34.95,
-    inStock: true,
-    description:
-      "Warm crewneck that will keep you warm whether you are skiing or in school. An everyday essential that goes with most outfit choices.",
-    summary: "Heather-grey crewneck with a small chest graphic and a large PEAK SIDE WEAR print on the back.",
-    sizes: ["S", "M", "L"],
-    colorways: [{ name: "Grey", swatch: "#B5B4B0", images: ["crew-front", "crew-back"] }],
   },
   {
     slug: "black-summer-edition-tee",
@@ -267,52 +321,17 @@ export const products: Product[] = [
     sizes: ["S", "M", "L"],
     colorways: [{ name: "Classic Black", swatch: "#4A4947", images: ["crop-grey-front", "crop-grey-back"], spin: { front: "crop-grey-front", back: "crop-grey-back" } }],
   },
-  {
-    slug: "navy-double-zip-up",
-    storeSlug: "navy-double-zip-up",
-    name: "Heavyweight Double Zip-Up — Navy",
-    category: "zip-ups",
-    price: 64.95,
-    inStock: false,
-    badge: "Best Seller",
-    description:
-      "Heavyweight boxy hood with double zippers. It's the perfect hoodie for all year round and your adventures.",
-    summary: "Heavyweight, boxy navy zip-up with a two-way zipper and embroidered PKS script.",
-    sizes: [],
-    colorways: [{ name: "Navy", swatch: "#26324F", images: ["zipup-navy-flat", "zipup-navy-flat-2", "detail-pks-navy"] }],
-  },
-  {
-    slug: "grey-double-zip-up",
-    storeSlug: "grey-zip-up",
-    name: "Heavyweight Double Zip-Up — Grey",
-    category: "zip-ups",
-    price: 64.95,
-    inStock: false,
-    description:
-      "Heavyweight boxy hood with double zippers. It's the perfect hoodie for all year round and your adventures.",
-    summary: "Heavyweight, boxy heather-grey zip-up with a two-way zipper and embroidered PKS script.",
-    sizes: [],
-    colorways: [{ name: "Grey", swatch: "#A9A8A4", images: ["zipup-grey-flat", "zipup-grey-flat-2", "detail-pks-grey"] }],
-  },
-  {
-    slug: "dark-grey-double-zip-up",
-    storeSlug: "dark-grey-zip-up",
-    name: "Heavyweight Double Zip-Up — Dark Grey",
-    category: "zip-ups",
-    price: 64.95,
-    inStock: false,
-    description:
-      "Heavyweight boxy hood with double zippers. It's the perfect hoodie for all year round and your adventures.",
-    summary: "Heavyweight, boxy charcoal zip-up with a two-way zipper and embroidered PKS script.",
-    sizes: [],
-    colorways: [{ name: "Dark Grey", swatch: "#4B4A48", images: ["zipup-darkgrey-flat", "zipup-darkgrey-flat-2", "detail-pks-darkgrey"] }],
-  },
 ];
 
 export const getProduct = (slug: string) => products.find((p) => p.slug === slug);
 export const bestSellers = () => products.filter((p) => p.bestSeller);
 export const categoryLabel = (c: Category) => CATEGORIES.find((x) => x.id === c)!.label;
-export const formatPrice = (n: number) => `$${n.toFixed(2)}`;
+export const categoryPlural = (c: Category) => CATEGORIES.find((x) => x.id === c)!.plural;
+export const formatPrice = (n: number | null) => (n === null ? "Price TBA" : `$${n.toFixed(2)}`);
+export const winterDrop = () => products.filter((p) => p.collection === "Winter Drop");
+/** Shop "Featured" order: Winter Drop first, then in stock, then sold out. */
+export const featuredRank = (p: Product) => (p.comingSoon ? 0 : p.inStock ? 1 : 2);
+export const sortablePrice = (p: Product) => p.price ?? Number.POSITIVE_INFINITY;
 
 export const relatedTo = (p: Product, n = 4) => {
   const same = products.filter((x) => x.slug !== p.slug && x.inStock && (x.category === p.category || (!!p.collection && x.collection === p.collection)));

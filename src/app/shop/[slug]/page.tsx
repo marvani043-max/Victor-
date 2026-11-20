@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ProductDetail";
 import ProductCard from "@/components/ProductCard";
-import { products, getProduct, relatedTo, categoryLabel } from "@/data/products";
+import { products, getProduct, relatedTo, categoryLabel, categoryPlural, formatPrice } from "@/data/products";
 import { SITE_URL, storeProductUrl } from "@/data/site";
 import { imageSrc } from "@/components/Img";
 
@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!p) return {};
   const img = imageSrc(p.lifestyle ?? p.colorways[0].images[0], 1600);
   return {
-    title: `${p.name} — $${p.price.toFixed(2)}`,
-    description: `${p.description ?? p.summary} ${p.inStock ? `Sizes ${p.sizes.join(", ")}.` : "Currently sold out."}`.trim(),
+    title: p.price === null ? p.name : `${p.name} — ${formatPrice(p.price)}`,
+    description: `${p.description ?? p.summary} ${p.comingSoon ? "Coming soon in the Peak Side Winter Drop." : p.inStock ? `Sizes ${p.sizes.join(", ")}.` : "Currently sold out."}`.trim(),
     alternates: { canonical: `/shop/${p.slug}/` },
     openGraph: { images: [{ url: `${ORIGIN}${img}` }], title: p.name },
   };
@@ -44,14 +44,18 @@ export default async function ProductPage({ params }: Params) {
         image: p.colorways.flatMap((c) => c.images.slice(0, 2)).map((n) => `${ORIGIN}${imageSrc(n, 1600)}`),
         color: p.colorways.map((c) => c.name).join(", "),
         size: p.sizes.length ? p.sizes.join(", ") : undefined,
-        offers: {
-          "@type": "Offer",
-          url: storeProductUrl(p.storeSlug),
-          priceCurrency: "USD",
-          price: p.price.toFixed(2),
-          availability: p.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-          itemCondition: "https://schema.org/NewCondition",
-        },
+        // No offer until the piece is on sale with a confirmed price.
+        offers:
+          p.price === null || p.comingSoon
+            ? undefined
+            : {
+                "@type": "Offer",
+                url: storeProductUrl(p.storeSlug),
+                priceCurrency: "USD",
+                price: p.price.toFixed(2),
+                availability: p.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                itemCondition: "https://schema.org/NewCondition",
+              },
       },
       {
         "@type": "BreadcrumbList",
@@ -77,7 +81,7 @@ export default async function ProductPage({ params }: Params) {
           </Link>
           <span aria-hidden="true">/</span>
           <Link href={`/shop/?c=${p.category}`} className="link-u">
-            {categoryLabel(p.category)}s
+            {categoryPlural(p.category)}
           </Link>
         </nav>
         <ProductDetail product={p} />

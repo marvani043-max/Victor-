@@ -9,8 +9,11 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
   const hover = product.lifestyle ?? product.colorways[0].images[1];
   const studio = imageMeta(first)?.kind === "studio";
   const spin = product.colorways[0].spin;
+  // Prefer a transparent cut-out when one exists: the multiply blend used for studio shots
+  // can render blank in Chrome when a canvas effect (the Winter Drop snow) sits on top.
+  const cut = !spin && imageMeta(`${first}-cut`) ? `${first}-cut` : null;
   return (
-    <Link href={`/shop/${product.slug}/`} className="group block" aria-label={`${product.name}, ${formatPrice(product.price)}${product.inStock ? "" : ", sold out"}`}>
+    <Link href={`/shop/${product.slug}/`} className="group block" aria-label={`${product.name}, ${formatPrice(product.price)}${product.comingSoon ? ", coming soon" : product.inStock ? "" : ", sold out"}`}>
       {spin ? (
         // Garment cut-out that tilts toward the cursor and flips to show the back on hover.
         <div data-tilt className="flip-stage relative aspect-[4/5] overflow-hidden bg-stone">
@@ -24,13 +27,13 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
       ) : (
       <div data-tilt className={`relative aspect-[4/5] overflow-hidden ${studio ? "bg-stone" : "bg-coal"}`}>
         <Img
-          name={first}
+          name={cut ?? first}
           alt=""
           sizes={sizes}
           priority={priority}
           className={`absolute inset-0 h-full w-full transition-[transform,opacity] duration-700 ease-out ${
-            studio ? "object-contain p-[8%] group-hover:scale-[1.04]" : "object-cover group-hover:scale-[1.03]"
-          } ${hover ? "group-hover:opacity-0" : ""} ${product.inStock ? "" : "grayscale-[35%]"}`}
+            cut ? "cut-shadow object-contain p-[9%] group-hover:scale-[1.04]" : studio ? "object-contain p-[8%] group-hover:scale-[1.04]" : "object-cover group-hover:scale-[1.03]"
+          } ${hover ? "group-hover:opacity-0" : ""} ${product.inStock || product.comingSoon ? "" : "grayscale-[35%]"}`}
         />
         {hover && (
           <Img
@@ -56,7 +59,7 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
             </div>
           )}
         </div>
-        <p className={`shrink-0 font-mono text-[13px] ${product.inStock ? "" : "text-granite line-through decoration-1"}`}>{formatPrice(product.price)}</p>
+        <p className={`shrink-0 font-mono text-[13px] ${product.inStock || product.comingSoon ? "" : "text-granite line-through decoration-1"}`}>{formatPrice(product.price)}</p>
       </div>
     </Link>
   );
@@ -65,7 +68,8 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
 function Badges({ product, showBestSeller }: { product: Product; showBestSeller: boolean }) {
   return (
     <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-      {!product.inStock && <span className="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>}
+      {product.comingSoon && <span className="label bg-sakura px-2 py-1 text-[10px] text-ink"><span className="hidden sm:inline">Winter drop · </span>Coming soon</span>}
+      {!product.inStock && !product.comingSoon && <span className="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>}
       {product.badge && <span className="label bg-sakura px-2 py-1 text-[10px] text-ink">{product.badge}</span>}
       {showBestSeller && product.inStock && product.bestSeller && !product.badge && (
         <span className="label bg-bone/90 px-2 py-1 text-[10px] text-ink">Best seller</span>

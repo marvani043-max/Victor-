@@ -11,7 +11,7 @@ const COLS = [
       { href: "/shop/?c=zip-ups", label: "Zip-ups" },
       { href: "/shop/?c=tees", label: "Tees" },
       { href: "/shop/?c=crop-tops", label: "Crop tops" },
-      { href: "/shop/?c=crewnecks", label: "Crewnecks" },
+      { href: "/shop/?c=bottoms", label: "Bottoms" },
     ],
   },
   {

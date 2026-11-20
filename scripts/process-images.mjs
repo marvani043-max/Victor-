@@ -102,6 +102,13 @@ const MAP = {
   "crop-white-plain": ["05718d81", "studio"],
   "crop-grey-front": ["066f2888", "studio"],
   "crop-grey-back": ["c768e371", "studio"],
+  // Winter drop (white-background photos supplied Nov 2026)
+  "winter-hoodie-pink-front": ["0e1d0001", "studio"],
+  "winter-hoodie-grey-front": ["0e1d0002", "studio"],
+  "winter-pants-grey-front": ["0e1d0003", "studio"],
+  "winter-pants-grey-back": ["0e1d0004", "studio"],
+  "winter-pants-pink-front": ["0e1d0005", "studio"],
+  "winter-pants-pink-back": ["0e1d0006", "studio"],
   // Brand marks
   "mark-pks": ["58fd8b0f", "mark"],
   "mark-blossom": ["c04fbb39", "mark"],
@@ -109,7 +116,8 @@ const MAP = {
 
 const WIDTHS = [480, 960, 1600];
 const files = fs.readdirSync(SRC);
-const manifest = {};
+// Merge into the existing manifest so entries added by other scripts (e.g. "-cut") are kept.
+const manifest = fs.existsSync(MANIFEST) ? JSON.parse(fs.readFileSync(MANIFEST, "utf8")) : {};
 
 for (const [name, [id, kind]] of Object.entries(MAP)) {
   const file = files.find((f) => f.startsWith(id));

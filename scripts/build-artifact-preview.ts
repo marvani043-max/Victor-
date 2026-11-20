@@ -6,7 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { products, CATEGORIES, bestSellers, relatedTo, formatPrice, categoryLabel, getProduct, type Product } from "../src/data/products";
+import { products, CATEGORIES, bestSellers, relatedTo, formatPrice, categoryLabel, categoryPlural, getProduct, winterDrop, featuredRank, sortablePrice, type Product } from "../src/data/products";
 import { site, storeProductUrl, restockMailto } from "../src/data/site";
 import { FAQ } from "../src/data/faq";
 import manifestJson from "../src/data/image-manifest.json";
@@ -48,7 +48,8 @@ const card = (p: Product, showBest = true) => {
   const hover = p.lifestyle ?? p.colorways[0].images[1];
   const studio = M[first].kind === "studio";
   const badges = [
-    !p.inStock ? `<span class="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>` : "",
+    p.comingSoon ? `<span class="label bg-sakura px-2 py-1 text-[10px] text-ink"><span class="hidden sm:inline">Winter drop · </span>Coming soon</span>` : "",
+    !p.inStock && !p.comingSoon ? `<span class="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>` : "",
     p.badge ? `<span class="label bg-sakura px-2 py-1 text-[10px] text-ink">${p.badge}</span>` : "",
     showBest && p.inStock && p.bestSeller && !p.badge ? `<span class="label bg-bone/90 px-2 py-1 text-[10px] text-ink">Best seller</span>` : "",
   ].join("");
@@ -57,6 +58,8 @@ const card = (p: Product, showBest = true) => {
       ? `<div class="mt-2 flex items-center gap-1.5">${p.colorways.map((c) => `<span title="${c.name}" class="h-2.5 w-2.5 rounded-full ring-1 ring-ink/15" style="background:${c.swatch}"></span>`).join("")}<span class="label ml-1 text-[10px] text-granite">${p.colorways.length} colours</span></div>`
       : "";
   const spin = p.colorways[0].spin;
+  // Prefer a transparent cut-out when one exists (multiply can render blank under the snow canvas).
+  const cut = !spin && M[`${first}-cut`] ? `${first}-cut` : null;
   const media = spin
     ? `<div data-tilt class="flip-stage relative aspect-[4/5] overflow-hidden bg-stone">
     <div class="flip-inner">${img(`${spin.front}-cut`, "", "flip-face cut-shadow h-full w-full object-contain p-[9%]")}${img(`${spin.back}-cut`, "", "flip-face flip-back cut-shadow h-full w-full object-contain p-[9%]")}</div>
@@ -64,18 +67,18 @@ const card = (p: Product, showBest = true) => {
     <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">${badges}</div>
   </div>`
     : "";
-  return `<a href="#product-${p.slug}" class="group block" aria-label="${esc(p.name)}, ${formatPrice(p.price)}${p.inStock ? "" : ", sold out"}">
+  return `<a href="#product-${p.slug}" class="group block" aria-label="${esc(p.name)}, ${formatPrice(p.price)}${p.comingSoon ? ", coming soon" : p.inStock ? "" : ", sold out"}">
   ${
     media ||
     `<div data-tilt class="relative aspect-[4/5] overflow-hidden ${studio ? "bg-stone" : "bg-coal"}">
-    ${img(first, "", `absolute inset-0 h-full w-full transition-[transform,opacity] duration-700 ease-out ${studio ? "object-contain p-[8%] group-hover:scale-[1.04]" : "object-cover group-hover:scale-[1.03]"} ${hover ? "group-hover:opacity-0" : ""} ${p.inStock ? "" : "grayscale-[35%]"}`)}
+    ${img(cut ?? first, "", `absolute inset-0 h-full w-full transition-[transform,opacity] duration-700 ease-out ${cut ? "cut-shadow object-contain p-[9%] group-hover:scale-[1.04]" : studio ? "object-contain p-[8%] group-hover:scale-[1.04]" : "object-cover group-hover:scale-[1.03]"} ${hover ? "group-hover:opacity-0" : ""} ${p.inStock || p.comingSoon ? "" : "grayscale-[35%]"}`)}
     ${hover ? img(hover, "", "absolute inset-0 h-full w-full scale-[1.06] object-cover opacity-0 transition-[transform,opacity] duration-700 ease-out group-hover:scale-100 group-hover:opacity-100", { blend: false }) : ""}
     <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">${badges}</div>
   </div>`
   }
   <div class="mt-3 flex items-start justify-between gap-3">
     <div class="min-w-0"><h3 class="text-[15px] font-medium leading-snug">${esc(p.name)}</h3>${dots}</div>
-    <p class="shrink-0 font-mono text-[13px] ${p.inStock ? "" : "text-granite line-through decoration-1"}">${formatPrice(p.price)}</p>
+    <p class="shrink-0 font-mono text-[13px] ${p.inStock || p.comingSoon ? "" : "text-granite line-through decoration-1"}">${formatPrice(p.price)}</p>
   </div>
 </a>`;
 };
@@ -162,8 +165,8 @@ const footer = `
 </footer>`;
 
 // ---------- home ----------
-const minPrice = Math.min(...products.map((p) => p.price));
-const soldOut = products.filter((p) => !p.inStock);
+const minPrice = Math.min(...products.flatMap((p) => (p.price === null ? [] : [p.price])));
+const soldOut = products.filter((p) => !p.inStock && !p.comingSoon);
 const LOOKS = {
   trail: {
     line: "Granite, spray and switchbacks. Tees that handle the climb and still look right at the top.",
@@ -233,6 +236,23 @@ const home = `
         <a href="#story" class="btn border border-bone/50 px-5 text-bone hover:border-bone hover:bg-bone hover:text-ink sm:px-6">Our story</a>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
+  <ps-petals snow></ps-petals>
+  <div class="wrap relative">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="label text-sakura">New · Coming soon</p>
+        <h2 id="winter-title" class="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">The Winter <span class="text-sakura">Drop.</span></h2>
+      </div>
+      <div class="max-w-sm">
+        <p class="text-[16px] leading-relaxed text-bone/80">Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.</p>
+        <a href="#shop" class="btn-bone mt-6">Shop the Winter Drop ${arrow}</a>
+      </div>
+    </div>
+    <ul class="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">${winterDrop().map((p) => `<li>${card(p, false)}</li>`).join("")}</ul>
   </div>
 </section>
 
@@ -353,7 +373,7 @@ ${[0, 1, 2, 3]
   </div>
 </section>
 
-<section class="wrap py-24 sm:py-32">
+${soldOut.length ? `<section class="wrap py-24 sm:py-32">
   <div class="grid gap-10 lg:grid-cols-12">
     <div class="lg:col-span-4">
       <p class="label text-granite">Sold out</p>
@@ -371,7 +391,7 @@ ${[0, 1, 2, 3]
       .join("")}
     </div>
   </div>
-</section>
+</section>` : ""}
 
 <section class="border-t border-ink/10 py-20 sm:py-28">
   <div class="wrap">
@@ -418,8 +438,8 @@ const shop = `
   <p id="shop-count" class="label mt-6 text-granite" aria-live="polite">${products.length} products</p>
   <ul id="shop-grid" class="mt-4 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-y-14">
   ${[...products]
-    .sort((a, b) => Number(b.inStock) - Number(a.inStock))
-    .map((p, i) => `<li class="shop-item" data-cat="${p.category}" data-price="${p.price}" data-stock="${p.inStock ? 1 : 0}" data-order="${i}">${card(p)}</li>`)
+    .sort((a, b) => featuredRank(a) - featuredRank(b))
+    .map((p, i) => `<li class="shop-item" data-cat="${p.category}" data-price="${sortablePrice(p)}" data-stock="${p.inStock ? 1 : 0}" data-order="${i}">${card(p)}</li>`)
     .join("")}
   </ul>
 </div>`;
@@ -459,23 +479,25 @@ const productView = (p: Product) => {
     .join("");
 
   const primary = (compact: boolean) =>
-    p.inStock
+    p.comingSoon
+      ? `<a href="${site.instagram.url}" ${ext} class="btn-ink w-full ${compact ? "py-3.5" : "py-5"}">Coming soon <span class="opacity-60">·</span> Follow for the drop ${arrowUR}</a>`
+      : p.inStock
       ? `<a href="${storeProductUrl(p.storeSlug)}" ${ext} class="btn-ink w-full ${compact ? "py-3.5" : "py-5"}">Choose size &amp; checkout <span class="opacity-60">·</span> ${formatPrice(p.price)} ${arrowUR}</a>`
       : `<a href="${restockMailto(p.name)}" class="btn-ink w-full ${compact ? "py-3.5" : "py-5"}">Email me when it's back ${arrow}</a>`;
 
   return `
 <div class="wrap pb-24 pt-6 sm:pt-10">
-  <nav aria-label="Breadcrumb" class="label mb-6 flex items-center gap-2 text-granite"><a href="#home" class="link-u">Home</a><span aria-hidden="true">/</span><a href="#shop" class="link-u">Shop</a><span aria-hidden="true">/</span><a href="#shop-${p.category}" class="link-u">${categoryLabel(p.category)}s</a></nav>
+  <nav aria-label="Breadcrumb" class="label mb-6 flex items-center gap-2 text-granite"><a href="#home" class="link-u">Home</a><span aria-hidden="true">/</span><a href="#shop" class="link-u">Shop</a><span aria-hidden="true">/</span><a href="#shop-${p.category}" class="link-u">${categoryPlural(p.category)}</a></nav>
   <div class="grid gap-8 lg:grid-cols-12 lg:gap-12">
     <div class="lg:col-span-7">${galleries}</div>
     <div class="lg:col-span-5"><div class="lg:sticky" style="top:calc(var(--header-h) + 2rem)">
       <p class="label text-granite">${p.collection ? `${p.collection} · ` : ""}${categoryLabel(p.category)}</p>
       <h1 class="display mt-3 text-[12vw] sm:text-7xl lg:text-[4.25rem]">${esc(p.name)}</h1>
       <div class="mt-5 flex items-center gap-4">
-        <p class="font-mono text-xl ${p.inStock ? "" : "text-granite line-through"}">${formatPrice(p.price)}</p>
-        ${!p.inStock ? `<span class="label bg-ink px-2 py-1 text-bone">Sold out</span>` : ""}${p.badge ? `<span class="label bg-sakura px-2 py-1">${p.badge}</span>` : ""}
+        <p class="font-mono text-xl ${p.inStock || p.comingSoon ? "" : "text-granite line-through"}">${formatPrice(p.price)}</p>
+        ${p.comingSoon ? `<span class="label bg-sakura px-2 py-1 text-ink">Coming soon</span>` : ""}${!p.inStock && !p.comingSoon ? `<span class="label bg-ink px-2 py-1 text-bone">Sold out</span>` : ""}${p.badge ? `<span class="label bg-sakura px-2 py-1">${p.badge}</span>` : ""}
       </div>
-      ${p.inStock ? `<p class="mt-2 text-[13px] text-granite">Or 4 interest-free payments of ${formatPrice(Math.ceil((p.price / 4) * 100) / 100)} with PayPal at checkout.</p>` : ""}
+      ${p.inStock && p.price !== null ? `<p class="mt-2 text-[13px] text-granite">Or 4 interest-free payments of ${formatPrice(Math.ceil((p.price / 4) * 100) / 100)} with PayPal at checkout.</p>` : ""}
       <p class="mt-6 max-w-md text-[16px] leading-relaxed">${esc(p.description ?? p.summary)}</p>
       <fieldset class="mt-8"><legend class="label">Colour <span class="text-granite">— <span class="cw-name">${p.colorways[0].name}</span></span></legend>
         <div class="mt-3 flex flex-wrap gap-2">${p.colorways
@@ -488,12 +510,14 @@ const productView = (p: Product) => {
       }
       <div class="buy-cta mt-8">${primary(false)}
         <p class="mt-3 text-[12px] leading-relaxed text-granite">${
-          p.inStock
+          p.comingSoon
+            ? `Part of the new Winter Drop and not on sale yet. Follow <a class="underline" href="${site.instagram.url}" ${ext}>${site.instagram.handle}</a> to hear the moment it's live.`
+            : p.inStock
             ? `Opens the official Peak Side store, where you pick your size and pay. Use code <span class="font-mono text-ink">${site.promo.code}</span> for free shipping.`
             : `Opens an email to Peak Side (<span class="select-all">${site.email}</span>) asking about the restock. Or follow <a class="underline" href="${site.instagram.url}" ${ext}>${site.instagram.handle}</a> for drops.`
         }</p></div>
       <div class="mt-8 border-t border-ink/15">
-        ${accordion("Details", `<p>${esc(p.summary)}</p>${note("Fabric, weight and care instructions: to be supplied by Peak Side.")}`, true)}
+        ${accordion("Details", `<p>${esc(p.summary)}</p>${note(`${p.comingSoon ? "Price, sizes, fabric and care instructions" : "Fabric, weight and care instructions"}: to be supplied by Peak Side.`)}`, true)}
         ${accordion("Fit &amp; sizing", `<p>${esc(p.fit ?? "See the size chart on the checkout page for measurements.")}</p>${note("Measured size chart (chest, length, sleeve in inches): to be supplied by Peak Side.")}`)}
         ${accordion("Shipping &amp; returns", `<p>Orders are processed within ${site.policies.processing}, with tracking emailed when your order ships. Returns and exchanges are accepted within ${site.policies.returnWindow} of delivery on unworn, unwashed items with tags attached.</p><a href="#shipping" class="link-u mt-3 inline-flex items-center gap-1.5 font-medium">Full policy ${arrowUR}</a>`)}
       </div>
@@ -658,7 +682,7 @@ const script = `
     document.querySelectorAll('.cat-btn').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.cat===state.cat); });
     var list = items.slice();
     if(state.sort==='price-asc') list.sort(function(a,b){ return a.dataset.price-b.dataset.price; });
-    else if(state.sort==='price-desc') list.sort(function(a,b){ return b.dataset.price-a.dataset.price; });
+    else if(state.sort==='price-desc') list.sort(function(a,b){ var pa=+a.dataset.price, pb=+b.dataset.price; return (isFinite(pb)?pb:-1)-(isFinite(pa)?pa:-1); });
     else list.sort(function(a,b){ return a.dataset.order-b.dataset.order; });
     var n=0;
     list.forEach(function(li){

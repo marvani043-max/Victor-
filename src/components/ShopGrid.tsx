@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import ProductCard from "./ProductCard";
-import { CATEGORIES, products, type Category } from "@/data/products";
+import { CATEGORIES, products, featuredRank, sortablePrice, type Category } from "@/data/products";
 
 type Sort = "featured" | "price-asc" | "price-desc";
 
@@ -42,9 +42,9 @@ export default function ShopGrid() {
 
   const list = useMemo(() => {
     let l = products.filter((p) => (!cat || p.category === cat) && (!hideSold || p.inStock));
-    if (sort === "price-asc") l = [...l].sort((a, b) => a.price - b.price);
-    else if (sort === "price-desc") l = [...l].sort((a, b) => b.price - a.price);
-    else l = [...l].sort((a, b) => Number(b.inStock) - Number(a.inStock));
+    if (sort === "price-asc") l = [...l].sort((a, b) => sortablePrice(a) - sortablePrice(b));
+    else if (sort === "price-desc") l = [...l].sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
+    else l = [...l].sort((a, b) => featuredRank(a) - featuredRank(b));
     return l;
   }, [cat, sort, hideSold]);
 

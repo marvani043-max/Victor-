@@ -10,14 +10,15 @@ const WORD: Record<Category, string> = {
   "zip-ups": "Zip-up",
   tees: "Tee",
   "crop-tops": "Crop top",
-  crewnecks: "Crew",
+  bottoms: "Pants",
 };
 
-/** Every in-stock colourway that has studio front + back shots, best sellers first. */
+/** Every colourway with studio front + back shots: Winter Drop first, then best sellers. */
 export function spinItems(href: Href, img: ImgUrl) {
+  const rank = (p: Product) => (p.comingSoon ? 0 : p.bestSeller ? 1 : 2);
   return [...products]
-    .filter((p) => p.inStock)
-    .sort((a, b) => Number(!!b.bestSeller) - Number(!!a.bestSeller))
+    .filter((p) => p.inStock || p.comingSoon)
+    .sort((a, b) => rank(a) - rank(b))
     .flatMap((p) =>
       p.colorways
         .filter((c) => c.spin)

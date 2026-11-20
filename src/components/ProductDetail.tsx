@@ -57,7 +57,11 @@ export default function ProductDetail({ product }: { product: Product }) {
     `${product.name} in ${colorway.name}${imageMeta(name)?.kind === "studio" ? (i === 1 ? ", back view" : ", product view") : ", worn"}`;
 
   const Primary = ({ compact = false }: { compact?: boolean }) =>
-    product.inStock ? (
+    product.comingSoon ? (
+      <a href={site.instagram.url} target="_blank" rel="noopener noreferrer" className={`btn-ink w-full ${compact ? "py-3.5" : "py-5"}`}>
+        Coming soon <span className="opacity-60">·</span> Follow for the drop <ArrowUpRight />
+      </a>
+    ) : product.inStock ? (
       <a href={buyHref} className={`btn-ink w-full ${compact ? "py-3.5" : "py-5"}`}>
         Choose size &amp; checkout <span className="opacity-60">·</span> {formatPrice(product.price)}
         <Arrow />
@@ -148,11 +152,12 @@ export default function ProductDetail({ product }: { product: Product }) {
             </p>
             <h1 className="display mt-3 text-[12vw] sm:text-7xl lg:text-[4.25rem]">{product.name}</h1>
             <div className="mt-5 flex items-center gap-4">
-              <p className={`font-mono text-xl ${product.inStock ? "" : "text-granite line-through"}`}>{formatPrice(product.price)}</p>
-              {!product.inStock && <span className="label bg-ink px-2 py-1 text-bone">Sold out</span>}
+              <p className={`font-mono text-xl ${product.inStock || product.comingSoon ? "" : "text-granite line-through"}`}>{formatPrice(product.price)}</p>
+              {product.comingSoon && <span className="label bg-sakura px-2 py-1 text-ink">Coming soon</span>}
+              {!product.inStock && !product.comingSoon && <span className="label bg-ink px-2 py-1 text-bone">Sold out</span>}
               {product.badge && <span className="label bg-sakura px-2 py-1">{product.badge}</span>}
             </div>
-            {product.inStock && (
+            {product.inStock && product.price !== null && (
               <p className="mt-2 text-[13px] text-granite">
                 Or 4 interest-free payments of {formatPrice(Math.ceil((product.price / 4) * 100) / 100)} with PayPal at checkout.
               </p>
@@ -200,7 +205,15 @@ export default function ProductDetail({ product }: { product: Product }) {
             <div ref={cta} className="mt-8">
               <Primary />
               <p className="mt-3 text-[12px] leading-relaxed text-granite">
-                {product.inStock ? (
+                {product.comingSoon ? (
+                  <>
+                    Part of the new Winter Drop and not on sale yet. Follow{" "}
+                    <a className="underline" href={site.instagram.url} target="_blank" rel="noopener noreferrer">
+                      {site.instagram.handle}
+                    </a>{" "}
+                    to hear the moment it&apos;s live.
+                  </>
+                ) : product.inStock ? (
                   <>
                     You&apos;ll pick your size and pay on the official Peak Side store. Use code{" "}
                     <span className="font-mono text-ink">{site.promo.code}</span> for free shipping.
@@ -222,7 +235,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <p>{product.summary}</p>
                 {/* PLACEHOLDER — fabric composition, weight and care were not published on the store. */}
                 <p className="mt-3 border-l-2 border-sakura pl-3 text-[13px] text-granite">
-                  Fabric, weight and care instructions: to be supplied by Peak Side.
+                  {product.comingSoon ? "Price, sizes, fabric and care instructions" : "Fabric, weight and care instructions"}: to be supplied by Peak Side.
                 </p>
               </Accordion>
               <Accordion title="Fit & sizing">

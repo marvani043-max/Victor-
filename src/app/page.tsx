@@ -6,14 +6,14 @@ import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import Img from "@/components/Img";
 import { Arrow, ArrowUpRight, Instagram, Ridge } from "@/components/Icons";
-import { bestSellers, products, formatPrice } from "@/data/products";
+import { bestSellers, products, formatPrice, winterDrop } from "@/data/products";
 import { site, restockMailto, BASE_PATH } from "@/data/site";
 import { spinItems, fitFinderData, jsonForScript } from "@/data/interactive";
 import { imageSrc } from "@/components/Img";
 
 const hrefFor = (p: { slug: string }) => `${BASE_PATH}/shop/${p.slug}/`;
 
-const minPrice = Math.min(...products.map((p) => p.price));
+const minPrice = Math.min(...products.flatMap((p) => (p.price === null ? [] : [p.price])));
 
 const COLLECTIONS = [
   { title: "Hoodies & zips", href: "/shop/?c=hoodies", image: "tunnel-zip-black", alt: "Black double zip hoodie worn against graffiti", note: "Oversized, faded, heavyweight" },
@@ -23,10 +23,41 @@ const COLLECTIONS = [
 
 export default function Home() {
   const sellers = bestSellers();
-  const soldOut = products.filter((p) => !p.inStock);
+  const soldOut = products.filter((p) => !p.inStock && !p.comingSoon);
+  const winter = winterDrop();
   return (
     <>
       <Hero />
+
+      {/* Winter Drop: new pieces, featured first */}
+      <section className="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
+        <ps-petals snow="" />
+        <div className="wrap relative">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="label text-sakura">New · Coming soon</p>
+              <h2 id="winter-title" className="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">
+                The Winter <span className="text-sakura">Drop.</span>
+              </h2>
+            </div>
+            <div className="max-w-sm">
+              <p className="text-[16px] leading-relaxed text-bone/80">
+                Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.
+              </p>
+              <Link href="/shop/" className="btn-bone mt-6">
+                Shop the Winter Drop <Arrow />
+              </Link>
+            </div>
+          </div>
+          <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">
+            {winter.map((p, i) => (
+              <Reveal as="li" key={p.slug} delay={i * 0.06}>
+                <ProductCard product={p} showBestSeller={false} priority />
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <Marquee
         className="border-b border-ink/10 bg-bone py-4"

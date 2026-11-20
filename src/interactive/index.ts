@@ -672,9 +672,12 @@ class PsPetals extends HTMLElement {
   private ro?: ResizeObserver;
   private host?: HTMLElement;
   private last: { x: number; y: number; t: number } | null = null;
+  /** `snow` attribute: white flakes instead of cherry-blossom petals. */
+  private snow = false;
 
   connectedCallback() {
     if (this.canvas || reduced()) return;
+    this.snow = this.hasAttribute("snow");
     const root = this.attachShadow({ mode: "open" });
     root.innerHTML = `<style>:host{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:var(--petals-z,5)}canvas{width:100%;height:100%;display:block}</style><canvas aria-hidden="true"></canvas>`;
     this.canvas = root.querySelector("canvas")!;
@@ -724,9 +727,9 @@ class PsPetals extends HTMLElement {
       vr: (Math.random() - 0.5) * 0.04,
       flip: Math.random() * Math.PI * 2,
       vf: 0.02 + Math.random() * 0.05,
-      size: 5 + Math.random() * 6,
+      size: this.snow ? 1.4 + Math.random() * 2.6 : 5 + Math.random() * 6,
       phase: Math.random() * Math.PI * 2,
-      color: PETAL_COLORS[(Math.random() * PETAL_COLORS.length) | 0],
+      color: this.snow ? "#F3F0EA" : PETAL_COLORS[(Math.random() * PETAL_COLORS.length) | 0],
       extra,
     };
   }
@@ -784,6 +787,14 @@ class PsPetals extends HTMLElement {
         }
         if (p.x > this.w + 20) p.x = -20;
         if (p.x < -20) p.x = this.w + 20;
+      }
+      if (this.snow) {
+        ctx.globalAlpha = 0.35 + 0.5 * (p.z - 0.55);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.z, 0, Math.PI * 2);
+        ctx.fill();
+        continue;
       }
       ctx.save();
       ctx.translate(p.x, p.y);

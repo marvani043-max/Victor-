@@ -1141,5 +1141,132 @@
    1200
   ],
   "color": "rgb(0,0,0)"
+ },
+ "winter-hoodie-pink-front": {
+  "w": 996,
+  "h": 1194,
+  "kind": "studio",
+  "widths": [
+   480,
+   960,
+   996
+  ],
+  "color": "rgb(248,248,248)"
+ },
+ "winter-hoodie-grey-front": {
+  "w": 960,
+  "h": 1167,
+  "kind": "studio",
+  "widths": [
+   480,
+   960
+  ],
+  "color": "rgb(248,248,248)"
+ },
+ "winter-pants-grey-front": {
+  "w": 896,
+  "h": 1363,
+  "kind": "studio",
+  "widths": [
+   480,
+   896
+  ],
+  "color": "rgb(248,248,248)"
+ },
+ "winter-pants-grey-back": {
+  "w": 843,
+  "h": 1306,
+  "kind": "studio",
+  "widths": [
+   480,
+   843
+  ],
+  "color": "rgb(248,248,248)"
+ },
+ "winter-pants-pink-front": {
+  "w": 853,
+  "h": 1340,
+  "kind": "studio",
+  "widths": [
+   480,
+   853
+  ],
+  "color": "rgb(248,248,248)"
+ },
+ "winter-pants-pink-back": {
+  "w": 787,
+  "h": 1174,
+  "kind": "studio",
+  "widths": [
+   480,
+   787
+  ],
+  "color": "rgb(248,248,248)"
+ },
+ "winter-hoodie-pink-front-cut": {
+  "w": 1206,
+  "h": 1206,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "winter-hoodie-grey-front-cut": {
+  "w": 1178,
+  "h": 1178,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1178
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "winter-pants-grey-front-cut": {
+  "w": 1374,
+  "h": 1374,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "winter-pants-grey-back-cut": {
+  "w": 1328,
+  "h": 1328,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "winter-pants-pink-front-cut": {
+  "w": 1364,
+  "h": 1364,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "color": "rgb(0,0,0)"
+ },
+ "winter-pants-pink-back-cut": {
+  "w": 1184,
+  "h": 1184,
+  "kind": "cut",
+  "widths": [
+   480,
+   960,
+   1184
+  ],
+  "color": "rgb(0,0,0)"
  }
 }
