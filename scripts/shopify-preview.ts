@@ -163,7 +163,8 @@ const linklists: Record<string, unknown> = {
 // ---------------- engine ----------------
 const locale = JSON.parse(fs.readFileSync(path.join(THEME, "locales/en.default.json"), "utf8"));
 const settingsSchema = JSON.parse(fs.readFileSync(path.join(THEME, "config/settings_schema.json"), "utf8"));
-const settingsData = JSON.parse(fs.readFileSync(path.join(THEME, "config/settings_data.json"), "utf8")).current;
+const settingsFile = JSON.parse(fs.readFileSync(path.join(THEME, "config/settings_data.json"), "utf8"));
+const settingsData = typeof settingsFile.current === "string" ? settingsFile.presets[settingsFile.current] : settingsFile.current;
 const settings: Record<string, unknown> = {};
 for (const group of settingsSchema) for (const s of group.settings ?? []) if ("default" in s) settings[s.id] = s.default;
 Object.assign(settings, settingsData, { contact_email: "hello@peak-side.com" });
