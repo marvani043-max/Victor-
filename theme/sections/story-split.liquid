@@ -1,18 +1,22 @@
 <section class="section story" aria-labelledby="StoryHeading-{{ section.id }}">
-  <div class="page-width story__grid{% if section.settings.image_right %} story__grid--flip{% endif %}">
-    <div class="story__media">
-      {%- if section.settings.image != blank -%}
+  <div class="page-width story__grid{% if section.settings.image_right %} story__grid--flip{% endif %}{% if section.settings.image == blank %} story__grid--text{% endif %}">
+    {%- if section.settings.image != blank -%}
+      <div class="story__media">
         {% render 'image', image: section.settings.image, alt: section.settings.alt, sizes: '(min-width: 990px) 50vw, 100vw', class: 'story__img', widths: '540,720,960,1200,1600' %}
-      {%- else -%}
-        <div class="story__empty mono">Image</div>
-      {%- endif -%}
-    </div>
+      </div>
+    {%- endif -%}
     <div class="story__copy">
       <p class="kicker mono">{{ section.settings.kicker | escape }}</p>
       <{{ section.settings.heading_tag }} class="h2" id="StoryHeading-{{ section.id }}">{{ section.settings.heading | escape }}</{{ section.settings.heading_tag }}>
       <div class="rte">{{ section.settings.text }}</div>
-      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
-        <a class="button button--secondary" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+      {%- liquid
+        assign story_link = section.settings.button_link
+        if story_link == blank and section.settings.button_to_story
+          assign story_link = pages.story.url | default: pages['about-us'].url | default: pages.about.url
+        endif
+      -%}
+      {%- if section.settings.button_label != blank and story_link != blank -%}
+        <a class="button button--secondary" href="{{ story_link }}">{{ section.settings.button_label | escape }}</a>
       {%- endif -%}
     </div>
   </div>
@@ -31,7 +35,8 @@
     { "type": "select", "id": "heading_tag", "label": "Heading level", "options": [{ "value": "h1", "label": "H1 (use once per page, at the top)" }, { "value": "h2", "label": "H2" }], "default": "h2" },
     { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Peak Side began with a love of being outside and a long-held ambition to start a clothing brand.</p>" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Read the story" },
-    { "type": "url", "id": "button_link", "label": "Button link" }
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "checkbox", "id": "button_to_story", "label": "Without a link, use the store's Story / About page", "default": false, "info": "Looks for a page with the handle story, about-us or about." }
   ],
   "presets": [{ "name": "Image with story" }]
 }

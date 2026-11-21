@@ -1,0 +1,35 @@
+{%- comment -%}
+  Resolves a product's cut from real store data, in this order:
+    1. product metafield custom.fit_profile (cropped | regular | boxy | oversized)
+    2. a product tag "fit:<cut>", e.g. fit:boxy
+    3. the product's own title: "oversized", "boxy", "crop"
+  Echoes the cut or nothing. Nothing is guessed beyond the product's own data.
+  Params: product
+{%- endcomment -%}
+{%- liquid
+  assign fits = 'cropped,regular,boxy,oversized' | split: ','
+  assign fit = product.metafields.custom.fit_profile.value | default: '' | downcase | strip
+  if fit == blank
+    for tag in product.tags
+      assign tag_d = tag | downcase | strip
+      assign prefix = tag_d | slice: 0, 4
+      if prefix == 'fit:'
+        assign fit = tag_d | remove_first: 'fit:' | strip
+        break
+      endif
+    endfor
+  endif
+  if fit == blank
+    assign title_d = product.title | downcase
+    if title_d contains 'oversized'
+      assign fit = 'oversized'
+    elsif title_d contains 'boxy'
+      assign fit = 'boxy'
+    elsif title_d contains 'crop'
+      assign fit = 'cropped'
+    endif
+  endif
+  if fits contains fit
+    echo fit
+  endif
+-%}

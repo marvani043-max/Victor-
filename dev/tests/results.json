@@ -1,6 +1,6 @@
 {
-  "ranAt": "2026-11-20T00:56:42.537Z",
-  "passed": 31,
+  "ranAt": "2026-11-21T08:50:28.789Z",
+  "passed": 36,
   "failed": 0,
   "results": [
     {
@@ -182,6 +182,36 @@
       "name": "Interactions publish named custom events through Shopify.analytics.publish",
       "ok": true,
       "detail": "ps_explorer_colour_changed, ps_explorer_view_changed, ps_explorer_detail_opened, ps_fit_selected"
+    },
+    {
+      "group": "Store data",
+      "name": "Variant images map photos to colours even with plain alt text; choosing a colour shows that variant photo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Store data",
+      "name": "Every photo is reachable: thumbnails, previous/next and a counter when views are unknown",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Store data",
+      "name": "Fit comes from metafield, tag or title (crop tops inferred from their titles)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Store data",
+      "name": "Uploaded theme as-is: collections listed automatically, no empty photo boxes, story falls back to text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "Store data",
+      "name": "Sale prices: compare-at shown struck through only when higher than the price",
+      "ok": true,
+      "detail": ""
     },
     {
       "group": "Performance",

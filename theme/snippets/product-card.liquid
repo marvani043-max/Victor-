@@ -1,13 +1,18 @@
 {%- comment -%}
   Product card. Params: product (required), sizes, priority (bool), heading_level (default 3)
   The image and title are links; colour swatches are buttons that swap the card photo (no nested controls inside links).
+  Hover shows the back view when the alt text marks one, otherwise the product's second photo.
 {%- endcomment -%}
 {%- liquid
   assign h = heading_level | default: 3
+  capture color_pos_s
+    render 'color-position', product: product
+  endcapture
+  assign color_pos = color_pos_s | plus: 0
+  assign color_idx = color_pos | minus: 1
   assign color_option = nil
   for option in product.options_with_values
-    assign on = option.name | downcase
-    if on == 'color' or on == 'colour'
+    if option.position == color_pos
       assign color_option = option
     endif
   endfor
@@ -17,21 +22,31 @@
   endif
   assign front = product.featured_media
   assign back = nil
+  assign second = nil
   for media in product.media
+    if media.media_type != 'image' or media.id == front.id
+      continue
+    endif
     capture info
-      render 'media-info', media: media, product: product
+      render 'media-info', media: media, product: product, color_pos: color_pos
     endcapture
     assign parts = info | split: '|'
-    assign m_color = parts[0]
-    assign m_view = parts[1]
-    if m_color == first_color or m_color == blank
-      if m_view == 'back' and back == nil
+    if parts[0] == first_color or parts[0] == blank
+      if parts[1] == 'back' and back == nil
         assign back = media
+      endif
+      if second == nil
+        assign second = media
       endif
     endif
   endfor
+  if back == nil
+    assign back = second
+  endif
   assign card_sizes = sizes | default: '(min-width: 990px) 25vw, 50vw'
-  assign fit = product.metafields.custom.fit_profile.value
+  capture fit
+    render 'fit-profile', product: product
+  endcapture
 -%}
 <article class="card{% unless product.available %} card--sold-out{% endunless %}" data-card>
   <a class="card__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
@@ -52,7 +67,7 @@
   <div class="card__body">
     <p class="card__spec mono">
       {{- product.type -}}
-      {%- if fit != blank -%}{%- capture fit_key -%}fit.{{ fit }}{%- endcapture %} · {{ fit_key | t }}{%- endif -%}
+      {%- if fit != blank -%}{%- capture fit_key -%}fit.{{ fit }}{%- endcapture -%}{%- if product.type != blank %} · {% endif -%}{{ fit_key | t }}{%- endif -%}
     </p>
     <h{{ h }} class="card__title">
       <a href="{{ product.url }}" class="card__link">{{ product.title }}</a>
@@ -64,22 +79,34 @@
           {%- liquid
             assign v_handle = value.name | handle
             assign v_media = nil
-            for media in product.media
-              capture info
-                render 'media-info', media: media, product: product
-              endcapture
-              assign parts = info | split: '|'
-              if parts[0] == v_handle and parts[1] == 'front' and v_media == nil
-                assign v_media = media
+            for variant in product.variants
+              if variant.options[color_idx] == value.name and variant.featured_media
+                assign v_media = variant.featured_media
+                break
               endif
             endfor
+            if v_media == nil
+              for media in product.media
+                if media.media_type != 'image'
+                  continue
+                endif
+                capture info
+                  render 'media-info', media: media, product: product, color_pos: color_pos
+                endcapture
+                assign parts = info | split: '|'
+                if parts[0] == v_handle and parts[1] == 'front'
+                  assign v_media = media
+                  break
+                endif
+              endfor
+            endif
           -%}
           <button
             type="button"
             class="swatch swatch--sm"
             aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
             {% if v_media %}data-src="{{ v_media.preview_image | image_url: width: 720 }}"{% endif %}
-            style="--swatch: {% render 'swatch-color', value: value %}"
+            style="{% render 'swatch-style', value: value, product: product, color_pos: color_pos %}"
           >
             <span class="visually-hidden">{{ value.name }}</span>
           </button>

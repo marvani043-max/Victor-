@@ -32,7 +32,8 @@ const { rewriteHtml } = await import('./rewrite.mjs');
 const { PRODUCTS, COLLECTIONS, PAGES, POLICIES } = await import('../data/products.mjs');
 
 const BANNER = `<div data-preview-banner role="region" aria-label="Preview notice" style="background:var(--color-warning-bg);color:var(--color-warning);font:600 12px/1.45 'Overpass Mono',ui-monospace,monospace;padding:7px 16px;text-align:center;border-bottom:1px solid var(--color-warning)">DESIGN PREVIEW by Marvani Marketing · Peak Side Shopify theme · not the official store · sample data: nothing can be bought or sent</div>`;
-store.configure({ origin: 'https://preview.local', banner: BANNER, transform: rewriteHtml });
+const demo = JSON.parse(fs.readFileSync(path.join(ROOT, 'dev/data/demo-content.json'), 'utf8'));
+store.configure({ origin: 'https://preview.local', banner: BANNER, transform: rewriteHtml, demo });
 
 const FRAME_CSS = `<style>.section-header{top:env(safe-area-inset-top,0px)}body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:var(--color-background)}</style>`;
 const headInject = (route) => `<meta name="robots" content="noindex">\n<script>window.__PS_PATH=${JSON.stringify(route)};</script>\n<script src="preview-engine.js" defer></script>\n${FRAME_CSS}\n`;

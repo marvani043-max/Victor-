@@ -5,7 +5,7 @@
     "close": "Close",
     "close_menu": "Close menu",
     "search": "Search",
-    "search_placeholder": "Search hoodies, tees, crop tops…",
+    "search_placeholder": "Search the shop…",
     "account": "Account",
     "home": "Home",
     "based_in": "Based in {{ location }}",
@@ -68,7 +68,14 @@
     "tax_note": "Taxes and shipping calculated at checkout.",
     "worn_in_photo": "Worn in this photo",
     "view_product": "View {{ title }}",
-    "view_short": "View"
+    "view_short": "View",
+    "price_sale": "Sale price",
+    "price_compare": "Regular price",
+    "show_image": "Show image {{ number }} of {{ total }}",
+    "image_counter": "{{ number }} / {{ total }}",
+    "previous_image": "Previous image",
+    "next_image": "Next image",
+    "images_label": "Product images"
   },
   "fit": {
     "cropped": "Cropped",
@@ -76,7 +83,8 @@
     "boxy": "Boxy",
     "oversized": "Oversized",
     "scale_label": "Fit scale",
-    "this_piece": "This piece"
+    "this_piece": "This piece",
+    "none_yet": "No pieces use this cut yet."
   },
   "collections": {
     "filter_and_sort": "Filter & sort",
@@ -146,7 +154,7 @@
   "search": {
     "title": "Search",
     "results_for": "Results for “{{ terms }}”",
-    "no_results": "No results for “{{ terms }}”. Try a product type like hoodie, tee or crop top.",
+    "no_results": "No results for “{{ terms }}”. Try a shorter word, or browse all products.",
     "submit": "Search"
   },
   "blog": {
@@ -164,5 +172,86 @@
     "code": "Gift card code",
     "balance": "Balance",
     "print": "Print"
+  },
+  "customer": {
+    "password": "Password",
+    "password_confirm": "Confirm password",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "login": {
+      "title": "Sign in",
+      "submit": "Sign in",
+      "forgot": "Forgot your password?",
+      "create": "Create an account",
+      "guest_title": "Continue as a guest",
+      "guest": "Continue to checkout"
+    },
+    "recover": {
+      "title": "Reset your password",
+      "text": "Enter your email and Shopify will send you a link to reset your password.",
+      "submit": "Send reset link",
+      "success": "If that email has an account, a reset link is on its way."
+    },
+    "register": {
+      "title": "Create an account",
+      "submit": "Create account",
+      "marketing": "Email me about drops and restocks (optional)",
+      "login": "Already have an account? Sign in"
+    },
+    "account": {
+      "title": "Your account",
+      "logout": "Sign out",
+      "orders": "Order history",
+      "no_orders": "You haven't placed any orders yet.",
+      "details": "Account details",
+      "addresses": {
+        "one": "View addresses ({{ count }})",
+        "other": "View addresses ({{ count }})"
+      }
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "back": "Back to your account",
+      "number": "Order",
+      "date": "Date",
+      "payment": "Payment",
+      "fulfillment": "Fulfillment",
+      "total": "Total",
+      "product": "Product",
+      "price": "Price",
+      "quantity": "Quantity",
+      "subtotal": "Subtotal",
+      "billing": "Billing address",
+      "shipping": "Shipping address",
+      "track": "Track shipment",
+      "cancelled": "Order cancelled on {{ date }}"
+    },
+    "addresses": {
+      "title": "Your addresses",
+      "default_label": "Default address",
+      "edit": "Edit",
+      "update": "Save address",
+      "delete": "Delete address",
+      "add": "Add an address",
+      "company": "Company",
+      "address1": "Address",
+      "address2": "Apartment, suite, etc.",
+      "city": "City",
+      "zip": "Postal / ZIP code",
+      "country": "Country / region",
+      "province": "State / province",
+      "default": "Set as default address"
+    },
+    "activate": {
+      "title": "Activate your account",
+      "text": "Create a password to activate your account.",
+      "submit": "Activate account",
+      "decline": "Decline invitation"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "text": "Enter a new password for your account.",
+      "submit": "Reset password"
+    }
   }
 }

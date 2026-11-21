@@ -1,15 +1,25 @@
+{%- comment -%}
+  Fit finder. Each product's cut comes from snippets/fit-profile.liquid (metafield → "fit:" tag → product title).
+  If no product in the collection has a cut, the section hides itself on the storefront (the theme editor shows a hint).
+{%- endcomment -%}
 {%- liquid
   assign col = section.settings.collection
   assign fits = 'cropped,regular,boxy,oversized' | split: ','
-  assign unassigned = 0
+  assign fit_map = ''
+  assign matched = 0
   if col != blank
     for p in col.products limit: 50
-      if p.metafields.custom.fit_profile.value == blank
-        assign unassigned = unassigned | plus: 1
+      capture p_fit
+        render 'fit-profile', product: p
+      endcapture
+      if p_fit != blank
+        assign matched = matched | plus: 1
       endif
+      assign fit_map = fit_map | append: p.handle | append: ':' | append: p_fit | append: ','
     endfor
   endif
 -%}
+{%- if matched > 0 -%}
 <section class="section fit-finder" id="fit" aria-labelledby="FitHeading-{{ section.id }}">
   <div class="page-width">
     <div class="section-head section-head--split">
@@ -38,15 +48,18 @@
         {%- for f in fits -%}
           {%- capture f_key -%}fit.{{ f }}{%- endcapture -%}
           {%- capture def_key -%}def_{{ f }}{%- endcapture -%}
+          {%- capture needle -%}:{{ f }},{%- endcapture -%}
           <div class="fit-panel" data-fit-panel="{{ f }}" {% if forloop.index == section.settings.default_index %}data-active{% endif %}>
             <div class="fit-panel__copy">
               <h3 class="fit-panel__title">{{ f_key | t }}</h3>
               <p>{{ section.settings[def_key] | escape }}</p>
             </div>
-            <ul class="fit-panel__products" role="list">
-              {%- if col != blank -%}
+            {%- if fit_map contains needle -%}
+              <ul class="fit-panel__products" role="list">
                 {%- for p in col.products limit: 50 -%}
-                  {%- if p.metafields.custom.fit_profile.value == f -%}
+                  {%- capture p_key -%},{{ p.handle }}:{{ f }},{%- endcapture -%}
+                  {%- capture map_wrapped -%},{{ fit_map }}{%- endcapture -%}
+                  {%- if map_wrapped contains p_key -%}
                     <li>
                       <a class="mini-card" href="{{ p.url }}">
                         <span class="mini-card__media">
@@ -63,24 +76,30 @@
                     </li>
                   {%- endif -%}
                 {%- endfor -%}
-              {%- endif -%}
-            </ul>
+              </ul>
+            {%- else -%}
+              <p class="muted fit-panel__empty">{{ 'fit.none_yet' | t }}</p>
+            {%- endif -%}
           </div>
         {%- endfor -%}
       </div>
     </fit-finder>
 
     <div class="fit-finder__foot">
-      {%- if unassigned > 0 and settings.show_content_placeholders -%}
-        {%- capture missing_text -%}{{ unassigned }} {% if unassigned == 1 %}piece has{% else %}pieces have{% endif %} no fit profile yet (custom.fit_profile).{%- endcapture -%}
-        {% render 'content-placeholder', text: missing_text %}
-      {%- endif -%}
-      {%- if settings.fit_guide_page != blank -%}
-        <a class="link" href="{{ settings.fit_guide_page.url }}">{{ section.settings.guide_link_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+      {%- liquid
+        assign guide = settings.fit_guide_page | default: pages['fit-guide']
+      -%}
+      {%- if guide != blank and guide.url -%}
+        <a class="link" href="{{ guide.url }}">{{ section.settings.guide_link_label | escape }} {% render 'icon', name: 'arrow' %}</a>
       {%- endif -%}
     </div>
   </div>
 </section>
+{%- elsif request.design_mode -%}
+  <div class="page-width section">
+    {% render 'content-placeholder', text: 'Fit finder is hidden: no product has a cut yet. Add a product metafield custom.fit_profile, a tag like fit:boxy, or include Oversized / Boxy / Crop in the title.' %}
+  </div>
+{%- endif -%}
 
 {% schema %}
 {
@@ -89,12 +108,13 @@
   "settings": [
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "03 — Fit, in plain words" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Four cuts. Pick yours." },
-    { "type": "textarea", "id": "text", "label": "Text", "default": "Every piece is one of four cuts. Choose one to see what it means and which pieces use it." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Choose a cut to see what it means and which pieces use it." },
     { "type": "collection", "id": "collection", "label": "Collection" },
     { "type": "range", "id": "default_index", "label": "Selected by default", "min": 1, "max": 4, "step": 1, "default": 4 },
-    { "type": "textarea", "id": "def_cropped", "label": "Cropped: explanation", "default": "A shorter body that sits above the waist. For the off-shoulder crop tops, Peak Side recommends sizing down." },
+    { "type": "paragraph", "content": "A product's cut comes from the metafield custom.fit_profile, then a tag like fit:boxy, then the words Oversized, Boxy or Crop in its title." },
+    { "type": "textarea", "id": "def_cropped", "label": "Cropped: explanation", "default": "A shorter body that sits above the waist. Check each piece's fit note for sizing advice." },
     { "type": "textarea", "id": "def_regular", "label": "Regular: explanation", "default": "A classic shape that is neither fitted nor oversized." },
-    { "type": "textarea", "id": "def_boxy", "label": "Boxy: explanation", "default": "Wider through the body with a squarer, straighter hang. For the boxy Summer Edition tee, Peak Side says stay true to size." },
+    { "type": "textarea", "id": "def_boxy", "label": "Boxy: explanation", "default": "Wider through the body with a squarer, straighter hang." },
     { "type": "textarea", "id": "def_oversized", "label": "Oversized: explanation", "default": "Cut big on purpose, with extra room through the body and sleeves." },
     { "type": "text", "id": "guide_link_label", "label": "Fit guide link", "default": "How to measure yourself" }
   ],

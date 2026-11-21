@@ -1,6 +1,6 @@
 {
   "name": "peak-side-shopify-theme",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Peak Side custom Shopify Online Store 2.0 theme by Marvani Marketing, with a local Liquid preview server for design review and automated tests.",
   "type": "module",
@@ -9,7 +9,6 @@
     "fonts": "node dev/copy-fonts.mjs",
     "theme:check": "node dev/theme-check.mjs",
     "contrast": "node dev/contrast.mjs",
-    "products:csv": "node dev/export-products-csv.mjs",
     "test": "node dev/tests/run.mjs",
     "screenshots": "node dev/tests/screenshots.mjs",
     "package": "node dev/package-theme.mjs",

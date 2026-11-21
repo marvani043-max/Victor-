@@ -1,6 +1,8 @@
 {%- comment -%} Hang-tag spec chips: type · fit · size range. Params: product, class {%- endcomment -%}
 {%- liquid
-  assign fit = product.metafields.custom.fit_profile.value
+  capture fit
+    render 'fit-profile', product: product
+  endcapture
   assign size_values = ''
   for option in product.options_with_values
     assign on = option.name | downcase

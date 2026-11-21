@@ -32,6 +32,11 @@ await new Promise((resolve, reject) => {
   server.stderr.on('data', (d) => process.stderr.write(d));
 });
 
+// Second server: the theme exactly as it would be uploaded (no preview-only demo photos)
+const PLAIN = `http://localhost:${PORT + 1}`;
+const plainServer = spawn(process.execPath, ['dev/server.mjs'], { env: { ...process.env, PORT: String(PORT + 1), PS_DEMO: '0' }, stdio: ['ignore', 'pipe', 'pipe'] });
+await new Promise((resolve) => plainServer.stdout.on('data', (d) => String(d).includes('preview') && resolve()));
+
 const browser = await chromium.launch();
 const newPage = async (opts = {}) => {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, ...opts });
@@ -447,6 +452,71 @@ try {
     return names.join(', ');
   });
 
+
+  /* ---------------- Store connection: real-catalogue behaviour ---------------- */
+  await check('Store data', 'Variant images map photos to colours even with plain alt text; choosing a colour shows that variant photo', async () => {
+    const page = await newPage();
+    await page.goto(BASE + '/products/double-zip-hoodie');
+    const data = await page.evaluate(() => JSON.parse(document.querySelector('[data-product-json]').textContent));
+    const grey = data.variants.find((v) => v.option1 === 'Flower Gray');
+    await page.locator('label.swatch-option--lg', { hasText: 'Flower Gray' }).click();
+    const active = page.locator('garment-explorer [data-slide][data-active]');
+    assert((await active.getAttribute('data-media-id')) === String(grey.featured_media.id), 'not the variant image');
+    assert(await page.locator('[data-thumb]:visible').count() === 3, `expected 3 grey thumbnails, got ${await page.locator('[data-thumb]:visible').count()}`);
+    await page.context().close();
+  });
+
+  await check('Store data', 'Every photo is reachable: thumbnails, previous/next and a counter when views are unknown', async () => {
+    const page = await newPage();
+    await page.goto(BASE + '/products/white-globe-hoodie');
+    assert(await page.locator('[data-view-btn]').count() === 0, 'view buttons shown without view data');
+    const label = page.locator('garment-explorer [data-view-label]');
+    assert((await label.textContent()).trim() === '1 / 2', `counter: ${await label.textContent()}`);
+    await page.locator('garment-explorer [data-next]').click();
+    assert((await label.textContent()).trim() === '2 / 2', 'next did not advance');
+    assert((await page.locator('[data-thumb]').nth(1).getAttribute('aria-pressed')) === 'true', 'thumbnail not in sync');
+    await page.locator('[data-thumb]').nth(0).focus();
+    await page.keyboard.press('ArrowRight');
+    assert((await label.textContent()).trim() === '2 / 2', 'arrow key on thumbnails');
+    await page.context().close();
+  });
+
+  await check('Store data', 'Fit comes from metafield, tag or title (crop tops inferred from their titles)', async () => {
+    const page = await newPage();
+    await page.goto(BASE + '/products/off-shoulder-crop-top-black');
+    assert((await page.locator('.product__fit .fit-scale__stop.is-current').textContent()).includes('Cropped'), 'title inference failed');
+    await page.goto(BASE + '/products/double-zip-hoodie');
+    assert((await page.locator('.product__fit .fit-scale__stop.is-current').textContent()).includes('Boxy'), 'metafield not used');
+    await page.goto(BASE + '/products/white-globe-hoodie');
+    assert(await page.locator('.product__fit .fit-scale').count() === 0, 'invented a fit');
+    await page.context().close();
+  });
+
+  await check('Store data', 'Uploaded theme as-is: collections listed automatically, no empty photo boxes, story falls back to text', async () => {
+    const page = await newPage();
+    await page.goto(PLAIN + '/', { waitUntil: 'networkidle' });
+    const tiles = await page.locator('.tile__title').allTextContents();
+    assert(tiles.length === 5 && !tiles.some((t) => /^all/i.test(t.trim())), `tiles: ${tiles.join(', ')}`);
+    assert(await page.locator('.lookbook').count() === 0, 'lookbook rendered without photos');
+    assert(await page.locator('.story__grid--text').count() === 1, 'story did not fall back to text');
+    assert(await page.locator('garment-explorer').count() === 1, 'hero explorer missing without a chosen product');
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    assert(overflow <= 1, `overflow ${overflow}`);
+    await page.goto(PLAIN + '/pages/story');
+    assert(await page.locator('h1').count() === 1 && await page.locator('.story__media').count() === 0, 'story page');
+    await page.context().close();
+  });
+
+  await check('Store data', 'Sale prices: compare-at shown struck through only when higher than the price', async () => {
+    const { createEngine } = await import('../shopify.mjs');
+    const engine = createEngine();
+    const tpl = "{% render 'price', product: p %}";
+    const sale = await engine.parseAndRender(tpl, { p: { price_varies: false, selected_or_first_available_variant: { price: 4000, compare_at_price: 5500, available: true } } });
+    const full = await engine.parseAndRender(tpl, { p: { price_varies: false, selected_or_first_available_variant: { price: 4000, compare_at_price: null, available: true } } });
+    assert(sale.includes('price--sale') && /data-price-compare(?![^>]*hidden)/.test(sale) && sale.includes('$55.00'), 'sale price not shown');
+    assert(!full.includes('price--sale') && /data-price-compare hidden/.test(full), 'compare shown without a sale');
+  });
+
   /* ---------------- Layout stability ---------------- */
   await check('Performance', 'Cumulative layout shift during load (measured, not a Lighthouse score)', async () => {
     const out = [];
@@ -467,6 +537,7 @@ try {
 } finally {
   await browser.close();
   server.kill();
+  plainServer.kill();
   const passed = results.filter((r) => r.ok).length;
   fs.writeFileSync(path.resolve('dev/tests/results.json'), JSON.stringify({ ranAt: new Date().toISOString(), passed, failed: results.length - passed, results }, null, 2));
   console.log(`\n${passed}/${results.length} checks passed`);

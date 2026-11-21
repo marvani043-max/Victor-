@@ -12,7 +12,7 @@
 
     {%- capture seo_title -%}
       {%- if request.page_type == 'index' -%}
-        {{ shop.name }}: hoodies, tees and crop tops from {{ settings.brand_location }}
+        {{ shop.name }}: clothing from {{ settings.brand_location }}
       {%- else -%}
         {{ page_title }}
         {%- if current_tags %} – {{ current_tags | join: ', ' }}{% endif -%}
@@ -83,7 +83,9 @@
           errorSummary: {{ 'forms.error_summary' | t | json }},
           updating: {{ 'collections.updating' | t | json }},
           cartUpdating: {{ 'cart.updating' | t | json }},
-          sending: {{ 'forms.sending' | t | json }}
+          sending: {{ 'forms.sending' | t | json }},
+          priceRegular: {{ 'products.price_regular' | t | json }},
+          priceSale: {{ 'products.price_sale' | t | json }}
         }
       };
     </script>

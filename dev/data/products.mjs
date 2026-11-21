@@ -20,7 +20,7 @@ export const PRODUCTS = [
     colors: ['Black', 'Pink'],
     sizes: SIZES_S_2XL,
     available: true,
-    fit: 'oversized',
+    fit: null /* inferred from the title */,
     description: `<p>Cut big on purpose, with a faded wash that runs lighter across the shoulders and deeper toward the hem, so it looks lived-in from the first wear.</p><p>The PKS script sits small on the chest and the back stays clean. Pull it over a tee after a cold morning outside, or wear it straight through the week.</p>`,
     media: [
       ['hoodie-faded-black-front', 'Black, front view'],
@@ -45,7 +45,7 @@ export const PRODUCTS = [
     colors: ['Black', 'Pink'],
     sizes: SIZES_S_2XL,
     available: true,
-    fit: 'oversized',
+    fit: null /* inferred from the title */,
     description: `<p>The same oversized, faded hoodie with something to say from behind: hand-drawn PEAK SIDE lettering fills the back, and the PKS script sits on the chest.</p><p>The one to wear when you're walking ahead of the group.</p>`,
     media: [
       ['hoodie-both-black-front', 'Black, front view'],
@@ -70,13 +70,15 @@ export const PRODUCTS = [
     sizes: SIZES_S_2XL,
     available: true,
     fit: 'boxy',
+    // Mock of Shopify variant images: each colour's variants point at its front photo
+    variantImages: { Black: 'zip-black-front', 'Navy Blue': 'zip-navy-front', 'Flower Gray': 'zip-grey-front' },
     description: `<p>A boxy full-zip with a two-way zipper, so you can open it from the bottom when you sit down without unzipping the whole thing.</p><p>The PKS script is on the chest. Pick it in black, navy or a light flower gray.</p>`,
     media: [
-      ['zip-black-front', 'Black, front view'],
+      ['zip-black-front', 'Double Zip Hoodie'],
       ['zip-black-back', 'Black, back view'],
-      ['zip-navy-front', 'Navy Blue, front view'],
+      ['zip-navy-front', 'Double Zip Hoodie'],
       ['zip-navy-back', 'Navy Blue, back view'],
-      ['zip-grey-front', 'Flower Gray, front view'],
+      ['zip-grey-front', 'Double Zip Hoodie'],
       ['zip-grey-back', 'Flower Gray, back view'],
       ['tunnel-zip-black', 'Black, worn in a graffiti tunnel'],
       ['tunnel-zip-navy', 'Navy Blue, worn in a graffiti tunnel'],
@@ -101,8 +103,8 @@ export const PRODUCTS = [
     fit: null,
     description: `<p>The hoodie Peak Side reaches for when there's snow on the ground. An off-white pullover with a small globe graphic on the chest and a big globe-and-lettering print across the back.</p><p>In the founder's words: "this is my go-to hoodie."</p>`,
     media: [
-      ['globe-front', 'White, front view, laid flat'],
-      ['globe-back', 'White, back view, laid flat'],
+      ['globe-front', 'White Globe Hoodie'],
+      ['globe-back', 'White Globe Hoodie'],
     ],
     details: [
       { label: 'Globe graphic on the chest', note: 'Small graphic on the chest.', view: 'front', x: 63, y: 22 },
@@ -164,7 +166,7 @@ export const PRODUCTS = [
     colors: ['Faded Black'],
     sizes: SIZES_S_2XL,
     available: true,
-    fit: 'boxy',
+    fit: null /* inferred from the title */,
     description: `<p>The boxy cut of the Summer Edition, in black with a light fade that makes the blossom graphic stand out.</p><p>Peak Side calls it the one that makes an outfit pop.</p>`,
     media: [
       ['tee-black-boxy-alt', 'Faded Black, front view'],
@@ -211,7 +213,7 @@ export const PRODUCTS = [
     colors: ['White'],
     sizes: SIZES_S_2XL,
     available: true,
-    fit: 'boxy',
+    fit: null /* inferred from the title */,
     fitNote: 'Boxy fit. Stay true to size.',
     description: `<p>Exactly the Summer Edition design, cut boxy: the same blossom graphic front and back, with a squarer shape that hangs straight.</p>`,
     media: [
@@ -235,7 +237,7 @@ export const PRODUCTS = [
     colors: ['Black'],
     sizes: SIZES_S_2XL,
     available: true,
-    fit: 'cropped',
+    fit: null /* inferred from the title */,
     fitNote: 'For the best fit, size down.',
     description: `<p>A cropped tee with a wide neckline made to sit off the shoulder, finished with the blossom oval on the chest.</p><p>Made for summer and fall. Peak Side recommends sizing down for the best fit.</p>`,
     media: [
@@ -260,7 +262,7 @@ export const PRODUCTS = [
     colors: ['White'],
     sizes: SIZES_S_2XL,
     available: true,
-    fit: 'cropped',
+    fit: null /* inferred from the title */,
     fitNote: 'For the best fit, size down.',
     description: `<p>The white version of the off-shoulder crop: a wide neckline, a cropped length and the blossom oval on the chest.</p><p>Made for summer and fall. Peak Side recommends sizing down for the best fit.</p>`,
     media: [
@@ -285,7 +287,7 @@ export const PRODUCTS = [
     colors: ['Classic Black'],
     sizes: ['S', 'M', 'L'],
     available: true,
-    fit: 'cropped',
+    fit: null /* inferred from the title */,
     description: `<p>A washed charcoal crop with contrast stitching and the Peak Side oval on the chest.</p><p>Part of the Summer Edition, and easy to match with almost any outfit.</p>`,
     media: [
       ['crop-grey-front', 'Classic Black, front view'],

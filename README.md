@@ -16,10 +16,9 @@ Products, checkout, payments and analytics stay in Shopify admin.
 ```bash
 npm install
 npm run dev            # local preview at http://localhost:4173 (real theme files, mock data)
-npm test               # 31 end-to-end checks (Playwright + axe-core) → dev/tests/results.json
+npm test               # 36 end-to-end checks (Playwright + axe-core) → dev/tests/results.json
 npm run theme:check    # Shopify Theme Check
 npm run contrast       # WCAG contrast for every colour token pair → docs/contrast-report.md
-npm run products:csv   # docs/import/products.csv, redirects.csv, garment-details.json
 npm run screenshots    # docs/screenshots/*.jpg
 npm run package        # dist/peak-side-field-tag-theme.zip, ready to upload to Shopify
 npm run artifact       # dist/artifact/: static multi-page design preview (shared as a private Claude Artifact)
@@ -30,18 +29,13 @@ Requires Node 20 or later. Playwright with Chromium must be available for `npm t
 The preview server is a development tool, not Shopify. It renders `theme/` with LiquidJS and imitates the cart, filter, section-rendering and form endpoints.
 Checkout, email delivery and analytics are **simulated**, and every page carries a "LOCAL PREVIEW" banner.
 
-## Installing on Shopify
+## Installing on Peak Side's existing Shopify store
 
-Follow [`docs/07-HANDOFF-CHECKLIST.md`](docs/07-HANDOFF-CHECKLIST.md) §B:
-1. Metafield and metaobject definitions.
-2. CSV import.
-3. Photos, using the alt-text convention.
-4. Collections, pages and menus.
-5. Search & Discovery filters.
-6. Theme upload.
-7. Privacy settings.
-8. Redirects.
-9. Real-store testing.
+The theme reads the store's own catalogue: products, photos, prices, inventory, variants, collections (including Cabin plaid, Tops and Bottoms), menus and cart. Checkout is Shopify's.
+
+1. Use `release/peak-side-field-tag-theme-v1.1.0.zip` (or rebuild it with `npm run package`).
+2. Shopify admin → Online Store → Themes → **Add theme → Upload zip file**. It installs **unpublished**; store data and the live theme are untouched.
+3. Preview with **Customize** and work through [`docs/09-SHOPIFY-STORE-CONNECTION.md`](docs/09-SHOPIFY-STORE-CONNECTION.md).
 
 ## Repository layout
 
@@ -73,6 +67,7 @@ docs/                       Strategy, design system, interactions, asset registe
 | [06 Analytics and privacy](docs/06-ANALYTICS-AND-PRIVACY.md) | Where to see visitor numbers, event dictionary, data inventory |
 | [07 Handoff checklist](docs/07-HANDOFF-CHECKLIST.md) | Agency–client confirmations and Shopify setup steps |
 | [08 Test report](docs/08-TEST-REPORT.md) | What was tested, results, what remains untested |
+| [09 Shopify store connection](docs/09-SHOPIFY-STORE-CONNECTION.md) | v1.1 changes for the existing store, install steps, what to confirm |
 
 ## What's real and what isn't
 

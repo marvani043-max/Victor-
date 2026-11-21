@@ -1,0 +1,118 @@
+{
+  "_note": "LOCAL PREVIEW ONLY. Merged into theme templates by dev/store.mjs so the preview shows the home and story pages with their photos. Never part of the theme ZIP. Disable with PS_DEMO=0.",
+  "index": {
+    "sections": {
+      "lookbook": {
+        "type": "lookbook",
+        "blocks": {
+          "l1": {
+            "type": "look",
+            "settings": {
+              "image": "shopify://shop_images/trail-overlook.jpg",
+              "alt": "White Summer Edition tee seen from behind at a canyon overlook",
+              "place": "trail",
+              "caption": "Back print, canyon view.",
+              "product_1": "summer-edition-tee-white",
+              "x_1": 52,
+              "y_1": 34
+            }
+          },
+          "l2": {
+            "type": "look",
+            "settings": {
+              "image": "shopify://shop_images/tunnel-pink-hoodie.jpg",
+              "alt": "Two friends against a graffiti wall, one in a pink faded hoodie, one showing PEAK SIDE lettering on the back of a black hoodie",
+              "place": "town",
+              "caption": "Pink and black, front and back.",
+              "product_1": "oversized-faded-hoodie-front-back",
+              "x_1": 70,
+              "y_1": 50,
+              "product_2": "oversized-faded-hoodie-front-logo",
+              "x_2": 26,
+              "y_2": 46
+            }
+          },
+          "l3": {
+            "type": "look",
+            "settings": {
+              "image": "shopify://shop_images/trail-falls-front.jpg",
+              "alt": "Black Summer Edition tee worn on the rocks below a waterfall",
+              "place": "trail",
+              "caption": "Granite and spray.",
+              "product_1": "summer-edition-tee-black",
+              "x_1": 30,
+              "y_1": 52
+            }
+          },
+          "l4": {
+            "type": "look",
+            "settings": {
+              "image": "shopify://shop_images/tunnel-crop-duo-2.jpg",
+              "alt": "Two friends in black off-shoulder crop tops in front of a graffiti wall",
+              "place": "town",
+              "caption": "Off-shoulder crop tops.",
+              "product_1": "off-shoulder-crop-top-black",
+              "x_1": 36,
+              "y_1": 52
+            }
+          },
+          "l5": {
+            "type": "look",
+            "settings": {
+              "image": "shopify://shop_images/tunnel-zip-navy.jpg",
+              "alt": "Navy double zip hoodie worn in a graffiti tunnel at dusk",
+              "place": "town",
+              "caption": "Navy double zip.",
+              "product_1": "double-zip-hoodie",
+              "x_1": 47,
+              "y_1": 50
+            }
+          },
+          "l6": {
+            "type": "look",
+            "settings": {
+              "image": "shopify://shop_images/night-boxy-trio.jpg",
+              "alt": "Three friends at night showing the boxy Summer Edition tee's back print",
+              "place": "town",
+              "caption": "Boxy tee, full back print.",
+              "product_1": "summer-edition-boxy-tee-white",
+              "x_1": 21,
+              "y_1": 34
+            }
+          }
+        },
+        "block_order": [
+          "l1",
+          "l2",
+          "l3",
+          "l4",
+          "l5",
+          "l6"
+        ],
+        "settings": {}
+      },
+      "story": {
+        "settings": {
+          "image": "shopify://shop_images/tunnel-crew.jpg",
+          "alt": "A group of friends in Peak Side tees, crop tops and hoodies lined up in front of a graffiti tunnel"
+        }
+      }
+    }
+  },
+  "page.story": {
+    "sections": {
+      "intro": {
+        "settings": {
+          "image": "shopify://shop_images/trail-ridge.jpg",
+          "alt": "Wearing the white Summer Edition tee on a granite boulder above the treeline"
+        }
+      },
+      "community": {
+        "settings": {
+          "image": "shopify://shop_images/tunnel-crew.jpg",
+          "alt": "A group of friends in Peak Side tees, crop tops and hoodies lined up in front of a graffiti tunnel"
+        }
+      }
+    }
+  }
+}

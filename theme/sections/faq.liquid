@@ -4,8 +4,9 @@
       <p class="kicker mono">{{ section.settings.kicker | escape }}</p>
       <h2 class="h2" id="FaqHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
       {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
-      {%- if settings.contact_page != blank -%}
-        <a class="button button--secondary" href="{{ settings.contact_page.url }}">{{ section.settings.contact_label | escape }}</a>
+      {%- assign contact = settings.contact_page | default: pages.contact -%}
+      {%- if contact != blank and contact.url -%}
+        <a class="button button--secondary" href="{{ contact.url }}">{{ section.settings.contact_label | escape }}</a>
       {%- endif -%}
     </div>
     <div class="faq__list">

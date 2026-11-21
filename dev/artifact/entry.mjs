@@ -5,9 +5,10 @@
 import { configure, newCart, renderGet, cartAdd, cartChange } from '../store.mjs';
 import { liquidFs } from './fs-shims.mjs';
 import { rewriteHtml, fileToPath } from './rewrite.mjs';
+import demo from '../data/demo-content.json';
 
 const ORIGIN = 'https://preview.local';
-configure({ origin: ORIGIN, banner: '', transform: rewriteHtml, engineOptions: { fs: liquidFs } });
+configure({ origin: ORIGIN, banner: '', transform: rewriteHtml, demo, engineOptions: { fs: liquidFs } });
 
 /* ---------- cart, kept in this browser only ---------- */
 const CART_KEY = 'ps-preview-cart';

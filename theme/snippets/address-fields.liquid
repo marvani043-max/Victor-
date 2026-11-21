@@ -1,0 +1,24 @@
+{%- comment -%} Address form fields. Params: form, prefix (unique id prefix) {%- endcomment -%}
+<div class="field-row">
+  <div class="field field--grow"><label class="field__label" for="{{ prefix }}-first">{{ 'customer.first_name' | t }}</label><input class="field__input" id="{{ prefix }}-first" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name"></div>
+  <div class="field field--grow"><label class="field__label" for="{{ prefix }}-last">{{ 'customer.last_name' | t }}</label><input class="field__input" id="{{ prefix }}-last" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name"></div>
+</div>
+<div class="field"><label class="field__label" for="{{ prefix }}-company">{{ 'customer.addresses.company' | t }}</label><input class="field__input" id="{{ prefix }}-company" name="address[company]" value="{{ form.company }}" autocomplete="organization"></div>
+<div class="field"><label class="field__label" for="{{ prefix }}-address1">{{ 'customer.addresses.address1' | t }}</label><input class="field__input" id="{{ prefix }}-address1" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1"></div>
+<div class="field"><label class="field__label" for="{{ prefix }}-address2">{{ 'customer.addresses.address2' | t }}</label><input class="field__input" id="{{ prefix }}-address2" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2"></div>
+<div class="field-row">
+  <div class="field field--grow"><label class="field__label" for="{{ prefix }}-city">{{ 'customer.addresses.city' | t }}</label><input class="field__input" id="{{ prefix }}-city" name="address[city]" value="{{ form.city }}" autocomplete="address-level2"></div>
+  <div class="field field--grow"><label class="field__label" for="{{ prefix }}-zip">{{ 'customer.addresses.zip' | t }}</label><input class="field__input" id="{{ prefix }}-zip" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code"></div>
+</div>
+<div class="field-row">
+  <div class="field field--grow">
+    <label class="field__label" for="{{ prefix }}-country">{{ 'customer.addresses.country' | t }}</label>
+    <div class="select">
+      <select class="field__input" id="{{ prefix }}-country" name="address[country]" data-default="{{ form.country }}" autocomplete="country">{{ all_country_option_tags }}</select>
+      {% render 'icon', name: 'chevron' %}
+    </div>
+  </div>
+  <div class="field field--grow"><label class="field__label" for="{{ prefix }}-province">{{ 'customer.addresses.province' | t }}</label><input class="field__input" id="{{ prefix }}-province" name="address[province]" value="{{ form.province }}" autocomplete="address-level1"></div>
+</div>
+<div class="field"><label class="field__label" for="{{ prefix }}-phone">{{ 'forms.phone' | t }}</label><input class="field__input" type="tel" id="{{ prefix }}-phone" name="address[phone]" value="{{ form.phone }}" autocomplete="tel"></div>
+<label class="checkbox"><input type="checkbox" name="address[default]" value="1"{% if form.set_as_default_checkbox contains 'checked' %} checked{% endif %}> <span>{{ 'customer.addresses.default' | t }}</span></label>

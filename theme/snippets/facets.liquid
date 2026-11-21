@@ -97,7 +97,7 @@
                       <input type="checkbox" class="facet-option__input" name="{{ value.param_name }}" value="{{ value.value | escape }}"
                         {% if value.active %}checked{% endif %} {% if disabled %}disabled{% endif %}>
                       {%- if is_color -%}
-                        <span class="swatch swatch--sm" style="--swatch: {% render 'swatch-color', value: value, label: value.label %}" aria-hidden="true"></span>
+                        <span class="swatch swatch--sm" style="{% render 'swatch-style', value: value, label: value.label %}" aria-hidden="true"></span>
                       {%- else -%}
                         <span class="facet-option__box" aria-hidden="true">{% render 'icon', name: 'check' %}</span>
                       {%- endif -%}

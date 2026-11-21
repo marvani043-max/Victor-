@@ -1,17 +1,26 @@
-{%- comment -%} Params: product, variant (optional), class {%- endcomment -%}
+{%- comment -%}
+  Price from Shopify. Shows a struck-through compare-at price when the store sets one higher than the price.
+  Params: product, variant (optional), class
+{%- endcomment -%}
 {%- liquid
   assign target = variant | default: product.selected_or_first_available_variant
   assign show_range = false
   if variant == blank and product.price_varies
     assign show_range = true
   endif
+  assign on_sale = false
+  if target.compare_at_price > target.price
+    assign on_sale = true
+  endif
 -%}
-<span class="price{% if class %} {{ class }}{% endif %}{% unless target.available %} price--sold-out{% endunless %}" data-price>
-  <span class="visually-hidden">{{ 'products.price_regular' | t }}</span>
+<span class="price{% if class %} {{ class }}{% endif %}{% unless target.available %} price--sold-out{% endunless %}{% if on_sale %} price--sale{% endif %}" data-price>
   {%- if show_range -%}
+    <span class="visually-hidden">{{ 'products.price_regular' | t }}</span>
     {%- assign min_price = product.price_min | money -%}
     {{ 'general.from_price' | t: price: min_price }}
   {%- else -%}
-    {{ target.price | money }}
+    <span class="visually-hidden" data-price-label>{% if on_sale %}{{ 'products.price_sale' | t }}{% else %}{{ 'products.price_regular' | t }}{% endif %}</span>
+    <span data-price-current>{{ target.price | money }}</span>
+    <s class="price__compare" data-price-compare{% unless on_sale %} hidden{% endunless %}><span class="visually-hidden">{{ 'products.price_compare' | t }}</span> <span data-price-compare-value>{{ target.compare_at_price | money }}</span></s>
   {%- endif -%}
 </span>

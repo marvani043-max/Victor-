@@ -33,12 +33,14 @@ const RAW = PRODUCTS.map((def, pi) => {
     return { id: id * 10 + i, media_type: 'image', alt, position: i + 1, preview_image: img, src: img };
   }).filter((m) => m.preview_image);
   const variants = [];
+  const mediaFor = (color) => { const name = def.variantImages?.[color]; return name ? media.find((m) => m.preview_image.src === name) || null : null; };
   for (const color of def.colors) {
     for (const size of def.sizes) {
       variants.push({
+        featured_media: mediaFor(color),
         id: variantId++, title: `${color} / ${size}`, option1: color, option2: size, option3: null, options: [color, size],
         available: def.available, price: cents(def.price), compare_at_price: null, sku: '', requires_shipping: true,
-        featured_media: null, url: `/products/${def.handle}?variant=${variantId - 1}`,
+        url: `/products/${def.handle}?variant=${variantId - 1}`,
       });
     }
   }
@@ -73,7 +75,7 @@ export function buildProduct(raw, selectedVariantId) {
   product.toJSON = () => ({
     id, title: def.title, handle: def.handle, description: def.description, type: def.type, vendor: 'Peak Side', tags: def.tags,
     price: product.price, available: product.available, options: optionNames,
-    variants: variants.map(({ id, title, option1, option2, option3, options, available, price, compare_at_price, sku }) => ({ id, title, option1, option2, option3, options, available, price, compare_at_price, sku })),
+    variants: variants.map(({ id, title, option1, option2, option3, options, available, price, compare_at_price, sku, featured_media }) => ({ id, title, option1, option2, option3, options, available, price, compare_at_price, sku, featured_media: featured_media ? { id: featured_media.id, alt: featured_media.alt } : null })),
     media: media.map((m) => ({ id: m.id, alt: m.alt, position: m.position, media_type: 'image' })),
   });
   return product;
@@ -265,6 +267,12 @@ export function createEngine(opts = {}) {
     });
   });
   liquid.registerFilter('format_code', (s) => s);
+  // Not used by the mock catalogue; registered so templates that call them render in the preview.
+  liquid.registerFilter('video_tag', () => '<video controls muted playsinline></video>');
+  liquid.registerFilter('external_video_tag', () => '<iframe title="video"></iframe>');
+  liquid.registerFilter('time_tag', (d) => `<time>${d}</time>`);
+  liquid.registerFilter('format_address', (a) => (a ? `<address>${[a.name, a.address1, a.city, a.country].filter(Boolean).join('<br>')}</address>` : ''));
+  liquid.registerFilter('link_to', (text, url) => `<a href="${url}">${text}</a>`);
 
   // --- tags
   const rawBlock = (name) => ({

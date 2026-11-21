@@ -10,7 +10,8 @@ Passing here means the theme's front-end behaves as specified in that environmen
 | --- | --- |
 | Shopify Theme Check (`npm run theme:check`, @shopify/theme-check-node 3.22, recommended config) | **0 offenses** |
 | Colour contrast for every token pair used (`npm run contrast`) | **33 / 33 pass** WCAG 2.2 AA (see `contrast-report.md`) |
-| End-to-end checks (`npm test`) | **31 / 31 pass** |
+| End-to-end checks (`npm test`) | **36 / 36 pass** (v1.1) |
+| Theme Check on the extracted upload ZIP | **0 offenses**; no preview files, mock data or hard-coded prices inside |
 
 ### End-to-end checks
 
@@ -41,6 +42,23 @@ Passing here means the theme's front-end behaves as specified in that environmen
 
 On real touch devices the hover-only back images aren't downloaded, so the collection figure there should be lower (not measured).
 No frame-rate or Lighthouse score is claimed.
+
+### v1.1 store-connection checks
+
+These were added for the existing store. They run against the mock catalogue, set up to look like a real store: plain alt text, variant images, and no fit metafields on most products.
+
+- **Variant images:** with plain alt text, variant images still map photos to colours, and choosing Flower Gray shows that variant's own photo and its 3 thumbnails.
+- **Every photo reachable:** thumbnails, previous/next and arrow keys work. The counter ("1 / 2") replaces view buttons when views are unknown.
+- **Fit:** the cut comes from the metafield, then the tag, then the title. Crop tops are inferred from their titles, and products with no signal show no fit.
+- **Theme as uploaded** (no preview demo photos):
+  - "Shop by type" lists the store's collections automatically.
+  - No empty photo boxes.
+  - Story falls back to text.
+  - The hero picks an in-stock product.
+  - No overflow.
+- **Sale prices:** the compare-at price shows struck through only when it's higher than the price.
+
+**Not verified:** behaviour on Peak Side's real store. Collection handles, option names and photo setup could not be checked because the admin screenshots weren't received. See `09-SHOPIFY-STORE-CONNECTION.md`.
 
 ## Status of each part
 

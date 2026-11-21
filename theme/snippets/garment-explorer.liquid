@@ -1,58 +1,97 @@
 {%- comment -%}
-  GARMENT EXPLORER: the signature interaction.
-  Colourway → view (front / back / detail / worn) → numbered detail markers → details list.
+  GARMENT EXPLORER: the signature interaction, driven entirely by the product's Shopify data.
+  Colourway → photo (thumbnails, previous/next, front/back/detail/worn when the alt text says so) → numbered details.
   Params:
     product (required)
     explorer_id: unique id (section id)
     own_swatches: true to render colour controls inside the explorer (home page). On product pages the variant picker drives it.
+    thumbs: true to show a thumbnail strip (product pages)
     priority: load the first image eagerly
     sizes: image sizes attribute
     compact: true for a shorter details list (labels only; notes stay available to screen readers)
-  Data:
-    Media alt text names colour + view (see snippets/media-info.liquid).
-    product.metafields.custom.details: list of "garment_detail" metaobjects with fields label, note, view (front|back), x, y (0–100, % of the image).
-  Without JavaScript every image is shown in a stacked gallery and the details list stays readable.
+  How photos map to colours (snippets/media-info.liquid): a colour name in the alt text, otherwise the variant whose image it is.
+  Photos that match no colour show for every colour. Optional: product.metafields.custom.details (list of garment_detail
+  metaobjects: label, note, view, x, y) adds numbered markers.
+  Without JavaScript every photo is shown in a stacked gallery.
 {%- endcomment -%}
 {%- liquid
+  capture color_pos_s
+    render 'color-position', product: product
+  endcapture
+  assign color_pos = color_pos_s | plus: 0
   assign color_option = nil
-  assign color_index = 0
   for option in product.options_with_values
-    assign on = option.name | downcase
-    if on == 'color' or on == 'colour'
+    if option.position == color_pos
       assign color_option = option
-      assign color_index = forloop.index
     endif
   endfor
   assign current_color = ''
   if color_option
     assign current_color = color_option.selected_value | handle
   endif
+  assign initial_media_id = product.selected_or_first_available_variant.featured_media.id
   assign details = product.metafields.custom.details.value
   assign stage_sizes = sizes | default: '(min-width: 990px) 55vw, 100vw'
   assign view_list = 'front,back,detail,worn' | split: ','
+
+  comment
+    Classify every media item once. Each entry: id|colour|view
+  endcomment
+  assign views_seen = ''
+  assign view_count = 0
+  assign slide_count = 0
+  assign initial_found = false
+  for media in product.media
+    if media.media_type == 'image' or media.media_type == 'video' or media.media_type == 'external_video'
+      capture info
+        render 'media-info', media: media, product: product, color_pos: color_pos
+      endcapture
+      assign view_part = info | split: '|' | last
+      unless views_seen contains view_part
+        assign views_seen = views_seen | append: view_part | append: ','
+        assign view_count = view_count | plus: 1
+      endunless
+      if media.id == initial_media_id
+        assign initial_found = true
+      endif
+      assign slide_count = slide_count | plus: 1
+    endif
+  endfor
+  assign has_views = false
+  if view_count > 1
+    assign has_views = true
+  endif
 -%}
 <script src="{{ 'explorer.js' | asset_url }}" defer></script>
 <garment-explorer
-  class="explorer{% if compact %} explorer--compact{% endif %}"
+  class="explorer{% if compact %} explorer--compact{% endif %}{% unless has_views %} explorer--no-views{% endunless %}"
   id="Explorer-{{ explorer_id }}"
   data-color="{{ current_color }}"
   data-product="{{ product.handle }}"
-  {% if color_option %}data-color-index="{{ color_index }}"{% endif %}
+  data-has-views="{{ has_views }}"
 >
   <div class="explorer__stage">
     <div class="explorer__frame" data-stage>
       {%- assign shown_first = false -%}
+      {%- assign slide_n = 0 -%}
       {%- for media in product.media -%}
-        {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
-        {%- capture info -%}{%- render 'media-info', media: media, product: product -%}{%- endcapture -%}
+        {%- unless media.media_type == 'image' or media.media_type == 'video' or media.media_type == 'external_video' -%}{%- continue -%}{%- endunless -%}
+        {%- capture info -%}{%- render 'media-info', media: media, product: product, color_pos: color_pos -%}{%- endcapture -%}
         {%- liquid
+          assign slide_n = slide_n | plus: 1
           assign parts = info | split: '|'
           assign m_color = parts[0]
           assign m_view = parts[1]
           assign is_initial = false
           if shown_first == false
-            if m_color == current_color or m_color == blank or current_color == blank
+            if initial_found
+              if media.id == initial_media_id
+                assign is_initial = true
+              endif
+            elsif m_color == current_color or m_color == blank or current_color == blank
               assign is_initial = true
+            endif
+            if is_initial
               assign shown_first = true
             endif
           endif
@@ -61,7 +100,7 @@
             assign eager = true
           endif
           assign has_markers = false
-          if details != blank
+          if details != blank and media.media_type == 'image'
             if m_view == 'front' or m_view == 'back'
               assign has_markers = true
             endif
@@ -73,56 +112,91 @@
           data-color="{{ m_color }}"
           data-view="{{ m_view }}"
           data-media-id="{{ media.id }}"
+          data-media-type="{{ media.media_type }}"
           data-zoom-src="{{ media.preview_image | image_url: width: 1800 }}"
           {% if is_initial %}data-active{% endif %}
         >
-          {%- if m_view == 'worn' or m_view == 'detail' -%}
-            {% render 'image', image: media.preview_image, sizes: stage_sizes, class: 'explorer__img explorer__img--cover', priority: eager, alt: media.alt %}
-          {%- else -%}
-            <div class="explorer__fit">
-              <div class="explorer__canvas" style="--ratio: {{ media.preview_image.aspect_ratio | default: 1 }}">
-                {%- capture contain_class -%}explorer__img explorer__img--contain{% if media.preview_image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}
-                {% render 'image', image: media.preview_image, sizes: stage_sizes, class: contain_class, priority: eager, alt: media.alt %}
-                {%- if has_markers -%}
-                  <div class="explorer__markers">
-                    {%- for detail in details -%}
-                      {%- liquid
-                        assign d_view = detail.view.value | default: detail.view | default: 'front' | downcase
-                        assign d_label = detail.label.value | default: detail.label
-                        assign d_x = detail.x.value | default: detail.x | default: 50
-                        assign d_y = detail.y.value | default: detail.y | default: 50
-                      -%}
-                      {%- if d_view == m_view -%}
-                        <button
-                          type="button"
-                          class="marker"
-                          data-marker="{{ forloop.index }}"
-                          style="--x: {{ d_x }}%; --y: {{ d_y }}%;"
-                          aria-label="{{ 'products.detail_marker' | t: number: forloop.index, label: d_label }}"
-                          aria-controls="Detail-{{ explorer_id }}-{{ forloop.index }}"
-                          aria-pressed="false"
-                        >{{ forloop.index }}</button>
-                      {%- endif -%}
-                    {%- endfor -%}
+          {%- case media.media_type -%}
+            {%- when 'video' -%}
+              {{ media | video_tag: image_size: '1100x', controls: true, muted: true, playsinline: true, loop: true, preload: 'none', class: 'explorer__video' }}
+            {%- when 'external_video' -%}
+              <div class="explorer__video explorer__video--external">{{ media | external_video_tag: loading: 'lazy' }}</div>
+            {%- else -%}
+              {%- if m_view == 'worn' or m_view == 'detail' -%}
+                {% render 'image', image: media.preview_image, sizes: stage_sizes, class: 'explorer__img explorer__img--cover', priority: eager, alt: media.alt %}
+              {%- else -%}
+                <div class="explorer__fit">
+                  <div class="explorer__canvas" style="--ratio: {{ media.preview_image.aspect_ratio | default: 1 }}">
+                    {%- capture contain_class -%}explorer__img explorer__img--contain{% if media.preview_image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}
+                    {% render 'image', image: media.preview_image, sizes: stage_sizes, class: contain_class, priority: eager, alt: media.alt %}
+                    {%- if has_markers -%}
+                      <div class="explorer__markers">
+                        {%- for detail in details -%}
+                          {%- liquid
+                            assign d_view = detail.view.value | default: detail.view | default: 'front' | downcase
+                            assign d_label = detail.label.value | default: detail.label
+                            assign d_x = detail.x.value | default: detail.x | default: 50
+                            assign d_y = detail.y.value | default: detail.y | default: 50
+                          -%}
+                          {%- if d_view == m_view -%}
+                            <button
+                              type="button"
+                              class="marker"
+                              data-marker="{{ forloop.index }}"
+                              style="--x: {{ d_x }}%; --y: {{ d_y }}%;"
+                              aria-label="{{ 'products.detail_marker' | t: number: forloop.index, label: d_label }}"
+                              aria-controls="Detail-{{ explorer_id }}-{{ forloop.index }}"
+                              aria-pressed="false"
+                            >{{ forloop.index }}</button>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
                   </div>
-                {%- endif -%}
-              </div>
-            </div>
-          {%- endif -%}
+                </div>
+              {%- endif -%}
+          {%- endcase -%}
         </figure>
       {%- endfor -%}
-      {%- if product.media.size == 0 -%}
+      {%- if slide_count == 0 -%}
         <div class="explorer__empty">{{ product.title }}</div>
       {%- endif -%}
     </div>
-    <p class="explorer__corner explorer__corner--view mono" aria-hidden="true" data-view-label>{{ 'products.view_front' | t }}</p>
+    <p class="explorer__corner explorer__corner--view mono" aria-hidden="true" data-view-label>
+      {%- if has_views -%}{{ 'products.view_front' | t }}{%- else -%}{{ 'products.image_counter' | t: number: 1, total: slide_count }}{%- endif -%}
+    </p>
     {%- if color_option -%}
       <p class="explorer__corner explorer__corner--color mono" aria-hidden="true" data-color-label>{{ color_option.selected_value }}</p>
     {%- endif -%}
-    <button type="button" class="explorer__zoom icon-button" data-zoom aria-haspopup="dialog">
-      {% render 'icon', name: 'zoom' %}<span class="visually-hidden">{{ 'products.zoom' | t }}</span>
-    </button>
+    {%- if slide_count > 1 -%}
+      <button type="button" class="explorer__nav explorer__nav--prev icon-button" data-prev>
+        {% render 'icon', name: 'arrow' %}<span class="visually-hidden">{{ 'products.previous_image' | t }}</span>
+      </button>
+      <button type="button" class="explorer__nav explorer__nav--next icon-button" data-next>
+        {% render 'icon', name: 'arrow' %}<span class="visually-hidden">{{ 'products.next_image' | t }}</span>
+      </button>
+    {%- endif -%}
+    {%- if slide_count > 0 -%}
+      <button type="button" class="explorer__zoom icon-button" data-zoom aria-haspopup="dialog">
+        {% render 'icon', name: 'zoom' %}<span class="visually-hidden">{{ 'products.zoom' | t }}</span>
+      </button>
+    {%- endif -%}
   </div>
+
+  {%- if thumbs and slide_count > 1 -%}
+    <div class="explorer__thumbs" role="group" aria-label="{{ 'products.images_label' | t }}" data-thumbs>
+      {%- assign thumb_n = 0 -%}
+      {%- for media in product.media -%}
+        {%- unless media.media_type == 'image' or media.media_type == 'video' or media.media_type == 'external_video' -%}{%- continue -%}{%- endunless -%}
+        {%- capture info -%}{%- render 'media-info', media: media, product: product, color_pos: color_pos -%}{%- endcapture -%}
+        {%- assign thumb_n = thumb_n | plus: 1 -%}
+        <button type="button" class="explorer__thumb" data-thumb="{{ media.id }}" data-color="{{ info | split: '|' | first }}" aria-pressed="false"
+          aria-label="{{ 'products.show_image' | t: number: thumb_n, total: slide_count }}{% if media.alt != blank %}: {{ media.alt | escape }}{% endif %}">
+          {% render 'image', image: media.preview_image, alt: '', sizes: '72px', class: 'explorer__thumb-img', widths: '120,180' %}
+        </button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
 
   <div class="explorer__controls">
     {%- if own_swatches and color_option and color_option.values.size > 1 -%}
@@ -139,7 +213,7 @@
                 data-color-name="{{ value.name | escape }}"
                 {% if value.name == color_option.selected_value %}checked{% endif %}
               >
-              <span class="swatch" style="--swatch: {% render 'swatch-color', value: value %}" aria-hidden="true"></span>
+              <span class="swatch" style="{% render 'swatch-style', value: value, product: product, color_pos: color_pos %}" aria-hidden="true"></span>
               <span class="visually-hidden">{{ value.name }}</span>
             </label>
           {%- endfor -%}
@@ -147,12 +221,15 @@
       </fieldset>
     {%- endif -%}
 
-    <div class="view-switch" role="group" aria-label="{{ 'products.views_label' | t }}" data-views>
-      {%- for v in view_list -%}
-        {%- capture v_key -%}products.view_{{ v }}{%- endcapture -%}
-        <button type="button" class="view-switch__btn mono" data-view-btn="{{ v }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ v_key | t }}</button>
-      {%- endfor -%}
-    </div>
+    {%- if has_views -%}
+      <div class="view-switch" role="group" aria-label="{{ 'products.views_label' | t }}" data-views>
+        {%- for v in view_list -%}
+          {%- unless views_seen contains v -%}{%- continue -%}{%- endunless -%}
+          {%- capture v_key -%}products.view_{{ v }}{%- endcapture -%}
+          <button type="button" class="view-switch__btn mono" data-view-btn="{{ v }}" aria-pressed="false">{{ v_key | t }}</button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 
   {%- if details != blank -%}

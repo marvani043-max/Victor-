@@ -15,8 +15,9 @@
       this.errorBox = this.form.querySelector('[data-form-error]');
       this.section = this.closest('[data-section-id]');
       this.optionNames = (this.data.options || []).map((o) => (typeof o === 'string' ? o : o.name));
-      this.colorPos = this.optionNames.findIndex((n) => /^colou?r$/i.test(n)) + 1;
-      this.sizePos = this.optionNames.findIndex((n) => /^size$/i.test(n)) + 1;
+      // Same rule as snippets/color-position.liquid
+      this.colorPos = this.optionNames.findIndex((n) => /colou?r/i.test(n) || /^(pattern|print)$/i.test(n.trim())) + 1;
+      this.sizePos = this.optionNames.findIndex((n) => /^sizes?$/i.test(n.trim())) + 1;
 
       this.form.addEventListener('change', (e) => {
         if (e.target.matches('[data-option-position]')) this.onOptionChange(e.target);
@@ -58,6 +59,9 @@
       const variant = this.findVariant(options);
       this.variant = variant;
       this.updateState(variant);
+      // Show the variant's own photo when the store has assigned one
+      const mediaId = variant && variant.featured_media && variant.featured_media.id;
+      if (mediaId) document.dispatchEvent(new CustomEvent('variant:media', { detail: { product: this.data.handle, mediaId } }));
       if (pos === this.sizePos) PS.track('size_selected', { product: this.data.handle, size: input.value });
     }
 
@@ -95,8 +99,21 @@
 
       this.idInput.value = variant.id;
       const money = PS.formatMoney(variant.price);
-      if (price) price.lastChild.textContent = money;
-      if (price) price.classList.toggle('price--sold-out', !variant.available);
+      if (price) {
+        const onSale = Number(variant.compare_at_price) > Number(variant.price);
+        const current = price.querySelector('[data-price-current]');
+        if (current) current.textContent = money;
+        const compare = price.querySelector('[data-price-compare]');
+        if (compare) {
+          compare.hidden = !onSale;
+          const value = compare.querySelector('[data-price-compare-value]');
+          if (value && onSale) value.textContent = PS.formatMoney(variant.compare_at_price);
+        }
+        const label = price.querySelector('[data-price-label]');
+        if (label) label.textContent = onSale ? S.priceSale : S.priceRegular;
+        price.classList.toggle('price--sale', onSale);
+        price.classList.toggle('price--sold-out', !variant.available);
+      }
       if (stock) {
         stock.classList.toggle('stock--out', !variant.available);
         stock.querySelector('span').textContent = variant.available ? S.inStock : S.soldOut;

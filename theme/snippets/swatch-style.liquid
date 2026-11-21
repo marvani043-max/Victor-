@@ -1,0 +1,46 @@
+{%- comment -%}
+  Inline style for a colour swatch: --swatch (colour) and optional --swatch-image.
+  Order: Shopify's native option swatch (colour or image) → common colour names → the variant's own photo → neutral.
+  Params: value (option or filter value), label (fallback name), product + color_pos (optional, for variant photos)
+{%- endcomment -%}
+{%- liquid
+  assign sw_color = value.swatch.color
+  assign sw_image = value.swatch.image
+  assign n = value.name | default: label | default: value | downcase | strip
+  if sw_color == blank and sw_image == blank
+    case n
+      when 'black', 'classic black', 'jet black'
+        assign sw_color = '#1F1F1E'
+      when 'faded black', 'washed black'
+        assign sw_color = '#2C2C2B'
+      when 'white', 'off white', 'off-white', 'cream'
+        assign sw_color = '#F7F6F2'
+      when 'navy', 'navy blue'
+        assign sw_color = '#26324F'
+      when 'grey', 'gray', 'flower gray', 'heather grey', 'heather gray', 'light grey', 'light gray'
+        assign sw_color = '#B9B8B4'
+      when 'dark grey', 'dark gray', 'charcoal'
+        assign sw_color = '#4B4A48'
+      when 'pink'
+        assign sw_color = '#E85A97'
+      when 'red'
+        assign sw_color = '#B3261E'
+      when 'green', 'forest green'
+        assign sw_color = '#2E5E3E'
+      when 'brown'
+        assign sw_color = '#6B4A32'
+      when 'blue'
+        assign sw_color = '#2F5D9E'
+    endcase
+  endif
+  if sw_color == blank and sw_image == blank and product != blank and color_pos > 0
+    assign idx = color_pos | minus: 1
+    for variant in product.variants
+      if variant.options[idx] == value.name and variant.featured_media
+        assign sw_image = variant.featured_media.preview_image
+        break
+      endif
+    endfor
+  endif
+-%}
+--swatch: {{ sw_color | default: '#CFCAC0' }};{% if sw_image %} --swatch-image: url('{{ sw_image | image_url: width: 120, height: 120, crop: 'center' }}');{% endif %}

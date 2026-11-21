@@ -41,6 +41,9 @@ None of these items is resolved by this document. Tick an item only when the act
 
 ## B. Shopify setup steps (in order)
 
+> **Existing store (v1.1):** Peak Side already has its catalogue in Shopify. **Skip steps 2–8 and 14 below** (no CSV import, no new collections or menus) and follow `09-SHOPIFY-STORE-CONNECTION.md`. Metafields, variant images and templates remain optional extras, and only with Peak Side's approval.
+
+
 1. **Store basics:**
    - Store name and sender email: Settings → Notifications.
    - Currency, Markets and shipping zones for "ships worldwide".

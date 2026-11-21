@@ -1,29 +1,47 @@
 {%- comment -%}
-  Classifies a product media item by colourway and view from its alt text.
-  Convention: alt text names the colour and the view, e.g. "Black, back view", "Pink, worn on the trail", "Navy, detail of the zipper".
-  Output: "<colour-handle>|<view>", where view is front | back | detail | worn. Colour is blank when no colour name is found.
-  Params: media, product
+  Classifies a product media item by colourway and view.
+  Colour: (1) a colour name in the alt text, longest match wins, e.g. "Navy Blue, back view";
+          (2) otherwise the colour of a variant whose image is this media (Shopify variant images).
+  View:   "worn" / "on model" / "lifestyle" / video → worn; "detail" / "close-up" → detail; "back" → back; else front.
+  Output: "<colour-handle>|<view>". Colour is blank when the media belongs to every colourway.
+  Params: media, product, color_pos (optional; position of the colour option)
 {%- endcomment -%}
 {%- liquid
+  if color_pos == blank
+    capture color_pos_s
+      render 'color-position', product: product
+    endcapture
+    assign color_pos = color_pos_s | plus: 0
+  endif
   assign alt_d = media.alt | downcase
   assign color_handle = ''
-  assign best_len = 0
-  for option in product.options_with_values
-    assign on = option.name | downcase
-    if on == 'color' or on == 'colour'
-      for v in option.values
-        assign vd = v.name | downcase
-        if alt_d contains vd
-          if vd.size > best_len
+  if color_pos > 0
+    assign best_len = 0
+    for option in product.options_with_values
+      if option.position == color_pos
+        for v in option.values
+          assign vd = v.name | downcase
+          if alt_d contains vd and vd.size > best_len
             assign best_len = vd.size
             assign color_handle = v.name | handle
           endif
+        endfor
+      endif
+    endfor
+    if color_handle == blank
+      assign idx = color_pos | minus: 1
+      for variant in product.variants
+        if variant.featured_media.id == media.id
+          assign color_handle = variant.options[idx] | handle
+          break
         endif
       endfor
     endif
-  endfor
+  endif
   assign view = 'front'
-  if alt_d contains 'worn' or alt_d contains 'on model' or alt_d contains 'lifestyle'
+  if media.media_type == 'video' or media.media_type == 'external_video'
+    assign view = 'worn'
+  elsif alt_d contains 'worn' or alt_d contains 'on model' or alt_d contains 'lifestyle'
     assign view = 'worn'
   elsif alt_d contains 'detail' or alt_d contains 'close-up'
     assign view = 'detail'

@@ -1,24 +1,30 @@
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
   assign form_id = 'ProductForm-' | append: section.id
+  capture color_pos_s
+    render 'color-position', product: product
+  endcapture
+  assign color_pos = color_pos_s | plus: 0
   assign color_option = nil
-  assign color_pos = 0
   assign size_option = nil
   assign size_pos = 0
   for option in product.options_with_values
-    assign on = option.name | downcase
-    if on == 'color' or on == 'colour'
+    assign on = option.name | downcase | strip
+    if option.position == color_pos
       assign color_option = option
-      assign color_pos = option.position
-    elsif on == 'size'
+    elsif on == 'size' or on == 'sizes'
       assign size_option = option
       assign size_pos = option.position
     endif
   endfor
   assign size_idx = size_pos | minus: 1
   assign color_idx = color_pos | minus: 1
-  assign fit = product.metafields.custom.fit_profile.value
+  capture fit
+    render 'fit-profile', product: product
+  endcapture
   assign fit_note = product.metafields.custom.fit_note.value
+  assign fit_guide = settings.fit_guide_page | default: pages['fit-guide']
+  assign contact = settings.contact_page | default: pages.contact
   assign fabric = product.metafields.custom.fabric_care.value
   assign size_chart = product.metafields.custom.size_chart.value
 -%}
@@ -37,7 +43,7 @@
 
     <div class="product__grid">
       <div class="product__media">
-        {% render 'garment-explorer', product: product, explorer_id: section.id, own_swatches: false, priority: true, sizes: '(min-width: 990px) 56vw, 100vw' %}
+        {% render 'garment-explorer', product: product, explorer_id: section.id, own_swatches: false, thumbs: true, priority: true, sizes: '(min-width: 990px) 56vw, 100vw' %}
       </div>
 
       <div class="product__info">
@@ -72,7 +78,7 @@
                       <label class="swatch-option swatch-option--lg">
                         <input type="radio" class="visually-hidden" name="options[{{ option.name | escape }}]" value="{{ value.name | escape }}"
                           data-option-position="{{ option.position }}" {% if value.name == option.selected_value %}checked{% endif %}>
-                        <span class="swatch" style="--swatch: {% render 'swatch-color', value: value %}" aria-hidden="true"></span>
+                        <span class="swatch" style="{% render 'swatch-style', value: value, product: product, color_pos: color_pos %}" aria-hidden="true"></span>
                         <span class="swatch-option__name">{{ value.name }}</span>
                       </label>
                     {%- endfor -%}
@@ -152,8 +158,8 @@
         <div class="product__fit">
           <h2 class="product__subhead mono">{{ 'products.fit_heading' | t }}</h2>
           {% render 'fit-scale', fit: fit %}
-          {%- if settings.fit_guide_page != blank -%}
-            <a class="link" href="{{ settings.fit_guide_page.url }}">{{ section.settings.fit_link_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+          {%- if fit_guide != blank and fit_guide.url -%}
+            <a class="link" href="{{ fit_guide.url }}">{{ section.settings.fit_link_label | escape }} {% render 'icon', name: 'arrow' %}</a>
           {%- endif -%}
         </div>
 
@@ -211,8 +217,8 @@
           <p>{{ section.settings.no_chart_text | escape }}</p>
         {%- endif -%}
         <ul class="size-guide__links" role="list">
-          {%- if settings.fit_guide_page != blank -%}<li><a class="link" href="{{ settings.fit_guide_page.url }}">{{ section.settings.fit_link_label | escape }}</a></li>{%- endif -%}
-          {%- if settings.contact_page != blank -%}<li><a class="link" href="{{ settings.contact_page.url }}">{{ section.settings.ask_fit_label | escape }}</a></li>{%- endif -%}
+          {%- if fit_guide != blank and fit_guide.url -%}<li><a class="link" href="{{ fit_guide.url }}">{{ section.settings.fit_link_label | escape }}</a></li>{%- endif -%}
+          {%- if contact != blank and contact.url -%}<li><a class="link" href="{{ contact.url }}">{{ section.settings.ask_fit_label | escape }}</a></li>{%- endif -%}
         </ul>
       </div>
     </div>

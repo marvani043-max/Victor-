@@ -1,0 +1,41 @@
+{%- comment -%} Classic customer accounts: one order, from Shopify. {%- endcomment -%}
+<section class="section account">
+  <div class="page-width">
+    <p><a class="link" href="{{ routes.account_url }}">{{ 'customer.order.back' | t }}</a></p>
+    <h1 class="h1">{{ 'customer.order.title' | t: name: order.name }}</h1>
+    <p class="muted">{{ order.created_at | time_tag: format: 'date_at_time' }}</p>
+    {%- if order.cancelled -%}<p class="form-status form-status--error">{{ 'customer.order.cancelled' | t: date: order.cancelled_at }}</p>{%- endif -%}
+    <div class="table-scroll" tabindex="0" role="region" aria-label="{{ order.name }}">
+      <table class="account-table">
+        <thead><tr><th scope="col">{{ 'customer.order.product' | t }}</th><th scope="col">{{ 'customer.order.price' | t }}</th><th scope="col">{{ 'customer.order.quantity' | t }}</th><th scope="col">{{ 'customer.order.total' | t }}</th></tr></thead>
+        <tbody>
+          {%- for line_item in order.line_items -%}
+            <tr>
+              <th scope="row">
+                {{ line_item.title | link_to: line_item.product.url }}
+                {%- if line_item.fulfillment -%}<br><span class="muted">{{ line_item.fulfillment.created_at | time_tag: format: 'date' }}{% if line_item.fulfillment.tracking_url %} · <a class="link" href="{{ line_item.fulfillment.tracking_url }}">{{ 'customer.order.track' | t }}</a>{% endif %}</span>{%- endif -%}
+              </th>
+              <td class="mono">{{ line_item.final_price | money }}</td>
+              <td class="mono">{{ line_item.quantity }}</td>
+              <td class="mono">{{ line_item.final_line_price | money }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+        <tfoot>
+          <tr><th scope="row" colspan="3">{{ 'customer.order.subtotal' | t }}</th><td class="mono">{{ order.line_items_subtotal_price | money }}</td></tr>
+          {%- for shipping_method in order.shipping_methods -%}<tr><th scope="row" colspan="3">{{ shipping_method.title }}</th><td class="mono">{{ shipping_method.price | money }}</td></tr>{%- endfor -%}
+          {%- for tax_line in order.tax_lines -%}<tr><th scope="row" colspan="3">{{ tax_line.title }}</th><td class="mono">{{ tax_line.price | money }}</td></tr>{%- endfor -%}
+          <tr><th scope="row" colspan="3">{{ 'customer.order.total' | t }}</th><td class="mono">{{ order.total_net_amount | money_with_currency }}</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="account__grid">
+      <div><h2 class="h3">{{ 'customer.order.billing' | t }}</h2>{{ order.billing_address | format_address }}</div>
+      {%- if order.shipping_address -%}<div><h2 class="h3">{{ 'customer.order.shipping' | t }}</h2>{{ order.shipping_address | format_address }}</div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Customer order", "class": "section-main-order" }
+{% endschema %}

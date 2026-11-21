@@ -1,27 +1,37 @@
-/* GARMENT EXPLORER: colourway → view → numbered details.
-   Mouse, touch and keyboard all drive the same buttons. Reduced motion: instant swaps, same information. */
+/* GARMENT EXPLORER: colourway → photo → numbered details, driven by the product's Shopify media.
+   Every photo is reachable (thumbnails, previous/next, arrow keys). Front/Back/Detail/Worn buttons appear only
+   when the alt text identifies those views. Reduced motion: instant swaps, same information. */
 (() => {
   if (customElements.get('garment-explorer')) return;
   const PS = (window.PeakSide = window.PeakSide || {});
   const track = (n, d) => PS.track && PS.track(n, d);
-  const VIEW_ORDER = ['front', 'back', 'detail', 'worn'];
 
   class GarmentExplorer extends HTMLElement {
     connectedCallback() {
       this.slides = [...this.querySelectorAll('[data-slide]')];
+      this.thumbs = [...this.querySelectorAll('[data-thumb]')];
       this.viewBtns = [...this.querySelectorAll('[data-view-btn]')];
+      this.hasViews = this.dataset.hasViews === 'true';
       this.color = this.dataset.color || '';
-      const active = this.slides.find((s) => s.hasAttribute('data-active')) || this.slides[0];
-      this.view = active ? active.dataset.view : 'front';
       this.colorName = this.querySelector('[data-color-label]')?.textContent.trim() || '';
+      this.active = this.slides.find((s) => s.hasAttribute('data-active')) || this.slides[0] || null;
       this.activeDetail = null;
+      this.counterTemplate = this.querySelector('[data-view-label]')?.textContent.trim() || '';
 
-      this.querySelector('[data-views]')?.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-view-btn]');
-        if (btn) this.setView(btn.dataset.viewBtn, true);
+      this.addEventListener('click', (e) => {
+        const viewBtn = e.target.closest('[data-view-btn]');
+        if (viewBtn) { this.setView(viewBtn.dataset.viewBtn, true); return; }
+        const thumb = e.target.closest('[data-thumb]');
+        if (thumb) { this.show(this.slideById(thumb.dataset.thumb), true); return; }
+        if (e.target.closest('[data-prev]')) { this.step(-1); return; }
+        if (e.target.closest('[data-next]')) { this.step(1); return; }
+        const marker = e.target.closest('[data-marker]');
+        if (marker) { this.toggleDetail(Number(marker.dataset.marker), 'marker'); return; }
+        const item = e.target.closest('[data-detail-btn]');
+        if (item) { this.toggleDetail(Number(item.dataset.detailBtn), 'list', true); return; }
+        if (e.target.closest('[data-zoom]')) this.openZoom(e.target.closest('[data-zoom]'));
+        if (e.target.closest('[data-zoom-close]')) this.querySelector('[data-zoom-dialog]')?.close();
       });
-      this.querySelector('[data-views]')?.addEventListener('keydown', (e) => this.onViewKey(e));
-
       this.addEventListener('change', (e) => {
         const input = e.target;
         if (input.name && input.name.startsWith('explorer-color-')) {
@@ -30,23 +40,22 @@
           if (legend) legend.textContent = input.dataset.colorName;
         }
       });
-
-      this.addEventListener('click', (e) => {
-        const marker = e.target.closest('[data-marker]');
-        if (marker) { this.toggleDetail(Number(marker.dataset.marker), 'marker'); return; }
-        const item = e.target.closest('[data-detail-btn]');
-        if (item) { this.toggleDetail(Number(item.dataset.detailBtn), 'list', true); return; }
-        if (e.target.closest('[data-zoom]')) this.openZoom(e.target.closest('[data-zoom]'));
-        if (e.target.closest('[data-zoom-close]')) this.querySelector('[data-zoom-dialog]')?.close();
-      });
       this.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && this.activeDetail && e.target.closest('[data-marker]')) { this.clearDetail(); }
+        if (e.key === 'Escape' && this.activeDetail && e.target.closest('[data-marker]')) { this.clearDetail(); return; }
+        const inViews = e.target.closest('[data-views]');
+        const inThumbs = e.target.closest('[data-thumbs]');
+        if ((inViews || inThumbs) && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) this.onArrowKey(e, inViews ? this.viewBtns : this.thumbs);
       });
 
-      // Product page: the variant picker announces colour changes
+      // Product page: the variant picker announces colour and image changes
       document.addEventListener('variant:color', (e) => {
         if (e.detail?.product !== this.dataset.product) return;
         this.setColor(e.detail.color, e.detail.name, false);
+      });
+      document.addEventListener('variant:media', (e) => {
+        if (e.detail?.product !== this.dataset.product) return;
+        const slide = this.slideById(e.detail.mediaId);
+        if (slide) this.show(slide, false);
       });
 
       this.render(false);
@@ -64,53 +73,88 @@
       io.observe(this);
     }
 
-    matchesColor(slide, color = this.color) {
-      return !color || !slide.dataset.color || slide.dataset.color === color;
-    }
-    viewsFor(color) {
-      const set = new Set(this.slides.filter((s) => this.matchesColor(s, color)).map((s) => s.dataset.view));
-      return VIEW_ORDER.filter((v) => set.has(v));
-    }
-    currentSlide() {
-      const pool = this.slides.filter((s) => this.matchesColor(s));
-      return pool.find((s) => s.dataset.view === this.view) || pool.find((s) => s.dataset.view === 'front') || pool[0] || this.slides[0];
+    slideById(id) { return this.slides.find((s) => s.dataset.mediaId === String(id)) || null; }
+    matchesColor(el, color = this.color) { return !color || !el.dataset.color || el.dataset.color === color; }
+    pool() {
+      const p = this.slides.filter((s) => this.matchesColor(s));
+      return p.length ? p : this.slides;
     }
 
     render(announce = true) {
-      const views = this.viewsFor(this.color);
-      if (!views.includes(this.view)) this.view = views[0] || 'front';
-      const slide = this.currentSlide();
-      this.slides.forEach((s) => s.toggleAttribute('data-active', s === slide));
-      // Hidden slides keep their markers out of the tab order
-      this.slides.forEach((s) => s.querySelectorAll('[data-marker]').forEach((m) => { m.tabIndex = s === slide ? 0 : -1; }));
-      this.viewBtns.forEach((b) => {
-        const v = b.dataset.viewBtn;
-        b.hidden = !views.includes(v);
-        b.setAttribute('aria-pressed', String(v === this.view));
+      const pool = this.pool();
+      if (!this.active || !pool.includes(this.active)) {
+        const view = this.active?.dataset.view;
+        this.active = pool.find((s) => s.dataset.view === view) || pool.find((s) => s.dataset.view === 'front') || pool[0] || null;
+      }
+      const active = this.active;
+      this.slides.forEach((s) => {
+        const on = s === active;
+        s.toggleAttribute('data-active', on);
+        s.querySelectorAll('[data-marker]').forEach((m) => { m.tabIndex = on ? 0 : -1; });
+        if (!on) s.querySelector('video')?.pause();
       });
-      const viewBtn = this.viewBtns.find((b) => b.dataset.viewBtn === this.view);
-      const viewLabel = viewBtn ? viewBtn.textContent.trim() : this.view;
-      const vl = this.querySelector('[data-view-label]');
-      if (vl) vl.textContent = viewLabel;
+      // Thumbnails: only this colourway's photos
+      this.thumbs.forEach((t) => {
+        t.hidden = !this.matchesColor(t) && this.slides.some((s) => this.matchesColor(s));
+        t.setAttribute('aria-pressed', String(!!active && t.dataset.thumb === active.dataset.mediaId));
+      });
+      // View buttons: only views this colourway has
+      const views = new Set(pool.map((s) => s.dataset.view));
+      this.viewBtns.forEach((b) => {
+        b.hidden = !views.has(b.dataset.viewBtn);
+        b.setAttribute('aria-pressed', String(!!active && b.dataset.viewBtn === active.dataset.view));
+      });
+      const single = pool.length < 2;
+      this.querySelectorAll('[data-prev], [data-next]').forEach((b) => { b.hidden = single; });
+      // Corner label: the view name when known, otherwise "n / total"
+      const label = this.querySelector('[data-view-label]');
+      let spoken = '';
+      if (label && active) {
+        if (this.hasViews) {
+          const btn = this.viewBtns.find((b) => b.dataset.viewBtn === active.dataset.view);
+          spoken = btn ? btn.textContent.trim() : active.dataset.view;
+        } else {
+          spoken = `${pool.indexOf(active) + 1} / ${pool.length}`;
+        }
+        label.textContent = spoken;
+      }
       const cl = this.querySelector('[data-color-label]');
       if (cl && this.colorName) cl.textContent = this.colorName;
-      // Details list: highlight only the active detail
       this.querySelectorAll('[data-detail]').forEach((li) => li.classList.toggle('is-active', Number(li.dataset.detail) === this.activeDetail));
-      slide?.querySelectorAll('[data-marker]').forEach((m) => m.setAttribute('aria-pressed', String(Number(m.dataset.marker) === this.activeDetail)));
-      if (announce && PS.announce) PS.announce(`${viewLabel}${this.colorName ? `, ${this.colorName}` : ''}`);
+      active?.querySelectorAll('[data-marker]').forEach((m) => m.setAttribute('aria-pressed', String(Number(m.dataset.marker) === this.activeDetail)));
+      if (announce && PS.announce) PS.announce(`${spoken}${this.colorName ? `, ${this.colorName}` : ''}`);
+    }
+
+    show(slide, fromUser = false) {
+      if (!slide || slide === this.active) return;
+      if (slide.dataset.color && this.color && slide.dataset.color !== this.color) this.color = slide.dataset.color;
+      this.active = slide;
+      this.render(fromUser);
+      if (fromUser) track('explorer_view_changed', { product: this.dataset.product, view: slide.dataset.view, media: slide.dataset.mediaId });
+    }
+
+    step(dir) {
+      const pool = this.pool();
+      if (pool.length < 2) return;
+      const i = pool.indexOf(this.active);
+      this.show(pool[(i + dir + pool.length) % pool.length], true);
     }
 
     setView(view, fromUser = false) {
-      if (view === this.view) return;
-      this.view = view;
-      this.render(fromUser);
-      if (fromUser) track('explorer_view_changed', { product: this.dataset.product, view });
+      const slide = this.pool().find((s) => s.dataset.view === view);
+      if (slide) this.show(slide, fromUser);
     }
 
     setColor(color, name, fromUser = false) {
-      if (color === this.color) return;
-      this.color = color;
       if (name) this.colorName = name;
+      if (color === this.color) { this.render(false); return; }
+      this.color = color;
+      this.active = this.pool().includes(this.active) ? this.active : null;
+      if (!this.active) {
+        // Prefer the same view in the new colourway
+        const pool = this.pool();
+        this.active = pool.find((s) => s.dataset.view === 'front') || pool[0] || null;
+      }
       this.render(fromUser);
       if (fromUser) track('explorer_colour_changed', { product: this.dataset.product, colour: name || color });
     }
@@ -120,12 +164,14 @@
       const item = this.querySelector(`[data-detail="${n}"]`);
       const needView = item?.dataset.detailView;
       this.activeDetail = n;
-      if (needView && needView !== this.view && this.viewsFor(this.color).includes(needView)) this.view = needView;
+      if (needView && this.active?.dataset.view !== needView) {
+        const slide = this.pool().find((s) => s.dataset.view === needView && s.querySelector('[data-marker]'));
+        if (slide) this.active = slide;
+      }
       this.render(false);
       const label = item?.querySelector('.detail-list__label')?.textContent.trim();
       if (label && PS.announce) PS.announce(label);
       if (fromList) {
-        // Keep focus on the list item; bring the photo into view on small screens
         const stage = this.querySelector('.explorer__stage');
         const rect = stage?.getBoundingClientRect();
         if (rect && (rect.bottom < 0 || rect.top > window.innerHeight)) stage.scrollIntoView({ block: 'center', behavior: PS.reducedMotion() ? 'auto' : 'smooth' });
@@ -138,9 +184,8 @@
       this.render(false);
     }
 
-    onViewKey(e) {
-      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
-      const visible = this.viewBtns.filter((b) => !b.hidden);
+    onArrowKey(e, list) {
+      const visible = list.filter((b) => !b.hidden);
       const i = visible.indexOf(document.activeElement);
       if (i < 0) return;
       e.preventDefault();
@@ -150,12 +195,12 @@
       if (e.key === 'Home') next = 0;
       if (e.key === 'End') next = visible.length - 1;
       visible[next].focus();
-      this.setView(visible[next].dataset.viewBtn, true);
+      visible[next].click();
     }
 
     openZoom(trigger) {
       const dialog = this.querySelector('[data-zoom-dialog]');
-      const slide = this.currentSlide();
+      const slide = this.active;
       if (!dialog || !slide) return;
       const img = dialog.querySelector('[data-zoom-img]');
       const source = slide.querySelector('img');
@@ -165,7 +210,7 @@
       img.classList.toggle('is-photo', slide.dataset.view === 'worn' || slide.dataset.view === 'detail');
       PS.openDialog(dialog, trigger);
       dialog.querySelector('[data-zoom-close]')?.focus();
-      track('explorer_zoom_opened', { product: this.dataset.product, view: this.view });
+      track('explorer_zoom_opened', { product: this.dataset.product, view: slide.dataset.view });
     }
   }
   customElements.define('garment-explorer', GarmentExplorer);

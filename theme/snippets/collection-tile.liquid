@@ -1,0 +1,26 @@
+{%- comment -%} One "Shop by type" tile. Params: col (collection), title (optional), image (optional), attrs (block attributes) {%- endcomment -%}
+{%- liquid
+  assign min_price = 0
+  for p in col.products limit: 50
+    if forloop.first or p.price_min < min_price
+      assign min_price = p.price_min
+    endif
+  endfor
+  assign tile_image = image | default: col.featured_image | default: col.products.first.featured_media.preview_image
+  assign min_money = min_price | money
+-%}
+<li class="tile" {{ attrs }}>
+  <a class="tile__link" href="{{ col.url }}">
+    <span class="tile__media">
+      {%- if tile_image -%}
+        {%- capture tile_class -%}tile__img{% if tile_image.aspect_ratio < 0.95 %} is-photo{% endif %}{%- endcapture -%}
+        {% render 'image', image: tile_image, alt: '', sizes: '(min-width: 990px) 20vw, 50vw', class: tile_class, widths: '360,540,720' %}
+      {%- endif -%}
+    </span>
+    <span class="tile__body">
+      <span class="tile__title">{{ title | default: col.title | escape }}</span>
+      <span class="tile__meta mono">{{ 'general.pieces' | t: count: col.products_count }} · {{ 'general.from_price' | t: price: min_money }}</span>
+    </span>
+    {% render 'icon', name: 'arrow' %}
+  </a>
+</li>

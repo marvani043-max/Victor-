@@ -1,0 +1,16 @@
+{%- comment -%}
+  Echoes the position (1–3) of the product's colour-type option, or nothing.
+  Matches option names Color, Colour, Pattern or Print (any case), e.g. "Color" or "Plaid colour".
+  Params: product
+{%- endcomment -%}
+{%- liquid
+  assign pos = ''
+  for option in product.options_with_values
+    assign on = option.name | downcase | strip
+    if on contains 'color' or on contains 'colour' or on == 'pattern' or on == 'print'
+      assign pos = option.position
+      break
+    endif
+  endfor
+  echo pos
+-%}

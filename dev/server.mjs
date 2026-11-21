@@ -12,7 +12,12 @@ import { ROOT, THEME } from './shopify.mjs';
 import { configure, newCart, renderGet, cartAdd, cartChange, contactErrors } from './store.mjs';
 
 const PORT = Number(process.env.PORT || 4173);
-configure({ origin: `http://localhost:${PORT}`, ...(process.env.PREVIEW_BANNER === '0' ? { banner: '' } : {}) });
+configure({
+  origin: `http://localhost:${PORT}`,
+  ...(process.env.PREVIEW_BANNER === '0' ? { banner: '' } : {}),
+  // Demo photos for the lookbook/story (local preview only). PS_DEMO=0 shows the theme exactly as uploaded.
+  demo: process.env.PS_DEMO === '0' ? null : JSON.parse(fs.readFileSync(path.join(ROOT, 'dev/data/demo-content.json'), 'utf8')),
+});
 const carts = new Map(); // cookie id → { items: [{ variantId, quantity }], note }
 const submissions = [];
 

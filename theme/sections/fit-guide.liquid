@@ -30,8 +30,9 @@
         {%- else -%}
           <p>{{ section.settings.chart_missing | escape }}</p>
           {% render 'content-placeholder', text: 'Measured size chart (chest, length, sleeve) per product type, in inches and cm.' %}
-          {%- if settings.contact_page != blank -%}
-            <a class="link" href="{{ settings.contact_page.url }}">{{ section.settings.ask_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+          {%- assign contact = settings.contact_page | default: pages.contact -%}
+          {%- if contact != blank and contact.url -%}
+            <a class="link" href="{{ contact.url }}">{{ section.settings.ask_label | escape }} {% render 'icon', name: 'arrow' %}</a>
           {%- endif -%}
         {%- endif -%}
       </div>
@@ -45,7 +46,9 @@
           <tbody>
             {%- for p in col.products limit: 50 -%}
               {%- liquid
-                assign fit = p.metafields.custom.fit_profile.value
+                capture fit
+                  render 'fit-profile', product: p
+                endcapture
                 assign sizes = ''
                 for option in p.options_with_values
                   assign on = option.name | downcase

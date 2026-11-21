@@ -13,7 +13,15 @@ export const DEFAULT_BANNER = `<div data-preview-banner role="region" aria-label
 // Stands in for Shopify's analytics loader so theme events can be observed in the preview.
 export const SHOPIFY_STUB = `<script>window.Shopify=window.Shopify||{};Shopify.analytics={publish:function(n,d){(window.__shopifyEvents=window.__shopifyEvents||[]).push({name:n,data:d});}};</script>`;
 
-const config = { engine: null, origin: 'http://localhost:4173', banner: DEFAULT_BANNER, transform: (html) => html };
+const config = { engine: null, origin: 'http://localhost:4173', banner: DEFAULT_BANNER, transform: (html) => html, demo: null };
+
+// Local-preview-only template additions (photos for the lookbook and story). Deep-merged over the theme's templates.
+const deepMerge = (base, extra) => {
+  if (!extra || typeof extra !== 'object' || Array.isArray(extra)) return extra === undefined ? base : extra;
+  const out = { ...(base || {}) };
+  for (const [k, v] of Object.entries(extra)) out[k] = deepMerge(out[k], v);
+  return out;
+};
 export function configure(opts = {}) {
   Object.assign(config, opts);
   if (!config.engine) config.engine = createEngine(opts.engineOptions);
@@ -82,7 +90,7 @@ export class Renderer {
       },
       request: { locale: { iso_code: 'en' }, page_type: this.extra.pageType, path: this.url.pathname, design_mode: false, origin: config.origin },
       template: { name: this.extra.templateName || this.extra.pageType, suffix: null },
-      settings, cart: cartObject(this.cart), collections: this.collections, all_products: this.byHandle,
+      settings, cart: cartObject(this.cart), collections: this.collections, all_products: this.byHandle, pages: this.pages,
       localization: { available_countries: [{ iso_code: 'US', name: 'United States', currency: { iso_code: 'USD', symbol: '$' } }], country: { iso_code: 'US' } },
       linklists: { 'main-menu': menu('main-menu', this.url.pathname), footer: menu('footer', this.url.pathname) },
       canonical_url: `${config.origin}${this.url.pathname}`, page_title: this.extra.pageTitle || 'Peak Side', page_description: this.extra.pageDescription || '',
@@ -113,13 +121,17 @@ export class Renderer {
     for (const key of group.order) out += await this.renderSection(group.sections[key].type, `sections--preview__${key}`, group.sections[key]);
     return `${out}<!-- END sections: ${name} -->`;
   }
+  readTemplate(name) {
+    const tpl = readJSON(this.templateFile(name));
+    return config.demo && config.demo[name] ? deepMerge(tpl, config.demo[name]) : tpl;
+  }
   templateFile(name) {
     const p = path.join(THEME, 'templates', `${name}.json`);
     if (fs.existsSync(p)) return p;
     return path.join(THEME, 'templates', `${name.split('.')[0]}.json`);
   }
   async renderTemplate(name, onlySection) {
-    const tpl = readJSON(this.templateFile(name));
+    const tpl = this.readTemplate(name);
     if (onlySection) {
       for (const key of tpl.order) {
         const id = `template--preview__${key}`;

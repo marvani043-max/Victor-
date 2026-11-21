@@ -1,0 +1,57 @@
+{%- comment -%} Classic customer accounts: sign in, password reset request, guest checkout. Shopify handles every form. {%- endcomment -%}
+<section class="section account">
+  <div class="page-width page-width--narrow">
+    <h1 class="h1">{{ 'customer.login.title' | t }}</h1>
+    <div class="account__grid">
+      <div>
+        {%- form 'customer_login', class: 'account__form', id: 'CustomerLoginForm', novalidate: 'novalidate', data-validate: '' -%}
+          {% render 'form-errors', form: form %}
+          <div class="field">
+            <label class="field__label" for="CustomerEmail">{{ 'forms.email' | t }}</label>
+            <input class="field__input" type="email" name="customer[email]" id="CustomerEmail" autocomplete="email" required aria-describedby="CustomerEmail-error">
+            <p class="field__error" id="CustomerEmail-error" hidden></p>
+          </div>
+          {%- if form.password_needed -%}
+            <div class="field">
+              <label class="field__label" for="CustomerPassword">{{ 'customer.password' | t }}</label>
+              <input class="field__input" type="password" name="customer[password]" id="CustomerPassword" autocomplete="current-password" required aria-describedby="CustomerPassword-error">
+              <p class="field__error" id="CustomerPassword-error" hidden></p>
+            </div>
+          {%- endif -%}
+          <button type="submit" class="button button--primary" data-submit><span data-submit-label>{{ 'customer.login.submit' | t }}</span></button>
+          <p class="account__links">
+            <a class="link" href="#recover">{{ 'customer.login.forgot' | t }}</a>
+            <a class="link" href="{{ routes.account_register_url }}">{{ 'customer.login.create' | t }}</a>
+          </p>
+        {%- endform -%}
+      </div>
+      <div id="recover">
+        <h2 class="h3">{{ 'customer.recover.title' | t }}</h2>
+        {%- form 'recover_customer_password', class: 'account__form', id: 'RecoverPasswordForm', novalidate: 'novalidate', data-validate: '' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="form-status form-status--success" role="status" tabindex="-1" data-form-status>{% render 'icon', name: 'check' %}<p>{{ 'customer.recover.success' | t }}</p></div>
+          {%- else -%}
+            {% render 'form-errors', form: form %}
+            <p class="muted">{{ 'customer.recover.text' | t }}</p>
+            <div class="field">
+              <label class="field__label" for="RecoverEmail">{{ 'forms.email' | t }}</label>
+              <input class="field__input" type="email" name="email" id="RecoverEmail" autocomplete="email" required aria-describedby="RecoverEmail-error">
+              <p class="field__error" id="RecoverEmail-error" hidden></p>
+            </div>
+            <button type="submit" class="button button--secondary" data-submit><span data-submit-label>{{ 'customer.recover.submit' | t }}</span></button>
+          {%- endif -%}
+        {%- endform -%}
+        {%- if shop.checkout.guest_login -%}
+          <h2 class="h3">{{ 'customer.login.guest_title' | t }}</h2>
+          {%- form 'guest_login' -%}
+            <button type="submit" class="button button--secondary">{{ 'customer.login.guest' | t }}</button>
+          {%- endform -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Customer login", "class": "section-main-login" }
+{% endschema %}
