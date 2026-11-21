@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ProductDetail";
 import ProductCard from "@/components/ProductCard";
-import { products, getProduct, relatedTo, categoryLabel, categoryPlural, formatPrice } from "@/data/products";
+import { products, getProduct, relatedTo, categoryLabel, groupOf, groupLabel, formatPrice } from "@/data/products";
 import { SITE_URL, storeProductUrl } from "@/data/site";
 import { imageSrc } from "@/components/Img";
 
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const img = imageSrc(p.lifestyle ?? p.colorways[0].images[0], 1600);
   return {
     title: p.price === null ? p.name : `${p.name} — ${formatPrice(p.price)}`,
-    description: `${p.description ?? p.summary} ${p.comingSoon ? "Coming soon in the Peak Side Winter Drop." : p.inStock ? `Sizes ${p.sizes.join(", ")}.` : "Currently sold out."}`.trim(),
+    description: `${p.description ?? p.summary} ${p.comingSoon ? "Available to pre-order in the Peak Side Winter Drop." : p.inStock ? `Sizes ${p.sizes.join(", ")}.` : "Currently sold out."}`.trim(),
     alternates: { canonical: `/shop/${p.slug}/` },
     openGraph: { images: [{ url: `${ORIGIN}${img}` }], title: p.name },
   };
@@ -80,8 +80,8 @@ export default async function ProductPage({ params }: Params) {
             Shop
           </Link>
           <span aria-hidden="true">/</span>
-          <Link href={`/shop/?c=${p.category}`} className="link-u">
-            {categoryPlural(p.category)}
+          <Link href={`/shop/?c=${groupOf(p.category)}`} className="link-u">
+            {groupLabel(groupOf(p.category))}
           </Link>
         </nav>
         <ProductDetail product={p} />

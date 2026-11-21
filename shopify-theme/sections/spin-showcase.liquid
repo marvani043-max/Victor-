@@ -16,7 +16,8 @@
       {%- capture thumb -%}{%- render 'spin-images', product: product, width: 300 -%}{%- endcapture -%}
       {%- assign thumb_parts = thumb | strip | split: '|' -%}
       {%- assign price = product.price | money | strip_html -%}
-      {%- if product.tags contains 'coming-soon' -%}{%- assign status = 'products.product.coming_soon' | t -%}{%- else -%}{%- assign status = product.type -%}{%- endif -%}
+      {%- capture pre_order_check -%}{%- render 'pre-order-check', product: product -%}{%- endcapture -%}
+      {%- if product.tags contains 'coming-soon' -%}{%- assign status = 'products.product.coming_soon' | t -%}{%- elsif pre_order_check == 'true' -%}{%- assign status = 'products.product.pre_order' | t -%}{%- else -%}{%- assign status = product.type -%}{%- endif -%}
       {{ sep }}{"name": {{ product.title | json }}, "price": {{ price | json }}, "colour": {{ status | default: shop.name | json }}, "href": {{ product.url | json }}, "front": {{ parts[1] | json }}, "back": {{ parts[2] | json }}, "thumb": {{ thumb_parts[1] | json }}, "word": {{ product.type | default: shop.name | json }}, "plain": {% if parts[0] == 'photo' %}true{% else %}false{% endif %}}
       {%- assign sep = ',' -%}
       {%- assign count = count | plus: 1 -%}

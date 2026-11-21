@@ -4,6 +4,10 @@
     "page": "Page {{ page }}",
     "home": "Home",
     "shop_all": "Shop all",
+    "all_products": "All products",
+    "tops": "Tops",
+    "bottoms": "Bottoms",
+    "story": "Story",
     "menu": "Menu",
     "close": "Close",
     "view_all": "View all",
@@ -62,7 +66,9 @@
       "you_may_like": "Wear it with",
       "coming_soon_note_html": "Part of a new drop and not on sale yet. Follow {{ link }} to hear the moment it's live.",
       "sold_out_note": "This piece is sold out right now.",
-      "free_shipping_note": "Taxes and shipping calculated at checkout."
+      "free_shipping_note": "Taxes and shipping calculated at checkout.",
+      "pre_order": "Pre-order",
+      "pre_order_note": "Part of a new drop, sold as a pre-order. It ships as soon as it lands."
     }
   },
   "collections": {

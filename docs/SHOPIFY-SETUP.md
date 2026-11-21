@@ -11,14 +11,16 @@ Files:
 4. Click **Publish**. This works while the store is still password-protected.
 
 That's all that's required. The site then works on its own:
-- Summer Edition, Winter Drop and Best sellers fill themselves with matching products. Summer Edition uses titles containing "Summer Edition"; Winter Drop uses products tagged `coming-soon` or with "plaid" in the title; Best sellers uses products tagged `best-seller`, otherwise the newest products.
+- The menu shows **Shop all, Tops, Bottoms** (and Story once that page exists). Tops and Bottoms sort themselves: anything whose type or title says pants, sweatpants, joggers or shorts is a bottom, everything else is a top. If the store has its own collections with the handles `tops` and `bottoms`, the links use those instead.
+- The Winter Drop sits right after "Mountains meet everyday." It fills itself with products tagged `coming-soon` or with "plaid" in the title. Summer Edition uses titles containing "Summer Edition"; Best sellers uses products tagged `best-seller`, otherwise the newest products.
+- **Pre-orders:** a product shows "Pre-order" (badge and button) and can be bought when a size has **"Continue selling when out of stock"** turned on and no stock left, or when the product is tagged `pre-order`.
 - Buttons never point at pages that don't exist. "Our story" stays hidden until that page is created (step 3).
 - Products, prices, sizes, colours, stock, cart and checkout all come from Shopify.
 
 ## Recommended (makes it match the website exactly)
 1. **Tags on products:**
-   - `coming-soon` on the Winter Drop pieces, so they show "Coming soon" instead of "Sold out".
    - `best-seller` on the best sellers.
+   - `coming-soon` only on pieces that can't be bought yet (they show "Coming soon"). Don't use it on pre-order pieces: it hides the buy button.
 2. **Fit finder quiz tags:** it only appears once at least two products have these tags, for example:
    - `warmth:cold` or `warmth:warm`
    - `fit:oversized`, `fit:boxy`, `fit:cropped` or `fit:classic`
@@ -44,4 +46,4 @@ Before going live, open **Customize → Share preview** and check the store on a
 
 ## Good to know
 - Every photo section uses the bundled Peak Side photos until you upload your own in Customize.
-- Taking orders before stock arrives needs a Shopify pre-order app. The `coming-soon` tag only changes what's shown.
+- Pre-orders work without an app (see above). A pre-order app is only needed for extras like deposits or a separate pre-order checkout.

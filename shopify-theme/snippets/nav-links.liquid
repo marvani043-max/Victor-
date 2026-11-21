@@ -1,0 +1,15 @@
+{%- comment -%}
+  Built-in navigation (used when no menu is chosen in the header): Shop all, Tops, Bottoms,
+  Story. Params: link_class, arrow (true for the mobile menu), extra (true adds Shipping & returns)
+{%- endcomment -%}
+{%- capture tops_url -%}{% render 'group-url', group: 'tops' %}{%- endcapture -%}
+{%- capture bottoms_url -%}{% render 'group-url', group: 'bottoms' %}{%- endcapture -%}
+<a href="{{ routes.all_products_collection_url }}" class="{{ link_class }}">{{ 'general.shop_all' | t }}{% if arrow %} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}{% endif %}</a>
+<a href="{{ tops_url }}" class="{{ link_class }}">{{ 'general.tops' | t }}{% if arrow %} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}{% endif %}</a>
+<a href="{{ bottoms_url }}" class="{{ link_class }}">{{ 'general.bottoms' | t }}{% if arrow %} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}{% endif %}</a>
+{%- if pages['our-story'].handle != blank -%}
+  <a href="{{ pages['our-story'].url }}" class="{{ link_class }}">{{ 'general.story' | t }}{% if arrow %} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}{% endif %}</a>
+{%- endif -%}
+{%- if extra and shop.shipping_policy -%}
+  <a href="{{ shop.shipping_policy.url }}" class="{{ link_class }}">{{ shop.shipping_policy.title }}{% if arrow %} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}{% endif %}</a>
+{%- endif -%}

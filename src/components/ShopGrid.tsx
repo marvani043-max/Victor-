@@ -3,7 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import ProductCard from "./ProductCard";
-import { CATEGORIES, products, featuredRank, sortablePrice, type Category } from "@/data/products";
+import { CATEGORIES, SHOP_GROUPS, groupOf, products, featuredRank, sortablePrice, type Category, type ShopGroup } from "@/data/products";
+
+/** ?c= takes a shop category (tops, bottoms) or, for older links and the home tiles, a product type. */
+type Filter = ShopGroup | Category;
+const matches = (c: Category, f: Filter | null) => !f || f === c || f === groupOf(c);
+const chipFor = (f: Filter | null): ShopGroup | null => (!f ? null : SHOP_GROUPS.some((g) => g.id === f) ? (f as ShopGroup) : groupOf(f as Category));
 
 type Sort = "featured" | "price-asc" | "price-desc";
 
@@ -15,7 +20,7 @@ export default function ShopGrid() {
     const raw = params.get("c");
     const s = params.get("sort") || "";
     return {
-      cat: (CATEGORIES.some((c) => c.id === raw) ? raw : null) as Category | null,
+      cat: (SHOP_GROUPS.some((g) => g.id === raw) || CATEGORIES.some((c) => c.id === raw) ? raw : null) as Filter | null,
       sort: (["price-asc", "price-desc"].includes(s) ? s : "featured") as Sort,
       hideSold: params.get("instock") === "1",
     };
@@ -31,7 +36,7 @@ export default function ShopGrid() {
   const set = (key: "c" | "sort" | "instock", value: string | null) => {
     setState((prev) => ({
       ...prev,
-      ...(key === "c" ? { cat: value as Category | null } : key === "sort" ? { sort: (value ?? "featured") as Sort } : { hideSold: value === "1" }),
+      ...(key === "c" ? { cat: value as Filter | null } : key === "sort" ? { sort: (value ?? "featured") as Sort } : { hideSold: value === "1" }),
     }));
     const next = new URLSearchParams(params.toString());
     if (value) next.set(key, value);
@@ -41,22 +46,22 @@ export default function ShopGrid() {
   };
 
   const list = useMemo(() => {
-    let l = products.filter((p) => (!cat || p.category === cat) && (!hideSold || p.inStock));
+    let l = products.filter((p) => matches(p.category, cat) && (!hideSold || p.inStock || p.comingSoon));
     if (sort === "price-asc") l = [...l].sort((a, b) => sortablePrice(a) - sortablePrice(b));
     else if (sort === "price-desc") l = [...l].sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
     else l = [...l].sort((a, b) => featuredRank(a) - featuredRank(b));
     return l;
   }, [cat, sort, hideSold]);
 
-  const count = (c: Category | null) => products.filter((p) => !c || p.category === c).length;
+  const count = (g: ShopGroup | null) => products.filter((p) => !g || groupOf(p.category) === g).length;
 
   return (
     <div>
       <div className="sticky top-[var(--header-h)] z-20 -mx-4 border-y border-ink/10 bg-bone/95 px-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
         <div className="flex flex-col gap-3 py-3 lg:flex-row lg:items-center lg:justify-between">
           <div role="group" aria-label="Filter by category" className="no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1">
-            {[{ id: null as Category | null, plural: "All" }, ...CATEGORIES].map((c) => {
-              const active = cat === c.id;
+            {[{ id: null as ShopGroup | null, plural: "All" }, ...SHOP_GROUPS.map((g) => ({ id: g.id as ShopGroup | null, plural: g.label }))].map((c) => {
+              const active = chipFor(cat) === c.id;
               return (
                 <button
                   key={c.plural}

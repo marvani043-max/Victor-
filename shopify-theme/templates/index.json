@@ -287,7 +287,7 @@
     "winter": {
       "type": "collection-drop",
       "settings": {
-        "eyebrow": "New · Coming soon",
+        "eyebrow": "New · Pre-order",
         "heading": "The Winter",
         "heading_accent": "Drop.",
         "text": "Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.",
@@ -359,6 +359,7 @@
   },
   "order": [
     "hero",
+    "winter",
     "summer",
     "marquee",
     "intro",
@@ -367,7 +368,6 @@
     "tiles",
     "lookbook",
     "fit",
-    "winter",
     "story",
     "instagram"
   ]

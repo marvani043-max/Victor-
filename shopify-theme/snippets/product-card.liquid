@@ -26,6 +26,13 @@
   unless product.available or is_coming
     assign is_sold_out = true
   endunless
+  capture pre_order_check
+    render 'pre-order-check', product: product
+  endcapture
+  assign is_pre_order = false
+  if pre_order_check == 'true' and is_coming == false and is_sold_out == false
+    assign is_pre_order = true
+  endif
   assign on_sale = false
   if product.compare_at_price > product.price
     assign on_sale = true
@@ -46,6 +53,8 @@
   assign status_label = ''
   if is_coming
     assign status_label = 'products.product.coming_soon' | t | prepend: ', '
+  elsif is_pre_order
+    assign status_label = 'products.product.pre_order' | t | prepend: ', '
   elsif is_sold_out
     assign status_label = 'products.product.sold_out' | t | prepend: ', '
   endif
@@ -58,7 +67,7 @@
         <img src="{{ spin_parts[2] }}" alt="" width="900" height="900" loading="lazy" class="flip-face flip-back h-full w-full object-contain {% if spin_kind == 'cut' %}cut-shadow p-[9%]{% else %}p-[4%]{% endif %}">
       </div>
       <span class="label absolute bottom-3 right-3 bg-bone/90 px-2 py-1 text-[10px] text-ink">360°</span>
-      {%- render 'product-badges', product: product, is_coming: is_coming, is_sold_out: is_sold_out, on_sale: on_sale, show_best: show_best -%}
+      {%- render 'product-badges', product: product, is_coming: is_coming, is_pre_order: is_pre_order, is_sold_out: is_sold_out, on_sale: on_sale, show_best: show_best -%}
     </div>
   {%- else -%}
     <div {% if settings.card_tilt %}data-tilt{% endif %} class="relative aspect-[4/5] overflow-hidden bg-white">
@@ -70,7 +79,7 @@
       {%- else -%}
         {{ 'product-apparel-1' | placeholder_svg_tag: 'absolute inset-0 h-full w-full bg-stone p-8 text-granite' }}
       {%- endif -%}
-      {%- render 'product-badges', product: product, is_coming: is_coming, is_sold_out: is_sold_out, on_sale: on_sale, show_best: show_best -%}
+      {%- render 'product-badges', product: product, is_coming: is_coming, is_pre_order: is_pre_order, is_sold_out: is_sold_out, on_sale: on_sale, show_best: show_best -%}
     </div>
   {%- endif -%}
 

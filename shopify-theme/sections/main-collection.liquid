@@ -4,10 +4,52 @@
   for filter in collection.filters
     assign active_count = active_count | plus: filter.active_values.size
   endfor
+
+  comment
+    Tops / Bottoms. "group" is set on the collection.tops / collection.bottoms templates, which
+    show all products filtered to that category (used when the store has no tops/bottoms collection).
+  endcomment
+  assign group = section.settings.group
+  assign current_group = group
+  if collection.handle == 'tops' or collection.handle == 'bottoms'
+    assign current_group = collection.handle
+  endif
+
+  assign tops_count = 0
+  assign bottoms_count = 0
+  for p in collections.all.products
+    capture pg
+      render 'product-group', product: p
+    endcapture
+    if pg == 'bottoms'
+      assign bottoms_count = bottoms_count | plus: 1
+    else
+      assign tops_count = tops_count | plus: 1
+    endif
+  endfor
+  if collections.tops.handle != blank
+    assign tops_count = collections.tops.products_count
+  endif
+  if collections.bottoms.handle != blank
+    assign bottoms_count = collections.bottoms.products_count
+  endif
+
+  assign page_title = collection.title
+  assign per_page = section.settings.per_page
+  if group != blank
+    if group == 'bottoms'
+      assign page_title = 'general.bottoms' | t
+    else
+      assign page_title = 'general.tops' | t
+    endif
+    assign per_page = 50
+  endif
 -%}
+{%- capture tops_url -%}{% render 'group-url', group: 'tops' %}{%- endcapture -%}
+{%- capture bottoms_url -%}{% render 'group-url', group: 'bottoms' %}{%- endcapture -%}
 <div class="wrap pb-28 pt-10 sm:pt-16" {{ section.shopify_attributes }}>
   <div class="flex flex-col gap-4 pb-8 sm:flex-row sm:items-end sm:justify-between">
-    <h1 class="display text-[18vw] sm:text-[8rem] lg:text-[10rem]">{{ collection.title }}</h1>
+    <h1 class="display text-[18vw] sm:text-[8rem] lg:text-[10rem]">{{ page_title }}</h1>
     {%- if collection.description != blank -%}
       <div class="rte max-w-xs pb-3 text-[15px] leading-relaxed text-ink/70">{{ collection.description }}</div>
     {%- elsif section.settings.intro != blank -%}
@@ -15,14 +57,35 @@
     {%- endif -%}
   </div>
 
-  {%- paginate collection.products by section.settings.per_page -%}
+  {%- paginate collection.products by per_page -%}
+    {%- liquid
+      assign shown_count = collection.products_count
+      if group != blank
+        assign shown_count = 0
+        for p in collection.products
+          capture pg
+            render 'product-group', product: p
+          endcapture
+          if pg == group
+            assign shown_count = shown_count | plus: 1
+          endif
+        endfor
+      endif
+    -%}
     <div class="sticky z-20 -mx-4 border-y border-ink/10 bg-bone/95 px-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10" style="top: var(--header-h)">
       <div class="flex flex-col gap-3 py-3 lg:flex-row lg:items-center lg:justify-between">
         <div class="no-scrollbar -mx-1 flex min-w-0 items-center gap-1 overflow-x-auto px-1" role="group" aria-label="{{ 'collections.filter' | t }}">
-          <a href="{{ collection.url }}?sort_by={{ sort_by }}" class="filter-chip label shrink-0 whitespace-nowrap px-3.5 py-2.5 hover:bg-stone"{% if active_count == 0 %} aria-current="true"{% endif %}>
-            {{ 'collections.all' | t }} <span class="opacity-60">{{ collection.all_products_count }}</span>
+          <a href="{{ routes.all_products_collection_url }}" class="filter-chip label shrink-0 whitespace-nowrap px-3.5 py-2.5 hover:bg-stone"{% if collection.handle == 'all' and current_group == blank and active_count == 0 %} aria-current="true"{% endif %}>
+            {{ 'collections.all' | t }} <span class="opacity-60">{{ collections.all.products_count }}</span>
+          </a>
+          <a href="{{ tops_url }}" class="filter-chip label shrink-0 whitespace-nowrap px-3.5 py-2.5 hover:bg-stone"{% if current_group == 'tops' %} aria-current="true"{% endif %}>
+            {{ 'general.tops' | t }} <span class="opacity-60">{{ tops_count }}</span>
+          </a>
+          <a href="{{ bottoms_url }}" class="filter-chip label shrink-0 whitespace-nowrap px-3.5 py-2.5 hover:bg-stone"{% if current_group == 'bottoms' %} aria-current="true"{% endif %}>
+            {{ 'general.bottoms' | t }} <span class="opacity-60">{{ bottoms_count }}</span>
           </a>
           {%- for filter in collection.filters -%}
+            {%- if group != blank -%}{%- break -%}{%- endif -%}
             {%- if filter.type == 'list' or filter.type == 'boolean' -%}
               {%- for value in filter.values -%}
                 {%- if value.count == 0 and value.active == false -%}{%- continue -%}{%- endif -%}
@@ -34,6 +97,7 @@
           {%- endfor -%}
         </div>
         <form class="flex items-center justify-between gap-6 lg:justify-end" method="get" action="{{ collection.url }}" data-sort-form>
+          {%- if group != blank -%}<input type="hidden" name="view" value="{{ group }}">{%- endif -%}
           {%- for filter in collection.filters -%}
             {%- for value in filter.active_values -%}
               <input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">
@@ -52,11 +116,15 @@
       </div>
     </div>
 
-    <p class="label mt-6 text-granite" aria-live="polite">{{ 'collections.product_count' | t: count: collection.products_count }}</p>
+    <p class="label mt-6 text-granite" aria-live="polite">{{ 'collections.product_count' | t: count: shown_count }}</p>
 
-    {%- if collection.products.size > 0 -%}
+    {%- if shown_count > 0 -%}
       <ul class="mt-4 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-y-14">
         {%- for product in collection.products -%}
+          {%- if group != blank -%}
+            {%- capture pg -%}{% render 'product-group', product: product %}{%- endcapture -%}
+            {%- if pg != group -%}{%- continue -%}{%- endif -%}
+          {%- endif -%}
           {%- liquid
             assign eager_img = false
             if forloop.index0 < 4
@@ -85,6 +153,7 @@
   "tag": "section",
   "settings": [
     { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "select", "id": "group", "label": "Show only", "default": "", "options": [{ "value": "", "label": "Every product in the collection" }, { "value": "tops", "label": "Tops" }, { "value": "bottoms", "label": "Bottoms" }], "info": "Used by the Tops and Bottoms pages. Bottoms are products whose type or title says pants, sweatpants, joggers or shorts, or that are tagged bottoms." },
     { "type": "textarea", "id": "intro", "label": "Intro (used when the collection has no description)", "default": "Every piece in the current range. Pick a product to see colours and sizes." },
     { "type": "paragraph", "content": "Filter chips come from Shopify's storefront filters. Set them up in the Search & Discovery app (for example Product type, Availability)." }
   ]

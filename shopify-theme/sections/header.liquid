@@ -29,7 +29,7 @@
           <a href="{{ link.url }}" class="label link-u pb-0.5"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
         {%- endfor -%}
       {%- else -%}
-        <a href="{{ routes.all_products_collection_url }}" class="label link-u pb-0.5">{{ 'general.shop_all' | t }}</a>
+        {%- render 'nav-links', link_class: 'label link-u pb-0.5' -%}
       {%- endif -%}
     </nav>
 
@@ -78,9 +78,7 @@
         </a>
       {%- endfor -%}
     {%- else -%}
-      <a href="{{ routes.all_products_collection_url }}" class="display flex items-center justify-between border-b border-ink/10 py-3 text-[12vw] sm:text-7xl">
-        {{ 'general.shop_all' | t }} {% render 'icon', name: 'arrow', class: 'h-5 w-5' %}
-      </a>
+      {%- render 'nav-links', link_class: 'display flex items-center justify-between border-b border-ink/10 py-3 text-[12vw] sm:text-7xl', arrow: true, extra: true -%}
     {%- endif -%}
   </nav>
   <div class="wrap flex flex-wrap items-center justify-between gap-4 py-6" style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom))">
@@ -101,7 +99,7 @@
   "name": "Header",
   "class": "header-section",
   "settings": [
-    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "info": "Leave empty to show Shop all, Tops, Bottoms and Story, as on the website." },
     { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Leave empty to use the PKS mark and the shop name." },
     { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Peak Side" },
     { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop now" },

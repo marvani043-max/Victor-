@@ -5,8 +5,9 @@
 //
 // 20 Nov 2026: removed the three heavyweight zip-ups, the White Globe Hoodie and the
 // crewneck at the client's request, and added the Winter Drop (client-supplied photos).
-// Winter Drop names are descriptive working names; price, sizes and store links are
-// still to be supplied (the new store is password-protected until launch).
+// Winter Drop names are descriptive working names; sizes and store links are still to be
+// supplied. 21 Nov 2026: prices ($64.95 hoodies, $55.95 sweatpants) as published on the
+// demo, and the drop is sold as a pre-order.
 
 export type Category = "hoodies" | "zip-ups" | "tees" | "crop-tops" | "bottoms";
 
@@ -26,7 +27,7 @@ export type Product = {
   /** null until the client confirms a price (shown as "Price TBA"). */
   price: number | null;
   inStock: boolean;
-  /** Announced but not on sale yet (Winter Drop). */
+  /** New drop sold as a pre-order (Winter Drop). Shown as "Pre-order" and bought on the store. */
   comingSoon?: boolean;
   collection?: "Summer Edition" | "Winter Drop";
   badge?: string;
@@ -50,6 +51,15 @@ export const CATEGORIES: { id: Category; label: string; plural: string }[] = [
   { id: "bottoms", label: "Sweatpants", plural: "Bottoms" },
 ];
 
+/** The two shop categories shown to shoppers (21 Nov 2026, client request). `category` stays as the product type. */
+export type ShopGroup = "tops" | "bottoms";
+export const SHOP_GROUPS: { id: ShopGroup; label: string }[] = [
+  { id: "tops", label: "Tops" },
+  { id: "bottoms", label: "Bottoms" },
+];
+export const groupOf = (c: Category): ShopGroup => (c === "bottoms" ? "bottoms" : "tops");
+export const groupLabel = (g: ShopGroup) => SHOP_GROUPS.find((x) => x.id === g)!.label;
+
 const BLACK = "#1B1B1A";
 const WHITE = "#F7F6F2";
 
@@ -61,7 +71,7 @@ export const products: Product[] = [
     name: "Plaid-Lined Hoodie — Pink", // TODO: confirm name
     category: "hoodies",
     collection: "Winter Drop",
-    price: null, // TODO: confirm price
+    price: 64.95,
     inStock: false,
     comingSoon: true,
     summary:
@@ -75,7 +85,7 @@ export const products: Product[] = [
     name: "Plaid-Lined Hoodie — Grey",
     category: "hoodies",
     collection: "Winter Drop",
-    price: null,
+    price: 64.95,
     inStock: false,
     comingSoon: true,
     summary:
@@ -89,7 +99,7 @@ export const products: Product[] = [
     name: "Plaid Panel Sweatpants — Grey",
     category: "bottoms",
     collection: "Winter Drop",
-    price: null,
+    price: 55.95,
     inStock: false,
     comingSoon: true,
     summary:
@@ -110,7 +120,7 @@ export const products: Product[] = [
     name: "Plaid Panel Sweatpants — Pink",
     category: "bottoms",
     collection: "Winter Drop",
-    price: null,
+    price: 55.95,
     inStock: false,
     comingSoon: true,
     summary:

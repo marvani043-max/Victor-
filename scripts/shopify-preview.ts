@@ -76,7 +76,11 @@ function toShopify(p: PSProduct) {
       options: opts,
       option1: opts[0],
       option2: opts[1] ?? null,
-      available: p.inStock && !(opts.includes("2XL") && i % 3 === 0),
+      available: !!p.comingSoon || (p.inStock && !(opts.includes("2XL") && i % 3 === 0)),
+      // Winter Drop: sold as a pre-order (tracked, no stock, "continue selling when out of stock").
+      inventory_management: "shopify",
+      inventory_policy: p.comingSoon ? "continue" : "deny",
+      inventory_quantity: p.comingSoon ? 0 : 5,
       price,
       compare_at_price: null,
       featured_media: m ? { id: m.id } : null,
@@ -88,7 +92,7 @@ function toShopify(p: PSProduct) {
   const spin = p.colorways[0].spin;
   const tags = BARE ? [] : [...(TAGS[p.slug] ?? [])];
   if (p.bestSeller && !BARE) tags.push("best-seller");
-  if (p.comingSoon && !BARE) tags.push("coming-soon");
+  // Winter Drop is a pre-order now: detected from the variants' inventory policy, no tag needed.
   const prod = {
     id: nextId++,
     handle: p.slug,
@@ -97,7 +101,7 @@ function toShopify(p: PSProduct) {
     type: TYPE[p.category],
     vendor: "Peak Side",
     tags,
-    available: p.inStock,
+    available: p.inStock || !!p.comingSoon,
     price,
     price_min: price,
     price_varies: false,
@@ -151,7 +155,7 @@ const coll = (handle: string, title: string, list: typeof products) => ({
 const collections: Record<string, unknown> = BARE ? { all: coll("all", "Shop all", products) } : {
   all: coll("all", "Shop all", products),
   "summer-edition": coll("summer-edition", "Summer Edition", products.filter((p) => catalogue.find((c) => c.slug === p.handle)?.collection === "Summer Edition")),
-  "winter-drop": coll("winter-drop", "Winter Drop", products.filter((p) => p.tags.includes("coming-soon"))),
+  "winter-drop": coll("winter-drop", "Winter Drop", products.filter((p) => catalogue.find((c) => c.slug === p.handle)?.comingSoon)),
   "best-sellers": coll("best-sellers", "Best sellers", products.filter((p) => p.tags.includes("best-seller"))),
 };
 const menu = (title: string, links: [string, string][]) => ({ title, links: links.map(([t, u]) => ({ title: t, url: u, current: false })) });
@@ -340,6 +344,9 @@ async function renderPage(file: string, templateName: string, extra: Record<stri
   await renderPage("index.html", "index", {});
   for (const p of products) await renderPage(`product-${p.handle}.html`, "product", { product: p, page_title: p.title, recommendations: { performed: false } });
   for (const [h, c] of Object.entries(collections)) await renderPage(`collection-${h}.html`, "collection", { collection: c });
+  // Tops / Bottoms views of all products (what /collections/all?view=tops renders on Shopify)
+  await renderPage("collection-view-tops.html", "collection", { collection: collections.all }, "collection.tops");
+  await renderPage("collection-view-bottoms.html", "collection", { collection: collections.all }, "collection.bottoms");
   await renderPage("cart.html", "cart", {
     cart: {
       item_count: 2,

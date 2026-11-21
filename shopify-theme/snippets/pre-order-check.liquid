@@ -1,0 +1,15 @@
+{%- comment -%}
+  Outputs "true" when a product is sold as a pre-order: tagged "pre-order", or its variant can be
+  bought with no stock left ("Continue selling when out of stock" on a tracked variant).
+  Params: product, variant (optional, defaults to the first available variant)
+{%- endcomment -%}
+{%- liquid
+  assign v = variant | default: product.selected_or_first_available_variant
+  assign out = false
+  if product.tags contains 'pre-order' or product.tags contains 'preorder' or product.tags contains 'Pre-order'
+    assign out = true
+  elsif v.available and v.inventory_management == 'shopify' and v.inventory_policy == 'continue' and v.inventory_quantity < 1
+    assign out = true
+  endif
+  echo out
+-%}

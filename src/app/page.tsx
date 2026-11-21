@@ -29,6 +29,36 @@ export default function Home() {
     <>
       <Hero />
 
+      {/* Winter Drop: new pieces, featured first */}
+      <section className="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
+        <ps-petals snow="" />
+        <div className="wrap relative">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="label text-sakura">New · Pre-order</p>
+              <h2 id="winter-title" className="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">
+                The Winter <span className="text-sakura">Drop.</span>
+              </h2>
+            </div>
+            <div className="max-w-sm">
+              <p className="text-[16px] leading-relaxed text-bone/80">
+                Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.
+              </p>
+              <Link href="/shop/" className="btn-bone mt-6">
+                Shop the Winter Drop <Arrow />
+              </Link>
+            </div>
+          </div>
+          <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">
+            {winter.map((p, i) => (
+              <Reveal as="li" key={p.slug} delay={i * 0.06}>
+                <ProductCard product={p} showBestSeller={false} priority />
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* Summer Edition graphic */}
       <section className="relative overflow-hidden bg-[#F6EEF0] py-24 sm:py-32" aria-labelledby="se-title">
         <ps-petals />
@@ -190,35 +220,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Winter Drop: new pieces, featured first */}
-      <section className="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
-        <ps-petals snow="" />
-        <div className="wrap relative">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="label text-sakura">New · Coming soon</p>
-              <h2 id="winter-title" className="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">
-                The Winter <span className="text-sakura">Drop.</span>
-              </h2>
-            </div>
-            <div className="max-w-sm">
-              <p className="text-[16px] leading-relaxed text-bone/80">
-                Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.
-              </p>
-              <Link href="/shop/" className="btn-bone mt-6">
-                Shop the Winter Drop <Arrow />
-              </Link>
-            </div>
-          </div>
-          <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">
-            {winter.map((p, i) => (
-              <Reveal as="li" key={p.slug} delay={i * 0.06}>
-                <ProductCard product={p} showBestSeller={false} priority />
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      </section>
 
       {/* Story teaser */}
       <section className="relative overflow-hidden bg-stone" aria-labelledby="story-title">

@@ -5,6 +5,17 @@
   if product.tags contains 'coming-soon'
     assign is_coming = true
   endif
+  capture pre_order_check
+    render 'pre-order-check', product: product, variant: current_variant
+  endcapture
+  assign is_pre_order = false
+  if pre_order_check == 'true' and is_coming == false
+    assign is_pre_order = true
+  endif
+  assign add_label = 'products.product.add_to_cart' | t
+  if is_pre_order
+    assign add_label = 'products.product.pre_order' | t
+  endif
 
   capture spin
     render 'spin-images', product: product, width: 1200
@@ -34,7 +45,11 @@
     {%- if collection -%}
       <a href="{{ collection.url }}" class="link-u">{{ collection.title }}</a>
     {%- else -%}
+      {%- capture product_group -%}{% render 'product-group', product: product %}{%- endcapture -%}
+      {%- capture group_link -%}{% render 'group-url', group: product_group %}{%- endcapture -%}
       <a href="{{ routes.all_products_collection_url }}" class="link-u">{{ 'general.shop_all' | t }}</a>
+      <span aria-hidden="true">/</span>
+      <a href="{{ group_link }}" class="link-u">{% if product_group == 'bottoms' %}{{ 'general.bottoms' | t }}{% else %}{{ 'general.tops' | t }}{% endif %}</a>
     {%- endif -%}
   </nav>
 
@@ -124,6 +139,8 @@
           </p>
           {%- if is_coming -%}
             <span class="label bg-sakura px-2 py-1 text-ink">{{ 'products.product.coming_soon' | t }}</span>
+          {%- elsif is_pre_order -%}
+            <span class="label bg-sakura px-2 py-1 text-ink">{{ 'products.product.pre_order' | t }}</span>
           {%- endif -%}
           <span class="label bg-ink px-2 py-1 text-bone" data-sold-out-badge{% if current_variant.available or is_coming %} hidden{% endif %}>{{ 'products.product.sold_out' | t }}</span>
         </div>
@@ -184,8 +201,8 @@
                 <button type="button" class="btn-ink w-full py-5 opacity-80" disabled>{{ 'products.product.coming_soon' | t }}</button>
               {%- endif -%}
             {%- else -%}
-              <button type="submit" name="add" class="btn-ink w-full py-5 disabled:cursor-not-allowed disabled:opacity-60" data-add-button data-label-add="{{ 'products.product.add_to_cart' | t }}" data-label-sold="{{ 'products.product.sold_out' | t }}" data-label-unavailable="{{ 'products.product.unavailable' | t }}" {% unless current_variant.available %}disabled{% endunless %}>
-                <span data-add-label>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+              <button type="submit" name="add" class="btn-ink w-full py-5 disabled:cursor-not-allowed disabled:opacity-60" data-add-button data-label-add="{{ add_label }}" data-label-sold="{{ 'products.product.sold_out' | t }}" data-label-unavailable="{{ 'products.product.unavailable' | t }}" {% unless current_variant.available %}disabled{% endunless %}>
+                <span data-add-label>{% if current_variant.available %}{{ add_label }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
                 {% render 'icon', name: 'arrow' %}
               </button>
               {%- if section.settings.show_dynamic_checkout -%}
@@ -196,6 +213,8 @@
               {%- if is_coming -%}
                 {%- capture ig_link -%}<a class="underline" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer">{{ settings.social_instagram_handle | default: 'Instagram' }}</a>{%- endcapture -%}
                 {{ 'products.product.coming_soon_note_html' | t: link: ig_link }}
+              {%- elsif is_pre_order -%}
+                {{ 'products.product.pre_order_note' | t }} {{ 'products.product.free_shipping_note' | t }}
               {%- else -%}
                 {{ 'products.product.free_shipping_note' | t }}
               {%- endif -%}
@@ -248,8 +267,8 @@
     {%- if is_coming -%}
       <a href="{{ settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener noreferrer" class="btn-ink w-full py-3.5">{{ 'products.product.coming_soon' | t }}</a>
     {%- else -%}
-      <button type="submit" form="{{ form_id }}" name="add" class="btn-ink w-full py-3.5 disabled:opacity-60" data-add-button data-label-add="{{ 'products.product.add_to_cart' | t }}" data-label-sold="{{ 'products.product.sold_out' | t }}" data-label-unavailable="{{ 'products.product.unavailable' | t }}" {% unless current_variant.available %}disabled{% endunless %}>
-        <span data-add-label>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+      <button type="submit" form="{{ form_id }}" name="add" class="btn-ink w-full py-3.5 disabled:opacity-60" data-add-button data-label-add="{{ add_label }}" data-label-sold="{{ 'products.product.sold_out' | t }}" data-label-unavailable="{{ 'products.product.unavailable' | t }}" {% unless current_variant.available %}disabled{% endunless %}>
+        <span data-add-label>{% if current_variant.available %}{{ add_label }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
         <span class="opacity-60">·</span>
         <span data-price>{{ current_variant.price | money }}</span>
       </button>

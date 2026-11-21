@@ -9,9 +9,8 @@ import { site } from "@/data/site";
 
 const NAV = [
   { href: "/shop/", label: "Shop all" },
-  { href: "/shop/?c=hoodies", label: "Hoodies" },
-  { href: "/shop/?c=tees", label: "Tees" },
-  { href: "/shop/?c=crop-tops", label: "Crop tops" },
+  { href: "/shop/?c=tops", label: "Tops" },
+  { href: "/shop/?c=bottoms", label: "Bottoms" },
   { href: "/story/", label: "Story" },
 ];
 

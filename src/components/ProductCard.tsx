@@ -13,7 +13,7 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
   // can render blank in Chrome when a canvas effect (the Winter Drop snow) sits on top.
   const cut = !spin && imageMeta(`${first}-cut`) ? `${first}-cut` : null;
   return (
-    <Link href={`/shop/${product.slug}/`} className="group block" aria-label={`${product.name}, ${formatPrice(product.price)}${product.comingSoon ? ", coming soon" : product.inStock ? "" : ", sold out"}`}>
+    <Link href={`/shop/${product.slug}/`} className="group block" aria-label={`${product.name}, ${formatPrice(product.price)}${product.comingSoon ? ", pre-order" : product.inStock ? "" : ", sold out"}`}>
       {spin ? (
         // Garment cut-out that tilts toward the cursor and flips to show the back on hover.
         <div data-tilt className="flip-stage relative aspect-[4/5] overflow-hidden bg-stone">
@@ -68,7 +68,7 @@ export default function ProductCard({ product, sizes = "(min-width:1024px) 25vw,
 function Badges({ product, showBestSeller }: { product: Product; showBestSeller: boolean }) {
   return (
     <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-      {product.comingSoon && <span className="label bg-sakura px-2 py-1 text-[10px] text-ink"><span className="hidden sm:inline">Winter drop · </span>Coming soon</span>}
+      {product.comingSoon && <span className="label bg-sakura px-2 py-1 text-[10px] text-ink"><span className="hidden sm:inline">Winter drop · </span>Pre-order</span>}
       {!product.inStock && !product.comingSoon && <span className="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>}
       {product.badge && <span className="label bg-sakura px-2 py-1 text-[10px] text-ink">{product.badge}</span>}
       {showBestSeller && product.inStock && product.bestSeller && !product.badge && (

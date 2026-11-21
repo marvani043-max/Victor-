@@ -5,11 +5,10 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "menu_shop": {
-          "type": "menu",
+        "shop_links": {
+          "type": "shop_links",
           "settings": {
-            "heading": "Shop",
-            "menu": "main-menu"
+            "heading": "Shop"
           }
         },
         "menu_help": {
@@ -21,7 +20,7 @@
         }
       },
       "block_order": [
-        "menu_shop",
+        "shop_links",
         "menu_help"
       ],
       "settings": {

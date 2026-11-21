@@ -6,11 +6,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { products, CATEGORIES, bestSellers, relatedTo, formatPrice, categoryLabel, categoryPlural, getProduct, winterDrop, featuredRank, sortablePrice, type Product } from "../src/data/products";
-import { site, storeProductUrl, restockMailto } from "../src/data/site";
+import { products, CATEGORIES, SHOP_GROUPS, groupOf, groupLabel, bestSellers, relatedTo, formatPrice, categoryLabel, getProduct, winterDrop, featuredRank, sortablePrice, type Product } from "../src/data/products";
+import { site, storeProductUrl, restockMailto, STORE_URL } from "../src/data/site";
 import { FAQ } from "../src/data/faq";
 import manifestJson from "../src/data/image-manifest.json";
-import { spinItems, fitFinderData, jsonForScript } from "../src/data/interactive";
+import { fitFinderData, jsonForScript } from "../src/data/interactive";
 import { buildSync } from "esbuild";
 
 type Entry = { w: number; h: number; kind: string; widths: number[] };
@@ -48,7 +48,7 @@ const card = (p: Product, showBest = true) => {
   const hover = p.lifestyle ?? p.colorways[0].images[1];
   const studio = M[first].kind === "studio";
   const badges = [
-    p.comingSoon ? `<span class="label bg-sakura px-2 py-1 text-[10px] text-ink"><span class="hidden sm:inline">Winter drop · </span>Coming soon</span>` : "",
+    p.comingSoon ? `<span class="label bg-sakura px-2 py-1 text-[10px] text-ink"><span class="hidden sm:inline">Winter drop · </span>Pre-order</span>` : "",
     !p.inStock && !p.comingSoon ? `<span class="label bg-ink px-2 py-1 text-[10px] text-bone">Sold out</span>` : "",
     p.badge ? `<span class="label bg-sakura px-2 py-1 text-[10px] text-ink">${p.badge}</span>` : "",
     showBest && p.inStock && p.bestSeller && !p.badge ? `<span class="label bg-bone/90 px-2 py-1 text-[10px] text-ink">Best seller</span>` : "",
@@ -67,7 +67,7 @@ const card = (p: Product, showBest = true) => {
     <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">${badges}</div>
   </div>`
     : "";
-  return `<a href="#product-${p.slug}" class="group block" aria-label="${esc(p.name)}, ${formatPrice(p.price)}${p.comingSoon ? ", coming soon" : p.inStock ? "" : ", sold out"}">
+  return `<a href="#product-${p.slug}" class="group block" aria-label="${esc(p.name)}, ${formatPrice(p.price)}${p.comingSoon ? ", pre-order" : p.inStock ? "" : ", sold out"}">
   ${
     media ||
     `<div data-tilt class="relative aspect-[4/5] overflow-hidden ${studio ? "bg-stone" : "bg-coal"}">
@@ -85,9 +85,8 @@ const card = (p: Product, showBest = true) => {
 
 const NAV = [
   ["#shop", "Shop all"],
-  ["#shop-hoodies", "Hoodies"],
-  ["#shop-tees", "Tees"],
-  ["#shop-crop-tops", "Crop tops"],
+  ["#shop-tops", "Tops"],
+  ["#shop-bottoms", "Bottoms"],
   ["#story", "Story"],
 ];
 
@@ -143,7 +142,7 @@ const footer = `
       </div>
       <div class="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-6 lg:col-start-7 lg:pt-4">
         <div><h2 class="label text-mist">Shop</h2><ul class="mt-5 space-y-3">
-          ${[["#shop", "All products"], ...CATEGORIES.map((c) => [`#shop-${c.id}`, c.plural])].map(([h, l]) => `<li><a href="${h}" class="link-u text-[15px]">${l}</a></li>`).join("")}
+          ${[["#shop", "All products"], ...SHOP_GROUPS.map((g) => [`#shop-${g.id}`, g.label])].map(([h, l]) => `<li><a href="${h}" class="link-u text-[15px]">${l}</a></li>`).join("")}
         </ul></div>
         <div><h2 class="label text-mist">Help</h2><ul class="mt-5 space-y-3">
           <li><a href="#shipping" class="link-u text-[15px]">Shipping &amp; returns</a></li>
@@ -209,6 +208,25 @@ const lookPanel = (key: "trail" | "tunnel") =>
     .join("")}
   </ul></div>`;
 
+// "Spin the drop" shows the Winter Drop only (as published on 21 Nov 2026). Pieces without a
+// studio back shot spin on their front photo.
+const winterSpin = ["plaid-lined-hoodie-pink", "plaid-lined-hoodie-grey", "plaid-panel-sweatpants-pink", "plaid-panel-sweatpants-grey"].map((slug) => {
+  const p = getProduct(slug)!;
+  const c = p.colorways[0];
+  const front = c.spin?.front ?? c.images[0];
+  const back = c.spin?.back ?? front;
+  return {
+    name: p.name,
+    price: formatPrice(p.price),
+    colour: c.name,
+    href: `#product-${p.slug}`,
+    front: pick(`${front}-cut`, 960),
+    back: pick(`${back}-cut`, 960),
+    thumb: pick(`${front}-cut`, c.spin ? 480 : 960),
+    word: categoryLabel(p.category) === "Sweatpants" ? "Pants" : categoryLabel(p.category),
+  };
+});
+
 const home = `
 <section class="hero relative -mt-[var(--header-h)] h-[100svh] min-h-[600px] overflow-hidden bg-ink text-bone" aria-label="Peak Side">
   <div class="absolute inset-0 flex">
@@ -236,6 +254,23 @@ const home = `
         <a href="#story" class="btn border border-bone/50 px-5 text-bone hover:border-bone hover:bg-bone hover:text-ink sm:px-6">Our story</a>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
+  <ps-petals snow></ps-petals>
+  <div class="wrap relative">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="label text-sakura">New · Pre-order</p>
+        <h2 id="winter-title" class="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">The Winter <span class="text-sakura">Drop.</span></h2>
+      </div>
+      <div class="max-w-sm">
+        <p class="text-[16px] leading-relaxed text-bone/80">Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.</p>
+        <a href="#shop" class="btn-bone mt-6">Shop the Winter Drop ${arrow}</a>
+      </div>
+    </div>
+    <ul class="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">${winterDrop().map((p) => `<li>${card(p, false)}</li>`).join("")}</ul>
   </div>
 </section>
 
@@ -294,7 +329,7 @@ ${[0, 1, 2, 3]
 </section>
 
 <section class="border-y border-ink/10 bg-bone py-20 sm:py-28" aria-label="Spin the drop"><div class="wrap">
-  <ps-showcase><script type="application/json">${jsonForScript({ items: spinItems((p) => `#product-${p.slug}`, pick) })}</script></ps-showcase>
+  <ps-showcase><script type="application/json">${jsonForScript({ items: winterSpin })}</script></ps-showcase>
 </div></section>
 
 <section class="pb-24 pt-24 sm:pb-32 sm:pt-32"><h2 class="sr-only">Shop by category</h2>
@@ -340,23 +375,6 @@ ${[0, 1, 2, 3]
       <p class="mt-5 max-w-sm text-[16px] leading-relaxed text-ink/75">Three taps and we'll point you to the piece that fits your day, your weather and the way you like to wear it.</p>
     </div>
     <div class="lg:col-span-8"><ps-fit><script type="application/json">${jsonForScript(fitFinderData((p) => `#product-${p.slug}`, pick))}</script></ps-fit></div>
-  </div>
-</section>
-
-<section class="relative overflow-hidden bg-ink py-20 text-bone sm:py-28" aria-labelledby="winter-title">
-  <ps-petals snow></ps-petals>
-  <div class="wrap relative">
-    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <div>
-        <p class="label text-sakura">New · Coming soon</p>
-        <h2 id="winter-title" class="display mt-4 text-[17vw] sm:text-8xl lg:text-[9rem]">The Winter <span class="text-sakura">Drop.</span></h2>
-      </div>
-      <div class="max-w-sm">
-        <p class="text-[16px] leading-relaxed text-bone/80">Plaid-lined hoodies and plaid-panel sweatpants in washed black, in pink or grey plaid, finished with the PKS script.</p>
-        <a href="#shop" class="btn-bone mt-6">Shop the Winter Drop ${arrow}</a>
-      </div>
-    </div>
-    <ul class="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4">${winterDrop().map((p) => `<li>${card(p, false)}</li>`).join("")}</ul>
   </div>
 </section>
 
@@ -422,7 +440,7 @@ const shop = `
   <div class="filters sticky z-20 -mx-4 border-y border-ink/10 bg-bone/95 px-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10" style="top:calc(env(safe-area-inset-top,0px) + var(--header-h))">
     <div class="flex flex-col gap-3 py-3 lg:flex-row lg:items-center lg:justify-between">
       <div role="group" aria-label="Filter by category" class="no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1">
-        ${[{ id: "all", plural: "All", n: products.length }, ...CATEGORIES.map((c) => ({ id: c.id, plural: c.plural, n: products.filter((p) => p.category === c.id).length }))]
+        ${[{ id: "all", plural: "All", n: products.length }, ...SHOP_GROUPS.map((g) => ({ id: g.id, plural: g.label, n: products.filter((p) => groupOf(p.category) === g.id).length }))]
           .map((c) => `<button type="button" data-cat="${c.id}" aria-pressed="${c.id === "all"}" class="cat-btn label shrink-0 whitespace-nowrap px-3.5 py-2.5 transition-colors">${c.plural} <span class="cat-n">${c.n}</span></button>`)
           .join("")}
       </div>
@@ -439,7 +457,7 @@ const shop = `
   <ul id="shop-grid" class="mt-4 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-y-14">
   ${[...products]
     .sort((a, b) => featuredRank(a) - featuredRank(b))
-    .map((p, i) => `<li class="shop-item" data-cat="${p.category}" data-price="${sortablePrice(p)}" data-stock="${p.inStock ? 1 : 0}" data-order="${i}">${card(p)}</li>`)
+    .map((p, i) => `<li class="shop-item" data-cat="${p.category}" data-group="${groupOf(p.category)}" data-price="${sortablePrice(p)}" data-stock="${p.inStock || p.comingSoon ? 1 : 0}" data-order="${i}">${card(p)}</li>`)
     .join("")}
   </ul>
 </div>`;
@@ -480,14 +498,14 @@ const productView = (p: Product) => {
 
   const primary = (compact: boolean) =>
     p.comingSoon
-      ? `<a href="${site.instagram.url}" ${ext} class="btn-ink w-full ${compact ? "py-3.5" : "py-5"}">Coming soon <span class="opacity-60">·</span> Follow for the drop ${arrowUR}</a>`
+      ? `<a href="${p.storeSlug ? storeProductUrl(p.storeSlug) : `${STORE_URL}/`}" ${ext} class="btn-ink w-full ${compact ? "py-3.5" : "py-5"}">Pre-order <span class="opacity-60">·</span> ${p.price === null ? "Peak Side store" : formatPrice(p.price)} ${arrowUR}</a>`
       : p.inStock
       ? `<a href="${storeProductUrl(p.storeSlug)}" ${ext} class="btn-ink w-full ${compact ? "py-3.5" : "py-5"}">Choose size &amp; checkout <span class="opacity-60">·</span> ${formatPrice(p.price)} ${arrowUR}</a>`
       : `<a href="${restockMailto(p.name)}" class="btn-ink w-full ${compact ? "py-3.5" : "py-5"}">Email me when it's back ${arrow}</a>`;
 
   return `
 <div class="wrap pb-24 pt-6 sm:pt-10">
-  <nav aria-label="Breadcrumb" class="label mb-6 flex items-center gap-2 text-granite"><a href="#home" class="link-u">Home</a><span aria-hidden="true">/</span><a href="#shop" class="link-u">Shop</a><span aria-hidden="true">/</span><a href="#shop-${p.category}" class="link-u">${categoryPlural(p.category)}</a></nav>
+  <nav aria-label="Breadcrumb" class="label mb-6 flex items-center gap-2 text-granite"><a href="#home" class="link-u">Home</a><span aria-hidden="true">/</span><a href="#shop" class="link-u">Shop</a><span aria-hidden="true">/</span><a href="#shop-${groupOf(p.category)}" class="link-u">${groupLabel(groupOf(p.category))}</a></nav>
   <div class="grid gap-8 lg:grid-cols-12 lg:gap-12">
     <div class="lg:col-span-7">${galleries}</div>
     <div class="lg:col-span-5"><div class="lg:sticky" style="top:calc(var(--header-h) + 2rem)">
@@ -495,9 +513,9 @@ const productView = (p: Product) => {
       <h1 class="display mt-3 text-[12vw] sm:text-7xl lg:text-[4.25rem]">${esc(p.name)}</h1>
       <div class="mt-5 flex items-center gap-4">
         <p class="font-mono text-xl ${p.inStock || p.comingSoon ? "" : "text-granite line-through"}">${formatPrice(p.price)}</p>
-        ${p.comingSoon ? `<span class="label bg-sakura px-2 py-1 text-ink">Coming soon</span>` : ""}${!p.inStock && !p.comingSoon ? `<span class="label bg-ink px-2 py-1 text-bone">Sold out</span>` : ""}${p.badge ? `<span class="label bg-sakura px-2 py-1">${p.badge}</span>` : ""}
+        ${p.comingSoon ? `<span class="label bg-sakura px-2 py-1 text-ink">Pre-order</span>` : ""}${!p.inStock && !p.comingSoon ? `<span class="label bg-ink px-2 py-1 text-bone">Sold out</span>` : ""}${p.badge ? `<span class="label bg-sakura px-2 py-1">${p.badge}</span>` : ""}
       </div>
-      ${p.inStock && p.price !== null ? `<p class="mt-2 text-[13px] text-granite">Or 4 interest-free payments of ${formatPrice(Math.ceil((p.price / 4) * 100) / 100)} with PayPal at checkout.</p>` : ""}
+      ${(p.inStock || p.comingSoon) && p.price !== null ? `<p class="mt-2 text-[13px] text-granite">Or 4 interest-free payments of ${formatPrice(Math.ceil((p.price / 4) * 100) / 100)} with PayPal at checkout.</p>` : ""}
       <p class="mt-6 max-w-md text-[16px] leading-relaxed">${esc(p.description ?? p.summary)}</p>
       <fieldset class="mt-8"><legend class="label">Colour <span class="text-granite">— <span class="cw-name">${p.colorways[0].name}</span></span></legend>
         <div class="mt-3 flex flex-wrap gap-2">${p.colorways
@@ -511,13 +529,13 @@ const productView = (p: Product) => {
       <div class="buy-cta mt-8">${primary(false)}
         <p class="mt-3 text-[12px] leading-relaxed text-granite">${
           p.comingSoon
-            ? `Part of the new Winter Drop and not on sale yet. Follow <a class="underline" href="${site.instagram.url}" ${ext}>${site.instagram.handle}</a> to hear the moment it's live.`
+            ? `Part of the new Winter Drop, available to pre-order. Opens the official Peak Side store, where you pick your size and pay. Use code <span class="font-mono text-ink">${site.promo.code}</span> for free shipping.`
             : p.inStock
             ? `Opens the official Peak Side store, where you pick your size and pay. Use code <span class="font-mono text-ink">${site.promo.code}</span> for free shipping.`
             : `Opens an email to Peak Side (<span class="select-all">${site.email}</span>) asking about the restock. Or follow <a class="underline" href="${site.instagram.url}" ${ext}>${site.instagram.handle}</a> for drops.`
         }</p></div>
       <div class="mt-8 border-t border-ink/15">
-        ${accordion("Details", `<p>${esc(p.summary)}</p>${note(`${p.comingSoon ? "Price, sizes, fabric and care instructions" : "Fabric, weight and care instructions"}: to be supplied by Peak Side.`)}`, true)}
+        ${accordion("Details", `<p>${esc(p.summary)}</p>${note(`${p.comingSoon && p.price === null ? "Price, sizes, fabric and care instructions" : "Fabric, weight and care instructions"}: to be supplied by Peak Side.`)}`, true)}
         ${accordion("Fit &amp; sizing", `<p>${esc(p.fit ?? "See the size chart on the checkout page for measurements.")}</p>${note("Measured size chart (chest, length, sleeve in inches): to be supplied by Peak Side.")}`)}
         ${accordion("Shipping &amp; returns", `<p>Orders are processed within ${site.policies.processing}, with tracking emailed when your order ships. Returns and exchanges are accepted within ${site.policies.returnWindow} of delivery on unworn, unwashed items with tags attached.</p><a href="#shipping" class="link-u mt-3 inline-flex items-center gap-1.5 font-medium">Full policy ${arrowUR}</a>`)}
       </div>
@@ -617,6 +635,8 @@ const script = `
   var menuBtn = document.getElementById('menu-btn');
   var current = 'home';
   var CATS = ${JSON.stringify(CATEGORIES.map((c) => c.id))};
+  var GROUPS = ${JSON.stringify(SHOP_GROUPS.map((g) => g.id))};
+  var GROUP_OF = ${JSON.stringify(Object.fromEntries(CATEGORIES.map((c) => [c.id, groupOf(c.id)])))};
 
   function setMenu(open){
     menu.hidden = !open; menuBtn.setAttribute('aria-expanded', open);
@@ -637,7 +657,7 @@ const script = `
   function route(){
     var h = (location.hash || '#home').slice(1);
     var target = h, cat = null, anchor = null;
-    if (h.indexOf('shop-')===0 && CATS.indexOf(h.slice(5))>-1){ target='shop'; cat=h.slice(5); }
+    if (h.indexOf('shop-')===0 && (GROUPS.indexOf(h.slice(5))>-1 || CATS.indexOf(h.slice(5))>-1)){ target='shop'; cat=h.slice(5); }
     else if (h==='shop'){ cat='all'; }
     else if (h==='faq'){ target='shipping'; anchor='faq-anchor'; }
     var el = document.querySelector('.view[data-view="'+target+'"]');
@@ -679,14 +699,15 @@ const script = `
   var items = Array.prototype.slice.call(grid.children);
   function setCat(c){ state.cat=c; applyShop(); }
   function applyShop(){
-    document.querySelectorAll('.cat-btn').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.cat===state.cat); });
+    var chip = GROUP_OF[state.cat] || state.cat;
+    document.querySelectorAll('.cat-btn').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.cat===chip); });
     var list = items.slice();
     if(state.sort==='price-asc') list.sort(function(a,b){ return a.dataset.price-b.dataset.price; });
     else if(state.sort==='price-desc') list.sort(function(a,b){ var pa=+a.dataset.price, pb=+b.dataset.price; return (isFinite(pb)?pb:-1)-(isFinite(pa)?pa:-1); });
     else list.sort(function(a,b){ return a.dataset.order-b.dataset.order; });
     var n=0;
     list.forEach(function(li){
-      var show = (state.cat==='all'||li.dataset.cat===state.cat) && (!state.instock||li.dataset.stock==='1');
+      var show = (state.cat==='all'||li.dataset.group===state.cat||li.dataset.cat===state.cat) && (!state.instock||li.dataset.stock==='1');
       li.hidden=!show; if(show) n++; grid.appendChild(li);
     });
     document.getElementById('shop-count').textContent = n + (n===1?' product':' products');

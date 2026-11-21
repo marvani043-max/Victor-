@@ -5,7 +5,7 @@ import Img, { imageMeta } from "./Img";
 import Accordion from "./Accordion";
 import { Arrow, ArrowUpRight } from "./Icons";
 import { type Product, formatPrice, categoryLabel } from "@/data/products";
-import { site, storeProductUrl, restockMailto } from "@/data/site";
+import { site, storeProductUrl, restockMailto, STORE_URL } from "@/data/site";
 import Link from "next/link";
 import { imageSrc } from "./Img";
 
@@ -58,8 +58,8 @@ export default function ProductDetail({ product }: { product: Product }) {
 
   const Primary = ({ compact = false }: { compact?: boolean }) =>
     product.comingSoon ? (
-      <a href={site.instagram.url} target="_blank" rel="noopener noreferrer" className={`btn-ink w-full ${compact ? "py-3.5" : "py-5"}`}>
-        Coming soon <span className="opacity-60">·</span> Follow for the drop <ArrowUpRight />
+      <a href={product.storeSlug ? buyHref : `${STORE_URL}/`} className={`btn-ink w-full ${compact ? "py-3.5" : "py-5"}`}>
+        Pre-order <span className="opacity-60">·</span> {product.price === null ? "Peak Side store" : formatPrice(product.price)} <ArrowUpRight />
       </a>
     ) : product.inStock ? (
       <a href={buyHref} className={`btn-ink w-full ${compact ? "py-3.5" : "py-5"}`}>
@@ -153,11 +153,11 @@ export default function ProductDetail({ product }: { product: Product }) {
             <h1 className="display mt-3 text-[12vw] sm:text-7xl lg:text-[4.25rem]">{product.name}</h1>
             <div className="mt-5 flex items-center gap-4">
               <p className={`font-mono text-xl ${product.inStock || product.comingSoon ? "" : "text-granite line-through"}`}>{formatPrice(product.price)}</p>
-              {product.comingSoon && <span className="label bg-sakura px-2 py-1 text-ink">Coming soon</span>}
+              {product.comingSoon && <span className="label bg-sakura px-2 py-1 text-ink">Pre-order</span>}
               {!product.inStock && !product.comingSoon && <span className="label bg-ink px-2 py-1 text-bone">Sold out</span>}
               {product.badge && <span className="label bg-sakura px-2 py-1">{product.badge}</span>}
             </div>
-            {product.inStock && product.price !== null && (
+            {(product.inStock || product.comingSoon) && product.price !== null && (
               <p className="mt-2 text-[13px] text-granite">
                 Or 4 interest-free payments of {formatPrice(Math.ceil((product.price / 4) * 100) / 100)} with PayPal at checkout.
               </p>
@@ -207,11 +207,8 @@ export default function ProductDetail({ product }: { product: Product }) {
               <p className="mt-3 text-[12px] leading-relaxed text-granite">
                 {product.comingSoon ? (
                   <>
-                    Part of the new Winter Drop and not on sale yet. Follow{" "}
-                    <a className="underline" href={site.instagram.url} target="_blank" rel="noopener noreferrer">
-                      {site.instagram.handle}
-                    </a>{" "}
-                    to hear the moment it&apos;s live.
+                    Part of the new Winter Drop, available to pre-order. Opens the official Peak Side store, where you pick your size and pay. Use code{" "}
+                    <span className="font-mono text-ink">{site.promo.code}</span> for free shipping.
                   </>
                 ) : product.inStock ? (
                   <>
@@ -235,7 +232,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <p>{product.summary}</p>
                 {/* PLACEHOLDER — fabric composition, weight and care were not published on the store. */}
                 <p className="mt-3 border-l-2 border-sakura pl-3 text-[13px] text-granite">
-                  {product.comingSoon ? "Price, sizes, fabric and care instructions" : "Fabric, weight and care instructions"}: to be supplied by Peak Side.
+                  {product.comingSoon && product.price === null ? "Price, sizes, fabric and care instructions" : "Fabric, weight and care instructions"}: to be supplied by Peak Side.
                 </p>
               </Accordion>
               <Accordion title="Fit & sizing">

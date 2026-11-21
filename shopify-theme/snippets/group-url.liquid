@@ -1,0 +1,12 @@
+{%- comment -%}
+  URL for the Tops or Bottoms page. Uses the store's own "tops"/"bottoms" collection when it
+  exists; otherwise the all-products page in the theme's Tops/Bottoms view (no setup needed).
+  Params: group ("tops" or "bottoms")
+{%- endcomment -%}
+{%- liquid
+  if collections[group].handle != blank
+    echo collections[group].url
+  else
+    echo routes.all_products_collection_url | append: '?view=' | append: group
+  endif
+-%}

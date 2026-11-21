@@ -1,0 +1,21 @@
+{%- comment -%}
+  Outputs the shop category a product belongs to: "bottoms" or "tops".
+  Tags "bottoms"/"tops" win; otherwise bottoms are spotted from the product type or title
+  (pants, sweatpants, joggers, shorts, trousers, leggings, skirts). Everything else is a top.
+  Params: product
+{%- endcomment -%}
+{%- liquid
+  assign g = 'tops'
+  assign tags = product.tags | join: ',' | downcase | prepend: ',' | append: ','
+  if tags contains ',bottoms,' or tags contains ',bottom,'
+    assign g = 'bottoms'
+  elsif tags contains ',tops,' or tags contains ',top,'
+    assign g = 'tops'
+  else
+    assign words = product.type | append: ' ' | append: product.title | downcase
+    if words contains 'pant' or words contains 'jogger' or words contains 'short' or words contains 'trouser' or words contains 'legging' or words contains 'skirt' or words contains 'bottom'
+      assign g = 'bottoms'
+    endif
+  endif
+  echo g
+-%}
