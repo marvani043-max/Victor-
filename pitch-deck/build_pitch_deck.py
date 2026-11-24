@@ -19,7 +19,6 @@ from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)
 OUT = os.path.join(HERE, 'Agency-Pitch-Deck.pptx')
 ASSETS = os.path.join(HERE, 'assets')
 os.makedirs(ASSETS, exist_ok=True)
@@ -97,21 +96,6 @@ def circle(sl, x, y, d, label, fill=ACCENT, color=NAVY, size=18):
     return s
 
 
-def photo(sl, src, x, y, w, h):
-    """Center-crop a site image to the box and place it."""
-    name = os.path.splitext(os.path.basename(src))[0]
-    dst = os.path.join(ASSETS, f'{name}-{int(w*100)}x{int(h*100)}.jpg')
-    if not os.path.exists(dst):
-        im = Image.open(src).convert('RGB')
-        target = w / h; iw, ih = im.size
-        if iw / ih > target:
-            nw = int(ih * target); im = im.crop(((iw - nw) // 2, 0, (iw - nw) // 2 + nw, ih))
-        else:
-            nh = int(iw / target); im = im.crop((0, (ih - nh) // 2, iw, (ih - nh) // 2 + nh))
-        im.thumbnail((1600, 1600)); im.save(dst, quality=85)
-    return sl.shapes.add_picture(dst, Inches(x), Inches(y), Inches(w), Inches(h))
-
-
 def slide(title, kicker, notes):
     sl = prs.slides.add_slide(prs.slide_layouts[6])
     sl.background.fill.solid(); sl.background.fill.fore_color.rgb = rgb(NAVY)
@@ -126,21 +110,17 @@ def slide(title, kicker, notes):
     return sl
 
 
-IMG = lambda n: os.path.join(ROOT, 'public', 'images', n)
-
 # 1. Title ----------------------------------------------------------------
 sl = slide(None, None,
            'Thank them for their time. Say: "I\'ll keep this to about 20 minutes. '
            'I want to hear about your business first, show you a couple of things we\'ve built, '
            'then share a few ideas for you. Sound good?"')
-sl.shapes.add_picture(LOGO, Inches(.25), Inches(.35), Inches(2.3 * LOGO_AR), Inches(2.3))
-text(sl, .6, 2.85, 6.6, 1.9, [f"Let's grow", CLIENT, 'together'], 40, WHITE, True, HEAD, space=0)
-text(sl, .6, 4.95, 6.2, 1.0,
+text(sl, .6, 1.9, 6.6, 2.6, [f"Let's grow", CLIENT, 'together'], 48, WHITE, True, HEAD, space=0)
+text(sl, .6, 4.45, 6.0, 1.0,
      'A short look at your goals, the work we have done for other brands, '
      'and a plan made for your business.', 18, GRAY)
-text(sl, .6, 6.0, 6, .35, '[Meeting date]  ·  [Your name], [Your title]', 14, ACCENT, True)
-photo(sl, IMG('tunnel-crop-duo-1333.webp'), 7.75, .55, 5.0, 6.15)
-text(sl, 7.75, 6.78, 5, .2, 'Recent work: Peak Side', 10, DIM, align=PP_ALIGN.RIGHT)
+text(sl, .6, 5.7, 6, .35, '[Meeting date]  ·  [Your name], [Your title]', 14, ACCENT, True)
+sl.shapes.add_picture(LOGO, Inches(7.1), Inches(2.1), Inches(5.6), Inches(5.6 / LOGO_AR))
 
 # 2. Agenda ---------------------------------------------------------------
 sl = slide("What we'll cover today", 'TODAY',
@@ -192,31 +172,7 @@ for col, (label, x, fill, lab_color) in enumerate([('TODAY', .6, PANEL, GRAY), (
             ln = box(sl, x + .4, yy + .62, 4.7, .015, LINE, MSO_SHAPE.RECTANGLE)
 arrow = box(sl, 6.3, 4.1, .75, .7, ACCENT, MSO_SHAPE.RIGHT_ARROW)
 
-# 5. Case study: Peak Side ------------------------------------------------
-sl = slide('Peak Side: a streetwear brand, online', '02  ·  WORK WE HAVE DONE',
-           'Open the live site on your phone or laptop and let them scroll it. Point out the '
-           '360° product spin and the fit finder: features most small brands do not have. '
-           'Add a real result (orders, time on site, compliments from customers) before you present.')
-photo(sl, IMG('night-boxy-trio-960.webp'), .6, 2.15, 3.05, 4.5)
-photo(sl, IMG('tunnel-pink-hoodie-1333.webp'), 3.85, 2.15, 2.6, 2.15)
-photo(sl, IMG('globe-front-960.webp'), 3.85, 4.5, 2.6, 2.15)
-text(sl, 6.95, 2.15, 5.8, .3, 'THE CHALLENGE', 12, ACCENT, True)
-text(sl, 6.95, 2.5, 5.8, .8,
-     'A growing clothing brand whose store looked like every other template site.', 16, WHITE)
-text(sl, 6.95, 3.4, 5.8, .3, 'WHAT WE BUILT', 12, ACCENT, True)
-built = ['A custom website that looks and feels like the brand',
-         'A matching Shopify store theme, ready to sell',
-         '360° product spin viewer and a fit finder',
-         'A Winter Drop launch page with pre-orders']
-text(sl, 6.95, 3.75, 5.8, 1.7,
-     [[('✓  ', {'color': ACCENT, 'bold': True}), (b, {})] for b in built], 16, WHITE, space=6)
-box(sl, 6.95, 5.6, 5.8, 1.05, PANEL)
-text(sl, 7.25, 5.75, 5.3, .8,
-     [[('RESULT  ', {'color': ACCENT, 'bold': True, 'size': 12})],
-      [('[Add a result, e.g. "more online orders in the first month of the Winter Drop"]', {})]],
-     15, WHITE, space=2)
-
-# 6. Case study template --------------------------------------------------
+# 5. Case study template --------------------------------------------------
 sl = slide('[Brand name]: [what kind of business]', '02  ·  WORK WE HAVE DONE',
            'Copy this slide once for each past client you want to show. Keep it to one clear story: '
            'problem, what you did, what changed. Swap the grey box for a screenshot or photo '
@@ -232,7 +188,7 @@ for i, (h, d) in enumerate(cols):
     text(sl, 6.6, y + .05, 6.1, .3, h, 12, ACCENT, True)
     text(sl, 6.6, y + .4, 6.1, .9, d, 18, WHITE)
 
-# 7. Results at a glance ---------------------------------------------------
+# 6. Results at a glance ---------------------------------------------------
 sl = slide('Results we have delivered', '02  ·  WORK WE HAVE DONE',
            'Only use numbers you can back up. If you are just starting out, swap these for '
            '"years of experience", "brands worked with" and "posts / pages created". Or delete this slide.')
@@ -246,7 +202,7 @@ for i, (n, l) in enumerate(stats):
 text(sl, .6, 6.1, 12, .4,
      '"[A short quote from a happy client.]"  [Name, Business]', 16, GRAY, italic=True)
 
-# 8. Services --------------------------------------------------------------
+# 7. Services --------------------------------------------------------------
 sl = slide('What we can do for you', '03  ·  HOW WE HELP YOU GROW',
            'Do not read all six. Point to the two or three that match what they told you on the '
            'goals slide, and say why.')
@@ -264,7 +220,7 @@ for i, (tag, h, d) in enumerate(svc):
     text(sl, x + 1.25, y + .3, 2.35, .7, h, 17, WHITE, True)
     text(sl, x + 1.25, y + 1.0, 2.35, .85, d, 14, GRAY)
 
-# 9. 90-day plan ------------------------------------------------------------
+# 8. 90-day plan ------------------------------------------------------------
 sl = slide(f'Your 90-day growth plan', '03  ·  HOW WE HELP YOU GROW',
            'Make it feel concrete and low-risk: they see progress every month, and month one '
            'fixes the basics before any ad money is spent. Adjust the steps to what they need.')
@@ -280,7 +236,7 @@ for i, (m, h, pts) in enumerate(phases):
     text(sl, x + .35, 4.2, 3.1, .5, h, 22, WHITE, True, HEAD)
     text(sl, x + .35, 4.85, 3.2, 1.7, [[('•  ', {'color': ACCENT}), (p, {})] for p in pts], 15, GRAY, space=6)
 
-# 10. Ideas for this client ----------------------------------------------------
+# 9. Ideas for this client ----------------------------------------------------
 sl = slide(f'Three ideas for {CLIENT}', '03  ·  HOW WE HELP YOU GROW',
            'Fill this in before every meeting. Spend 15 minutes on their website, Google profile '
            'and Instagram. Specific ideas ("your Google profile has no photos") prove you did '
@@ -297,7 +253,7 @@ for i, (tag, idea, why) in enumerate(ideas):
     text(sl, 8.4, y + .22, 4.0, .3, 'WHAT IT DOES FOR YOU', 12, DIM, True)
     text(sl, 8.4, y + .55, 4.0, .7, why, 15, GRAY)
 
-# 11. Packages ------------------------------------------------------------------
+# 10. Packages ------------------------------------------------------------------
 sl = slide('Pick the plan that fits', '03  ·  HOW WE HELP YOU GROW',
            'Set your prices before you present. Most people pick the middle option, so make it '
            'the one you want them to choose. Ask: "Which of these feels like the right fit?"')
@@ -315,7 +271,7 @@ for i, (name, price, feats, hot) in enumerate(pk):
                                      (' / month', {'size': 14, 'color': GRAY})]], 14, space=0)
     text(sl, x + .35, 4.0, 3.2, 2.5, [[('✓  ', {'color': ACCENT, 'bold': True}), (f, {})] for f in feats], 15, WHITE, space=8)
 
-# 12. Next steps ------------------------------------------------------------------
+# 11. Next steps ------------------------------------------------------------------
 sl = slide("Let's get started", 'NEXT STEPS',
            'Ask for the decision: "Which plan would you like to start with?" If they need time, '
            'book the follow-up call before you hang up. Send this deck by email the same day.')
