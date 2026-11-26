@@ -200,26 +200,6 @@
     });
   });
 
-  /* ---------------- paver cross-section ---------------- */
-  $$('[data-xs]').forEach(function (xs) {
-    var svg = $('.xs-svg', xs), btns = $$('.xs-btn', xs), narrow = window.matchMedia('(max-width: 1000px)');
-    function sel(id) {
-      svg.classList.add('has-active');
-      $$('.lyr', svg).forEach(function (g) { g.classList.toggle('on', g.getAttribute('data-layer') === id); });
-      $$('.dim g[data-layer]', svg).forEach(function (g) { g.classList.toggle('on', g.getAttribute('data-layer') === id); });
-      btns.forEach(function (b) { var on = b.getAttribute('data-layer') === id; b.setAttribute('aria-expanded', String(on)); document.getElementById(b.getAttribute('aria-controls')).hidden = !on; });
-    }
-    btns.forEach(function (b) {
-      b.addEventListener('click', function () { sel(b.getAttribute('data-layer')); });
-      b.addEventListener('mouseenter', function () { if (!narrow.matches) sel(b.getAttribute('data-layer')); });
-    });
-    $$('.lyr', svg).forEach(function (g) {
-      g.addEventListener('click', function () { sel(g.getAttribute('data-layer')); });
-      g.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') sel(g.getAttribute('data-layer')); });
-    });
-    sel('pavers');
-  });
-
   /* ---------------- process progress ---------------- */
   $$('[data-steps]').forEach(function (steps) {
     var items = $$('.step', steps);

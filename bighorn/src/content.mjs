@@ -102,7 +102,6 @@ export const services = [
       ['Screed and set', 'A level bedding layer, then pavers set to pattern and cut clean at the edges.'],
       ['Lock it in', 'Edge restraint on open sides and joint sand swept in and set.'],
     ],
-    crossSection: true,
     project: 'backyard-rebuild',
     faq: [
       ['How long do pavers last?', 'A paver surface on a properly compacted base lasts for decades. Most problems people see come from a thin or soft base, which is why we spend most of the job below the surface.'],

@@ -53,7 +53,7 @@ Upload the contents of `site/` to Netlify, Cloudflare Pages, Vercel or any web h
 - **Page layouts:** `build.mjs`.
 - **Design:** `src/site.css`. Colours and fonts are tokens at the top.
 - **Behaviour:** `src/site.js` (hero before/after cycle, menus, service previews, before/after toggles,
-  paver cross-section, map, project filter, forms).
+  map, project filter, forms).
 - **Photos:** `tools/images.py`. Masters live in `src/img-master/`; run `python3 tools/images.py web` to remake
   the 420/720/1014 px WebP files in `src/static/img/`, then rebuild.
 - **Drawings:** `tools/drawings.mjs` draws the six typical-detail construction drawings (concrete, backyard plan,
@@ -90,7 +90,7 @@ Upload the contents of `site/` to Netlify, Cloudflare Pages, Vercel or any web h
    - The staircase post also carries Instagram's "AI content" label. The photos look like real job photos, but
      confirm they are unedited originals before launch, or drop that project.
    - Project towns, dates, sizes and materials (marked "to confirm" on the project pages).
-   - The method steps on each service page, the paver cross-section depths, and the process steps.
+   - The method steps on each service page and the process steps.
    - Service-area towns, and that the sod job took "a day of work on site".
    - Whether snow removal and landscape lighting (on the first concept) are real services. They are not on this
      version because nothing in his posts shows them.

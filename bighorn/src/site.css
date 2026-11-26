@@ -607,41 +607,6 @@ a.direct-val:hover { color: var(--sand); }
 .qa-a { padding: 0 0 24px; color: var(--ink-2); max-width: 44em; }
 .g12 > .c-4 { display: grid; gap: 20px; align-content: start; }
 
-/* ---------------------------------------------------------- cross-section */
-.xs { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
-.xs-fig { display: grid; gap: 14px; margin: 0; min-width: 0; }
-.xs-svg { width: 100%; height: auto; overflow: visible; }
-.xs-svg .pt-dot { fill: rgba(239, 232, 220, 0.55); }
-.xs-svg .pt-stone { fill: rgba(239, 232, 220, 0.07); stroke: rgba(239, 232, 220, 0.32); stroke-width: 1; }
-.xs-svg .pt-hatch { stroke: rgba(239, 232, 220, 0.22); stroke-width: 1.2; }
-.xs-svg .lyr { cursor: pointer; transition: opacity 0.25s; }
-.xs-svg .lyr .hl { fill: var(--clay); opacity: 0; transition: opacity 0.25s; }
-.xs-svg .lyr .edge { fill: none; stroke: rgba(239, 232, 220, 0.45); stroke-width: 1; transition: stroke 0.25s; }
-.xs-svg.has-active .lyr { opacity: 0.5; }
-.xs-svg.has-active .lyr.on { opacity: 1; }
-.xs-svg .lyr.on .hl { opacity: 0.3; }
-.xs-svg .lyr.on .edge { stroke: var(--clay-hi); stroke-width: 1.5; }
-.xs-svg .turf { stroke: #7e8a5a; stroke-width: 4; }
-.xs-svg .turf-blades { stroke: #7e8a5a; stroke-width: 1.5; fill: none; }
-.xs-svg .fabric-fill { fill: rgba(239, 232, 220, 0.18); }
-.xs-svg .paver rect { fill: rgba(221, 122, 47, 0.2); stroke: rgba(239, 232, 220, 0.55); stroke-width: 1; }
-.xs-svg .restraint { fill: rgba(239, 232, 220, 0.3); }
-.xs-svg .spike { stroke: rgba(239, 232, 220, 0.6); stroke-width: 2; }
-.xs-svg .break { fill: none; stroke: rgba(239, 232, 220, 0.35); stroke-width: 1; }
-.xs-svg .dim text, .xs-svg .note text { font: 500 11px var(--f-mono); fill: var(--bone-2); letter-spacing: 0.06em; }
-.xs-svg .dim line, .xs-svg .dim path, .xs-svg .note-line { stroke: rgba(239, 232, 220, 0.4); stroke-width: 1; fill: none; }
-.xs-svg .note-head { stroke: var(--clay); stroke-width: 1.5; fill: none; }
-.xs-svg .dim .on text { fill: var(--clay-hi); }
-.xs-list { border-top: 1px solid var(--rule-d2); }
-.xs-item { border-bottom: 1px solid var(--rule-d); }
-.xs-btn { display: flex; align-items: baseline; gap: 14px; width: 100%; padding: 15px 0; background: none; border: 0; text-align: left; cursor: pointer; color: var(--bone); }
-.xs-n { font: 600 1.25rem/1.1 var(--f-display); font-stretch: 108%; transition: color 0.2s; }
-.xs-d { margin-left: auto; color: var(--bone-3); white-space: nowrap; }
-.xs-btn:hover .xs-n, .xs-btn[aria-expanded="true"] .xs-n { color: var(--clay-hi); }
-.xs-desc { padding: 0 0 18px; color: var(--bone-2); max-width: 34em; }
-@media (max-width: 1000px) { .xs { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 420px) { .xs-d { white-space: normal; text-align: right; } }
-
 /* typical-detail drawings */
 .svc-block-media { position: relative; }
 .svc-block-media.is-dwg { aspect-ratio: 4 / 5; background: var(--night-2); }
