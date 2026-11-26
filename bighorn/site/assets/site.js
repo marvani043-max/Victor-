@@ -112,60 +112,22 @@
   function initTopo() { $$('canvas[data-topo]').forEach(function (c) { var cfg = topoCfg[c.getAttribute('data-topo')]; if (cfg) Topo(c, cfg); }); }
   if ('requestIdleCallback' in window) requestIdleCallback(initTopo, { timeout: 1200 }); else setTimeout(initTopo, 200);
 
-  /* ---------------- hero before/after cycle ---------------- */
-  var cyc = $('[data-cycle]');
-  if (cyc) (function () {
-    var slides = $$('.cyc', cyc), dots = $$('.cyc-dot', cyc), tag = $('[data-cyc-tag]', cyc), name = $('[data-cyc-name]', cyc), pauseBtn = $('[data-pause]', cyc);
-    var cur = 0, timer = 0, phase = 0, userPaused = false, visible = true, loaded = false;
-    // after hold, wipe to before, before hold, wipe back, after hold
-    var PH = [3000, 1300, 1500, 1300, 1700];
-    var DUR = PH.reduce(function (a, b) { return a + b; }, 0);
-    cyc.style.setProperty('--cyc-dur', DUR + 'ms');
-    function loadAll() {
-      if (loaded) return; loaded = true;
-      $$('img[data-src]', cyc).forEach(function (img) { img.srcset = img.getAttribute('data-srcset'); img.src = img.getAttribute('data-src'); img.removeAttribute('data-src'); img.removeAttribute('data-srcset'); });
-    }
-    function setTag(before) { tag.textContent = before ? 'Before' : 'After'; tag.classList.toggle('is-before', before); }
-    function show(i) {
-      slides[cur].classList.remove('show-before', 'moving');
-      cur = (i + slides.length) % slides.length;
-      slides.forEach(function (s, k) { var on = k === cur; s.classList.toggle('is-on', on); s.tabIndex = on ? 0 : -1; if (on) s.removeAttribute('aria-hidden'); else s.setAttribute('aria-hidden', 'true'); });
-      dots.forEach(function (d, k) { if (k === cur) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
-      name.textContent = slides[cur].getAttribute('data-name');
-      setTag(false);
-      // restart progress animation
-      cyc.classList.remove('cycling'); void cyc.offsetWidth; if (running()) cyc.classList.add('cycling');
-    }
-    function running() { return !reduce && !userPaused && visible && !document.hidden; }
-    function wipe(toBefore) {
-      var s = slides[cur];
-      s.classList.add('moving'); s.classList.toggle('show-before', toBefore);
-      setTimeout(function () { s.classList.remove('moving'); }, 1350);
-      setTag(toBefore);
-    }
-    function tick() {
-      clearTimeout(timer);
-      if (!running()) return;
-      if (phase === 1) wipe(true);
-      else if (phase === 3) wipe(false);
-      else if (phase === 5) { phase = 0; show(cur + 1); }
-      timer = setTimeout(function () { phase++; tick(); }, PH[phase]);
-    }
-    function start() { clearTimeout(timer); phase = 0; show(cur); tick(); }
-    function stop() { clearTimeout(timer); cyc.classList.remove('cycling'); slides[cur].classList.remove('show-before', 'moving'); setTag(false); }
-    dots.forEach(function (d, k) { d.addEventListener('click', function () { loadAll(); stop(); show(k); if (running()) { phase = 0; tick(); } }); });
-    if (pauseBtn) pauseBtn.addEventListener('click', function () {
-      userPaused = !userPaused;
-      cyc.classList.toggle('paused', userPaused);
-      pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
-      if (userPaused) stop(); else start();
-    });
-    if (reduce) { cyc.classList.add('no-cycle'); window.addEventListener('load', loadAll); return; }
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { var v = en[0].isIntersecting; if (v === visible) return; visible = v; if (v) start(); else stop(); }, { threshold: 0.25 }).observe(cyc);
-    document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else if (running()) start(); });
-    function boot() { loadAll(); setTimeout(start, 600); }
+  /* ---------------- hero photo slideshow ---------------- */
+  var hero = $('[data-hero]');
+  if (hero) (function () {
+    var slides = $$('.hero-slide', hero), i = 0;
+    function loadAll() { $$('img[data-src]', hero).forEach(function (img) { img.srcset = img.getAttribute('data-srcset'); img.src = img.getAttribute('data-src'); img.removeAttribute('data-src'); img.removeAttribute('data-srcset'); }); }
+    function next() { if (document.hidden) return; slides[i].classList.remove('is-on'); i = (i + 1) % slides.length; slides[i].classList.add('is-on'); }
+    function boot() { loadAll(); if (!reduce && slides.length > 1) setInterval(next, 6500); }
     if (document.readyState === 'complete') boot(); else window.addEventListener('load', boot);
   })();
+
+  /* ---------------- progress rings ---------------- */
+  var rings = $$('[data-ring]');
+  if (rings.length && 'IntersectionObserver' in window) {
+    var ringIO = new IntersectionObserver(function (en) { en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); ringIO.unobserve(x.target); } }); }, { threshold: 0.4 });
+    rings.forEach(function (el) { ringIO.observe(el); });
+  } else rings.forEach(function (el) { el.classList.add('in'); });
 
   /* ---------------- floating preview on the services list ---------------- */
   var plist = $('[data-preview-list]'), fp = $('.float-preview');
@@ -355,7 +317,7 @@
     }
     function compose(d) {
       var L = [];
-      L.push('Hi Caleb, this is ' + (d.name || 'a homeowner') + '. ' + (stepped ? 'I would like a free estimate.' : 'I have a question about a project.'));
+      L.push('Hi Bighorn, this is ' + (d.name || 'a homeowner') + '. ' + (stepped ? 'I would like a free estimate.' : 'I have a question about a project.'));
       if (d.types.length) L.push('Project: ' + d.types.join(', '));
       if (d.town) L.push('Location: ' + d.town + (d.property ? ' (' + d.property.toLowerCase() + ')' : ''));
       if (d.timing) L.push('Timing: ' + d.timing);
@@ -384,7 +346,7 @@
         $('[data-mail]', done).href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(msg);
       } else {
         var how = d.contact === 'Email' && d.email ? 'email you at ' + d.email : (d.contact === 'Text' ? 'text you at ' : 'call you at ') + d.phone;
-        $('[data-sent-text]', done).textContent = 'Caleb will ' + how + '. If it is urgent, call or text ' + PHONE_TXT + '.';
+        $('[data-sent-text]', done).textContent = 'We will ' + how + '. If it is urgent, call or text ' + PHONE_TXT + '.';
       }
       done.focus({ preventScroll: true });
       var top = done.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0) - 32;

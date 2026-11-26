@@ -5,7 +5,6 @@
 export const biz = {
   name: 'Bighorn Construction & Hardscape',
   short: 'Bighorn',
-  owner: 'Caleb Sharron',
   phone: '775-440-3757',
   tel: '+17754403757',
   email: 'bighorn.build@gmail.com',
@@ -16,9 +15,8 @@ export const biz = {
   tagline: 'Where tough work meets flawless results.',
   license: null, // TODO: Nevada State Contractors Board license number
   googleReviews: null, // TODO: Google Business Profile review link
-  // source: Instagram caption, March 2026
+  // source: the owner's Instagram caption, March 2026. The site does not name the owner.
   ownerQuote: 'My goal is simple: deliver clean, high-quality work and create outdoor spaces people are proud of.',
-  ownerIntro: "I'm a young contractor with a strong work ethic and a lot of hands-on experience in the trade.",
 };
 
 export const towns = [
@@ -357,7 +355,7 @@ export const projects = [
       before: 'Before: a backyard graded to bare dirt with wheelbarrows, a crew member and the first rolls of sod going down',
       after: 'After: a full green sod lawn laid edge to edge inside brick garden walls',
     },
-    note: 'TODO: confirm "in a day of work on site" with Caleb.',
+    note: 'TODO: confirm "in a day of work on site" with the owner.',
   },
   {
     slug: 'staircase-renovation',
@@ -416,7 +414,7 @@ export const projects = [
 
 export const steps = [
   ['Reach out', 'Call, text or email. A few photos of the space and a rough idea of what you want are plenty to start.', 'Usually a few minutes on the phone.'],
-  ['Walkthrough', 'Caleb comes out to measure, look at the soil, slope and access, and talk through options and budget with you.', 'On site, at a time that works for you.'],
+  ['Walkthrough', 'We come out to measure, look at the soil, slope and access, and talk through options and budget with you.', 'On site, at a time that works for you.'],
   ['Free estimate', 'You get the scope, materials and price spelled out, so you know what you are paying for before any work starts.', 'No cost, no obligation.'],
   ['Build', 'Dirt and base first, then the work you will see. You will know the schedule and who to call.', 'Owner on the job.'],
   ['Final walkthrough', 'We walk the finished job with you, take care of anything that is not right, and leave the site clean.', 'Done when you are happy with it.'],
