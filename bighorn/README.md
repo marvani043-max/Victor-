@@ -56,6 +56,9 @@ Upload the contents of `site/` to Netlify, Cloudflare Pages, Vercel or any web h
   paver cross-section, map, project filter, forms).
 - **Photos:** `tools/images.py`. Masters live in `src/img-master/`; run `python3 tools/images.py web` to remake
   the 420/720/1014 px WebP files in `src/static/img/`, then rebuild.
+- **Drawings:** `tools/drawings.mjs` draws the six typical-detail construction drawings (concrete, backyard plan,
+  sprinkler zones, fence and gate, grading, stairs) as SVG in `src/drawings/` and renders them with Playwright to
+  `src/img-master/dwg-*.png`. Then run `python3 tools/images.py web` and rebuild.
 
 ## Where the content came from
 
@@ -64,6 +67,11 @@ Upload the contents of `site/` to Netlify, Cloudflare Pages, Vercel or any web h
   first concept.
 - **Photos** are cut from iPad screenshots of Bighorn's Instagram posts (about 1014 px wide), with Instagram's
   slide counter and mute icon painted out. Nothing is AI-generated or stock.
+- **Drawings** on the service pages are illustrations of typical construction, labelled "typical detail" on
+  the drawing and in the caption. They show how the work is usually built, never a specific job, so they can sit
+  next to the real photos without misleading anyone. Fake job photos and a fake photo of Caleb were ruled out for
+  that reason. The code figures on them (IRC R401.3 grading, R311.7 stairs) are the model-code numbers; confirm
+  the concrete, fence and sprinkler numbers with Caleb along with the method steps.
 - **Left out on purpose:** the lit paver patio "after" photo (June post, Sparks). Instagram labels that post
   "AI content" and it is a rendering, not a finished job, so it cannot be shown as Bighorn's work. Its "before"
   photo was dropped with it. The first concept used that render in its hero; this version does not.

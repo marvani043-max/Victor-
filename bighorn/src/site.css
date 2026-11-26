@@ -565,7 +565,7 @@ a.direct-val:hover { color: var(--sand); }
 .tick-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 28px; width: 100%; }
 .tick-list li { display: flex; gap: 12px; }
 .tick-list li::before { content: ""; width: 12px; height: 1px; margin-top: 0.85em; background: var(--clay-deep); flex: none; }
-@media (max-width: 1000px) { .svc-block { grid-template-columns: minmax(0, 1fr); } .svc-block.flip .svc-block-media { order: 0; } .svc-block-media { aspect-ratio: 4 / 3.4; } }
+@media (max-width: 1000px) { .svc-block { grid-template-columns: minmax(0, 1fr); } .svc-block.flip .svc-block-media { order: 0; } .svc-block-media:not(.is-dwg) { aspect-ratio: 4 / 3.4; } .svc-block-media.is-dwg { max-width: 560px; } }
 @media (max-width: 520px) { .tick-list { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------------------------------------------------------- service page */
@@ -641,6 +641,20 @@ a.direct-val:hover { color: var(--sand); }
 .xs-desc { padding: 0 0 18px; color: var(--bone-2); max-width: 34em; }
 @media (max-width: 1000px) { .xs { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 420px) { .xs-d { white-space: normal; text-align: right; } }
+
+/* typical-detail drawings */
+.svc-block-media { position: relative; }
+.svc-block-media.is-dwg { aspect-ratio: 4 / 5; background: var(--night-2); }
+.dwg-tag { position: absolute; top: 12px; left: 12px; font: 500 0.66rem/1 var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; padding: 0.55em 0.75em; background: var(--sand); color: var(--ink); }
+.dwg-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 88px); align-items: center; }
+.dwg-fig { display: grid; gap: 12px; margin: 0; min-width: 0; }
+.dwg-fig img { width: 100%; height: auto; aspect-ratio: 4 / 5; background: var(--night-2); box-shadow: 0 30px 60px rgba(22, 18, 15, 0.18); }
+.dwg-copy { display: grid; gap: 22px; align-content: center; min-width: 0; }
+.spec-1 { grid-template-columns: minmax(0, 1fr); }
+.spec-1 > div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 4px 16px; align-items: baseline; padding-right: 0; }
+.spec-1 dd { margin-top: 0; }
+@media (max-width: 1000px) { .dwg-grid { grid-template-columns: minmax(0, 1fr); } .dwg-fig { max-width: 640px; } }
+@media (max-width: 480px) { .spec-1 > div { grid-template-columns: minmax(0, 1fr); } .spec-1 dd { margin-top: 4px; } }
 
 /* ---------------------------------------------------------- projects index */
 .filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(32px, 4vw, 56px); }

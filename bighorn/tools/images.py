@@ -110,7 +110,7 @@ def transparent_crest(im):
 
 def web():
     os.makedirs(OUT, exist_ok=True)
-    for f in sorted(glob.glob(os.path.join(MASTER, '*.webp'))):
+    for f in sorted(glob.glob(os.path.join(MASTER, '*.webp'))):  # job photos
         name = os.path.basename(f)[:-5]
         im = Image.open(f).convert('RGB')
         for wdt in WIDTHS:
@@ -118,6 +118,14 @@ def web():
             if r is not im:
                 r = r.filter(ImageFilter.UnsharpMask(radius=1.0, percent=40, threshold=2))
             r.save(os.path.join(OUT, f'{name}-{wdt}.webp'), quality={1014: 70, 720: 72, 420: 75}[wdt], method=6)
+        print(name, im.size)
+    # Typical-detail drawings (rendered by tools/drawings.mjs at 1600x2000)
+    for f in sorted(glob.glob(os.path.join(MASTER, 'dwg-*.png'))):
+        name = os.path.basename(f)[:-4]
+        im = Image.open(f).convert('RGB')
+        for wdt in (1600,) + WIDTHS:
+            r = im if im.width == wdt else im.resize((wdt, round(im.height * wdt / im.width)), Image.LANCZOS)
+            r.save(os.path.join(OUT, f'{name}-{wdt}.webp'), quality=88, method=6)
         print(name, im.size)
     crest = Image.open(os.path.join(MASTER, 'crest.png'))
     t = transparent_crest(crest)

@@ -54,7 +54,8 @@ const license = () => (biz.license ? `NV Lic. #${esc(biz.license)}` : `NV Lic. $
 
 function pic(name, { alt = '', sizes = '100vw', cls = '', pos = '', eager = false, defer = false } = {}) {
   const [w, h] = photos[name];
-  const srcset = [420, 720, 1014].map((x) => `${A(`img/${name}-${x}.webp`)} ${x}w`).join(', ');
+  const widths = name.startsWith('dwg-') ? [420, 720, 1014, 1600] : [420, 720, 1014];
+  const srcset = widths.map((x) => `${A(`img/${name}-${x}.webp`)} ${x}w`).join(', ');
   const src = A(`img/${name}-720.webp`);
   const s = defer ? `data-src="${src}" data-srcset="${srcset}"` : `src="${src}" srcset="${srcset}"`;
   return `<img${cls ? ` class="${cls}"` : ''} ${s} sizes="${sizes}" width="${w}" height="${h}" alt="${attr(alt)}"${eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async"${pos ? ` style="object-position:${pos}"` : ''}>`;
@@ -488,7 +489,7 @@ page('', {
       <div class="sec-aside"><p>Most outdoor projects need dirt work, a solid base, the surface, water and a fence. Bighorn does all of it, so you are not lining up three contractors and hoping they show up in the right order.</p><a class="link-arrow" href="${L('services')}">All services ${arrow}</a></div>
     </div>
     <ul class="svc-list" data-preview-list>
-      ${services.map((s) => `<li><a class="svc-row" href="${L('services/' + s.slug)}" data-preview="${A(`img/${s.image}-720.webp`)}" data-preview-pos="${s.imagePos}"><span class="svc-name">${esc(s.name)}</span><span class="svc-line">${esc(s.line)}</span><span class="svc-thumb">${pic(s.image, { alt: '', sizes: '96px', pos: s.imagePos })}</span>${arrow}</a></li>`).join('')}
+      ${services.map((s) => `<li><a class="svc-row" href="${L('services/' + s.slug)}" data-preview="${A(`img/${s.card || s.image}-720.webp`)}" data-preview-pos="${s.card ? s.cardPos : s.imagePos}"><span class="svc-name">${esc(s.name)}</span><span class="svc-line">${esc(s.line)}</span><span class="svc-thumb">${pic(s.card || s.image, { alt: '', sizes: '96px', pos: s.card ? s.cardPos : s.imagePos })}</span>${arrow}</a></li>`).join('')}
     </ul>
   </div>
   <div class="float-preview" aria-hidden="true"><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="360" height="450"></div>
@@ -572,7 +573,7 @@ page('services', {
   <div class="wrap">
     ${services.map((s, i) => `
     <article class="svc-block${i % 2 ? ' flip' : ''}" id="${s.slug}">
-      <a class="svc-block-media" href="${L('services/' + s.slug)}" tabindex="-1" aria-hidden="true">${pic(s.image, { alt: '', sizes: '(min-width: 1000px) 40vw, 100vw', pos: s.imagePos })}</a>
+      <a class="svc-block-media${s.card ? ' is-dwg' : ''}" href="${L('services/' + s.slug)}" tabindex="-1" aria-hidden="true">${pic(s.card || s.image, { alt: '', sizes: '(min-width: 1000px) 40vw, 100vw', pos: s.card ? s.cardPos : s.imagePos })}${s.card ? '<span class="dwg-tag">Typical detail drawing</span>' : ''}</a>
       <div class="svc-block-copy">
         <p class="mono svc-count">${String(i + 1).padStart(2, '0')} / ${String(services.length).padStart(2, '0')}</p>
         <h2 class="d-l"><a href="${L('services/' + s.slug)}">${esc(s.name)}</a></h2>
@@ -633,6 +634,19 @@ services.forEach((s, idx) => {
     <ol class="method">${s.steps.map(([h, t], i) => `<li data-rise><span class="method-no mono">${String(i + 1).padStart(2, '0')}</span><h3 class="d-s">${esc(h)}</h3><p>${esc(t)}</p></li>`).join('')}</ol>
   </div>
 </section>
+
+${s.drawing ? `
+<section class="band paper dwg-sec" aria-labelledby="dwg-h">
+  <div class="wrap dwg-grid">
+    <figure class="dwg-fig">${pic(s.drawing.img, { alt: s.drawing.alt, sizes: '(min-width: 1000px) 52vw, 100vw' })}<figcaption class="fig-cap"><span class="mono">Drawing ${s.drawing.no} &middot; typical detail</span><span>An illustration of how this work is usually built, not a photo of a specific job.</span></figcaption></figure>
+    <div class="dwg-copy">
+      <p class="label">Typical detail</p>
+      <h2 class="d-l" id="dwg-h">${esc(s.drawing.h)}</h2>
+      <dl class="spec spec-ink spec-1">${s.drawing.notes.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+      <p class="muted small">Typical numbers for Northern Nevada homes. Your soil, slope and use set the final specs, and they are written into your estimate.</p>
+    </div>
+  </div>
+</section>` : ''}
 
 ${s.crossSection ? `
 <section class="band night xs-sec" aria-labelledby="xs-h">

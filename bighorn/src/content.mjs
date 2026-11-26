@@ -41,11 +41,19 @@ export const photos = {
   'sideyard-after': [1014, 1352], 'sideyard-before': [1014, 1352],
   'stairs-after': [1014, 1352], 'stairs-before': [1014, 1352],
   'office-before': [1014, 761], 'office-demo': [1014, 761],
+  // typical-detail drawings (illustrations, not job photos)
+  'dwg-concrete': [1600, 2000], 'dwg-backyard': [1600, 2000], 'dwg-sprinklers': [1600, 2000],
+  'dwg-fence': [1600, 2000], 'dwg-grading': [1600, 2000], 'dwg-stairs': [1600, 2000],
 };
 
 export const services = [
   {
     slug: 'concrete',
+    drawing: {
+      img: 'dwg-concrete', no: 'S-01', h: 'What goes under a walkway.',
+      alt: 'Drawing: typical concrete walkway section and plan. A 4 inch slab on 4 inches of compacted base, sloped away from the house, with an isolation joint at the foundation and control joints 8 to 10 feet apart.',
+      notes: [['Slab', '4 in concrete'], ['Base', '4 in compacted aggregate'], ['Fall', '⅛–¼ in per ft, away from the house'], ['Control joints', '8–10 ft apart, cut to ¼ of the slab depth'], ['At the house', 'An isolation joint, so the slab moves on its own']],
+    },
     name: 'Concrete',
     nav: 'Concrete',
     line: 'Walkways, slabs, pads and driveways.',
@@ -103,6 +111,12 @@ export const services = [
   },
   {
     slug: 'backyard-design',
+    card: 'dwg-backyard', cardPos: '50% 40%',
+    drawing: {
+      img: 'dwg-backyard', no: 'S-02', h: 'A plan before the first stake.',
+      alt: 'Drawing: typical backyard plan. A paver patio off the slider, a path to the side gate, a lawn on sprinklers, planting beds on drip, a shade tree on the west side and a swale carrying water to the street.',
+      notes: [['Patio', 'Off the main door, sized for a table and chairs'], ['Paths', 'A hard path to the side gate'], ['Water', 'Lawn and beds on separate zones'], ['Drainage', 'A swale that carries water to the street'], ['Shade', 'Trees on the west side, for afternoon sun']],
+    },
     name: 'Backyard Design & Redesign',
     nav: 'Backyard design',
     line: 'Plan the whole yard, then build it.',
@@ -132,6 +146,11 @@ export const services = [
   },
   {
     slug: 'sod-sprinklers',
+    drawing: {
+      img: 'dwg-sprinklers', no: 'S-03', h: 'Zoned so the water goes where it is needed.',
+      alt: 'Drawing: typical sprinkler layout. Two lawn zones of spray heads with head-to-head coverage, a drip zone for the beds, a valve box with one valve per zone, a backflow preventer and a controller on the house wall.',
+      notes: [['Coverage', 'Head-to-head: each head reaches the next'], ['Zones', 'Lawn and beds on separate valves'], ['Beds', 'Drip at the plants, not spray'], ['Supply', 'A backflow preventer on the line'], ['Control', 'A timer you can adjust by season']],
+    },
     name: 'Sod & Sprinkler Systems',
     nav: 'Sod & sprinklers',
     line: 'Lawns, sprinklers and drip, zoned right.',
@@ -161,6 +180,12 @@ export const services = [
   },
   {
     slug: 'fencing-gates',
+    card: 'dwg-fence', cardPos: '50% 50%',
+    drawing: {
+      img: 'dwg-fence', no: 'S-04', h: 'Built to stay straight.',
+      alt: 'Drawing: typical 6 foot wood privacy fence and gate. Posts 8 feet on center set 24 to 36 inches deep in concrete, three rails on the back, a kickboard, and a 4 foot gate on a heavier 6 by 6 post with a brace running up from the hinge side.',
+      notes: [['Height', '6 ft privacy, typical'], ['Posts', '8 ft on center max, 24–36 in deep in concrete'], ['Gate post', '6×6, set deeper than the line posts'], ['Gate', 'Braced from the hinge side up, so it does not sag'], ['Bottom', 'A kickboard keeps the boards off the dirt']],
+    },
     name: 'Fencing & Gates',
     nav: 'Fencing & gates',
     line: 'Privacy fences, gates and side-yard closures.',
@@ -189,6 +214,12 @@ export const services = [
   },
   {
     slug: 'excavation-grading',
+    card: 'dwg-grading', cardPos: '50% 45%',
+    drawing: {
+      img: 'dwg-grading', no: 'S-05', h: 'Water should leave the house.',
+      alt: 'Drawing: typical grading section. The ground falls at least 6 inches in the first 10 feet from the foundation, over compacted fill placed in lifts, with a downspout extension and a swale. A dashed line shows the old grade falling toward the house.',
+      notes: [['Fall', 'At least 6 in within the first 10 ft (IRC R401.3)'], ['Fill', 'Placed and compacted in lifts'], ['Roof water', 'Downspouts carried away from the foundation'], ['Swale', 'Turns water toward the street']],
+    },
     name: 'Dirt Work & Excavation',
     nav: 'Dirt work & excavation',
     line: 'Grading, dig-outs, drainage and haul-off.',
@@ -217,6 +248,11 @@ export const services = [
   },
   {
     slug: 'remodels',
+    drawing: {
+      img: 'dwg-stairs', no: 'S-06', h: 'The numbers a good stair has to hit.',
+      alt: 'Drawing: typical stair section with new treads and nosings, painted risers and a handrail, labelled with the IRC limits: rise 7¾ inches max, run 10 inches min, nosing ¾ to 1¼ inches, handrail 34 to 38 inches.',
+      notes: [['Rise', '7¾ in max'], ['Run', '10 in min'], ['Nosing', '¾–1¼ in'], ['Handrail', '34–38 in above the nosings'], ['Consistency', 'Steps in a flight within ⅜ in of each other']],
+    },
     name: 'Remodels & Construction',
     nav: 'Remodels & construction',
     line: 'Interior renovations and commercial work.',

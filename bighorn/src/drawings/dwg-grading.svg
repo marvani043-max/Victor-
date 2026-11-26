@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+<style>
+.l{fill:none;stroke:#efe8dc;stroke-opacity:.85;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.l2{fill:none;stroke:#efe8dc;stroke-opacity:.4;stroke-width:1.1}
+.hid{fill:none;stroke:#efe8dc;stroke-opacity:.5;stroke-width:1.3;stroke-dasharray:7 5}
+.sand{stroke:#cfb58a;stroke-opacity:1}.clay{stroke:#dd7a2f;stroke-opacity:1}.grn{stroke:#8a9663;stroke-opacity:1}
+.water{fill:none;stroke:#9fb4ba;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t{font:500 15px 'IBM Plex Mono',monospace;fill:#b6ab9c;letter-spacing:.03em;paint-order:stroke;stroke:#1e1814;stroke-width:6px;stroke-linejoin:round}
+.tb{fill:#efe8dc}.tc{fill:#eb8b41}.ts{fill:#cfb58a}.tw{fill:#9fb4ba}
+.sm{font-size:12px;letter-spacing:.14em}
+.h{font:600 30px 'Archivo',sans-serif;font-stretch:112%;fill:#efe8dc;letter-spacing:-.01em}
+.dot{fill:#cfb58a}.lead{fill:none;stroke:#cfb58a;stroke-width:1.2}
+.dim path{fill:none;stroke:#efe8dc;stroke-opacity:.6;stroke-width:1.1}
+</style>
+<defs>
+<pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".9" fill="#efe8dc" fill-opacity=".07"/></pattern>
+<pattern id="soil" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="12" stroke="#efe8dc" stroke-opacity=".17" stroke-width="1.2"/></pattern>
+<pattern id="gravel" width="34" height="26" patternUnits="userSpaceOnUse"><path d="M4 7l5-3 5 2-1 5-7 1z M20 4l6 1 2 4-3 3-5-2z M12 17l5-1 3 4-4 3-4-2z M27 16l4 1 1 4-4 1z" fill="#efe8dc" fill-opacity=".06" stroke="#efe8dc" stroke-opacity=".34"/></pattern>
+<pattern id="conc" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="4" cy="5" r="1" fill="#efe8dc" fill-opacity=".45"/><circle cx="15" cy="9" r=".8" fill="#efe8dc" fill-opacity=".35"/><circle cx="9" cy="17" r="1.1" fill="#efe8dc" fill-opacity=".4"/><path d="M17 16l3 4h-5z" fill="none" stroke="#efe8dc" stroke-opacity=".35"/></pattern>
+<pattern id="grass" width="18" height="16" patternUnits="userSpaceOnUse"><path d="M3 12l1-5M8 13l2-6M13 12l1-4" stroke="#8a9663" stroke-opacity=".55" stroke-width="1.1" fill="none"/></pattern>
+<pattern id="pav" width="36" height="24" patternUnits="userSpaceOnUse"><path d="M0 0H36M0 12H36M0 0V12M18 12V24" stroke="#efe8dc" stroke-opacity=".32" stroke-width="1" fill="none"/></pattern>
+<pattern id="wood" width="40" height="8" patternUnits="userSpaceOnUse"><path d="M0 4C10 2 20 6 40 4" stroke="#cfb58a" stroke-opacity=".4" fill="none"/></pattern>
+<pattern id="siding" width="20" height="16" patternUnits="userSpaceOnUse"><path d="M0 15.5H20" stroke="#efe8dc" stroke-opacity=".28"/></pattern>
+</defs>
+<rect width="800" height="1000" fill="#1e1814"/>
+<rect width="800" height="1000" fill="url(#grid)"/>
+<rect x="24" y="24" width="752" height="952" class="l2"/>
+
+<text x="44" y="70" class="t ts sm" text-anchor="start">SECTION</text>
+<path d="M120 450L420 510L560 540L610 556L660 540L760 532V720H120Z" fill="url(#soil)"/>
+<path d="M120 450L350 496L120 520Z" fill="#cfb58a" fill-opacity=".1"/>
+<path class="l2 sand" d="M120 470H220M120 490H310M120 510H340" stroke-dasharray="5 5"/>
+<rect x="60" y="120" width="60" height="300" fill="url(#siding)"/><path class="l" d="M60 120V420H120V120"/>
+<rect x="70" y="420" width="50" height="220" fill="url(#conc)"/><rect x="50" y="640" width="100" height="40" fill="url(#conc)"/>
+<path class="l" d="M70 420V640H50V680H150V640H120V420"/>
+<path class="l" d="M120 450L420 510L560 540L610 556L660 540L760 532" stroke-width="2.4"/>
+<path class="l clay" d="M120 520L760 452" stroke-dasharray="9 7"/>
+<path class="l" d="M124 140V436Q124 444 132 446L240 470" stroke-width="3"/>
+<path class="water" d="M244 471L270 477M261.2 479.0L270 477L263.0 471.4"/><path class="water" d="M300 470L350 480M341.3 482.2L350 480L342.8 474.6"/><path class="water" d="M440 500L490 510M481.3 512.2L490 510L482.8 504.6"/><path class="water" d="M560 528L600 542M591.1 543.0L600 542L593.6 535.6"/>
+<circle cx="610" cy="548" r="7" class="water"/><circle cx="610" cy="548" r="1.6" fill="#9fb4ba"/>
+<path class="l2" d="M120 450H440" stroke-dasharray="3 5"/>
+<g class="dim"><path d="M440 450V510M433 450h14M433 510h14M435 455l10 -10M435 515l10 -10"/><text x="454" y="485" class="t tb" text-anchor="start">≥ 6 IN FALL</text></g>
+<g class="dim"><path d="M120 406H420M120 399v14M420 399v14M115 411l10 -10M415 411l10 -10"/><text x="270" y="394" class="t tb" text-anchor="middle">FIRST 10 FT</text></g>
+<g class="co"><circle cx="190" cy="488" r="3.6" class="dot"/><path class="lead" d="M190 488L220 600h16"/><text x="242" y="605" class="t" text-anchor="start">COMPACTED FILL,</text><text x="242" y="626" class="t" text-anchor="start">PLACED IN LIFTS</text></g>
+<g class="co"><circle cx="170" cy="457" r="3.6" class="dot"/><path class="lead" d="M170 457L250 300h16"/><text x="272" y="305" class="t" text-anchor="start">DOWNSPOUT EXTENSION</text><text x="272" y="326" class="t" text-anchor="start">CARRIES ROOF WATER OUT</text></g>
+<g class="co"><circle cx="610" cy="548" r="3.6" class="dot"/><path class="lead" d="M610 548L700 380h-16"/><text x="678" y="385" class="t" text-anchor="end">SWALE TURNS WATER</text><text x="678" y="406" class="t" text-anchor="end">TOWARD THE STREET</text></g>
+<g class="co"><circle cx="700" cy="459" r="3.6" class="dot"/><path class="lead" d="M700 459L760 230h-16"/><text x="738" y="235" class="t tc" text-anchor="end">BEFORE: GROUND FELL</text><text x="738" y="256" class="t tc" text-anchor="end">TOWARD THE HOUSE</text></g>
+<text x="560" y="660" class="t" text-anchor="start">NATIVE SOIL</text>
+<text x="44" y="768" class="t tb" text-anchor="start">IRC R401.3: THE GROUND SHOULD FALL AT LEAST 6 IN</text>
+<text x="44" y="790" class="t tb" text-anchor="start">WITHIN THE FIRST 10 FT FROM THE FOUNDATION.</text>
+<text x="44" y="820" class="t sm" text-anchor="start">VERTICAL SCALE EXAGGERATED FOR CLARITY.</text>
+
+<path class="l2" d="M24 852H776M440 852V976M630 852V976"/>
+<text x="44" y="882" class="t ts sm" text-anchor="start">BIGHORN CONSTRUCTION &amp; HARDSCAPE</text>
+<text x="44" y="924" class="h">Grading and drainage</text>
+<text x="44" y="956" class="t" text-anchor="start">TYPICAL SECTION</text>
+<text x="460" y="882" class="t sm" text-anchor="start">SCALE</text><text x="460" y="906" class="t tb" text-anchor="start">NOT TO SCALE</text>
+<text x="460" y="936" class="t sm" text-anchor="start">TYPE</text><text x="460" y="960" class="t tb" text-anchor="start">TYPICAL DETAIL</text>
+<text x="650" y="882" class="t sm" text-anchor="start">DRAWING</text>
+<text x="650" y="944" class="h" style="font-size:46px">S-05</text>
+</svg>
