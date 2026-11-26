@@ -112,22 +112,46 @@
   function initTopo() { $$('canvas[data-topo]').forEach(function (c) { var cfg = topoCfg[c.getAttribute('data-topo')]; if (cfg) Topo(c, cfg); }); }
   if ('requestIdleCallback' in window) requestIdleCallback(initTopo, { timeout: 1200 }); else setTimeout(initTopo, 200);
 
-  /* ---------------- hero photo slideshow ---------------- */
+  /* ---------------- hero: background jobs with a project switcher ---------------- */
   var hero = $('[data-hero]');
   if (hero) (function () {
-    var slides = $$('.hero-slide', hero), i = 0;
+    var slides = $$('.hero-slide', hero), items = $$('.hp-item', hero), link = $('[data-hero-link]', hero);
+    var cur = 0, timer = 0, DUR = 7000, visible = true;
+    hero.style.setProperty('--cyc-dur', DUR + 'ms');
     function loadAll() { $$('img[data-src]', hero).forEach(function (img) { img.srcset = img.getAttribute('data-srcset'); img.src = img.getAttribute('data-src'); img.removeAttribute('data-src'); img.removeAttribute('data-srcset'); }); }
-    function next() { if (document.hidden) return; slides[i].classList.remove('is-on'); i = (i + 1) % slides.length; slides[i].classList.add('is-on'); }
-    function boot() { loadAll(); if (!reduce && slides.length > 1) setInterval(next, 6500); }
+    function running() { return !reduce && visible && !document.hidden; }
+    function show(i) {
+      cur = (i + slides.length) % slides.length;
+      slides.forEach(function (sl, k) { sl.classList.toggle('is-on', k === cur); });
+      items.forEach(function (b, k) { if (k === cur) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+      if (link && items[cur]) link.href = items[cur].getAttribute('data-href');
+      hero.classList.remove('cycling'); void hero.offsetWidth; if (running()) hero.classList.add('cycling');
+      clearTimeout(timer); if (running()) timer = setTimeout(function () { show(cur + 1); }, DUR);
+    }
+    items.forEach(function (b, k) { b.addEventListener('click', function () { loadAll(); show(k); }); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) show(cur); else { clearTimeout(timer); hero.classList.remove('cycling'); } }, { threshold: 0.2 }).observe(hero);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) show(cur); else clearTimeout(timer); });
+    function boot() { loadAll(); show(0); }
     if (document.readyState === 'complete') boot(); else window.addEventListener('load', boot);
   })();
 
-  /* ---------------- progress rings ---------------- */
-  var rings = $$('[data-ring]');
-  if (rings.length && 'IntersectionObserver' in window) {
-    var ringIO = new IntersectionObserver(function (en) { en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); ringIO.unobserve(x.target); } }); }, { threshold: 0.4 });
-    rings.forEach(function (el) { ringIO.observe(el); });
-  } else rings.forEach(function (el) { el.classList.add('in'); });
+  /* ---------------- project spotlight carousel ---------------- */
+  $$('[data-spot]').forEach(function (spot) {
+    var slides = $$('.spot-slide', spot), n = $('[data-spot-n]', spot), cur = 0;
+    if (slides.length < 2) return;
+    function show(i, animate) {
+      cur = (i + slides.length) % slides.length;
+      slides.forEach(function (sl, k) { sl.hidden = k !== cur; sl.classList.toggle('enter', !!animate && k === cur); });
+      if (n) n.textContent = String(cur + 1).padStart(2, '0');
+    }
+    $('[data-spot-prev]', spot).addEventListener('click', function () { show(cur - 1, true); });
+    $('[data-spot-next]', spot).addEventListener('click', function () { show(cur + 1, true); });
+    spot.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') show(cur - 1, true); if (e.key === 'ArrowRight') show(cur + 1, true); });
+    var x0 = null, stage = $('.spot-stage', spot);
+    stage.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1), true); x0 = null; }, { passive: true });
+    show(0, false);
+  });
 
   /* ---------------- floating preview on the services list ---------------- */
   var plist = $('[data-preview-list]'), fp = $('.float-preview');

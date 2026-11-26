@@ -8,9 +8,11 @@ It is separate from the Peak Side project in the rest of this repo.
 
 ## Design
 
-Modelled on the layout of a Reno general contractor's site the client pointed to (full-screen photo hero with the
-company name in thin capitals, centred split navigation, dark service cards, a services grid with line icons, a
-quote band and contact cards in the footer), in Bighorn's own colours and copy. The site never names the owner.
+Photography first: full-bleed Bighorn job photos under heavy condensed headlines (Barlow Condensed, echoing
+the crest's lettering), a white trust bar cutting into the hero, charcoal bands for services and contact,
+warm high-desert sand bands for the work, and a burnt-orange band asking for the estimate. A Reno general
+contractor's site the client liked was used for ideas (photo-led hero, trust signals up front, dark and light
+rhythm), not copied. The site never names the owner.
 
 ## Pages
 

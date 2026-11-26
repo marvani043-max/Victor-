@@ -50,7 +50,7 @@ const todoBox = (title, text) => (todos.add(title), `<div class="todo-box"><p cl
 const svcBy = (s) => services.find((x) => x.slug === s);
 const projBy = (s) => projects.find((x) => x.slug === s);
 const license = () => (biz.license ? `NV Lic. #${esc(biz.license)}` : `NV Lic. ${todo('license # to add')}`);
-const rule = '<span class="rule-line" aria-hidden="true"></span>';
+const rule = '';
 
 function pic(name, { alt = '', sizes = '100vw', cls = '', pos = '', eager = false, defer = false } = {}) {
   const [w, h] = photos[name];
@@ -102,17 +102,15 @@ const ICON = {
   license: '<rect x="5" y="3" width="14" height="18"/><path d="M8 8h8M8 12h8M8 16h5"/>',
   shield: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
   seal: '<circle cx="12" cy="9" r="5.5"/><path d="M9 14l-2 7 5-3 5 3-2-7"/>',
+  estimate: '<rect x="5" y="4" width="14" height="17" rx="1"/><path d="M9 4V2.5h6V4M8.5 11l2 2 4-4M8.5 17h7"/>',
+  hat: '<path d="M3 18h18"/><path d="M5 18v-2a7 7 0 0 1 14 0v2"/><path d="M10 9.5V6h4v3.5"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  chevL: '<path d="M15 5l-7 7 7 7"/>',
+  chevR: '<path d="M9 5l7 7-7 7"/>',
   insta: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/>',
 };
 const icon = (k, size = 40, sw = 1.1) => `<svg class="ico" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
 const SVC_ICON = { concrete: 'concrete', 'pavers-hardscape': 'pavers', 'backyard-design': 'tree', 'sod-sprinklers': 'drop', 'fencing-gates': 'fence', 'excavation-grading': 'shovel', remodels: 'stairs' };
-const ticks = (x1, x2, step, y, d = 'l2 -7') => { let s = ''; for (let x = x1; x <= x2; x += step) s += `M${x} ${y}${d}`; return s; };
-const ART = {
-  hardscape: `<path d="M0 236H420"/><path d="M14 236V98L84 58L154 98V236"/><path d="M6 103L84 52L162 103"/><rect x="38" y="124" width="42" height="46"/><path d="M59 124v46M38 147h42"/><rect x="104" y="152" width="40" height="84"/><path d="M124 152v84"/><path d="M196 236V126M392 236V126M186 126H404M186 118H404"/><path d="${ticks(200, 392, 24, 118, 'v-8')}"/><path d="M154 236L178 212H420M166 224H420"/><path d="${(() => { let s = ''; for (let x = 206; x <= 420; x += 30) s += `M${x} 212L${x - 14} 236`; return s; })()}"/><rect x="292" y="184" width="88" height="28"/><path d="M292 198H380M322 184V198M352 198V212"/><circle cx="306" cy="176" r="9"/><circle cx="328" cy="174" r="10"/><circle cx="352" cy="176" r="9"/><circle cx="371" cy="177" r="7"/>`,
-  backyard: `<path d="M0 236H420"/><path d="M252 160H420M252 176H420"/><path d="${ticks(254, 420, 16, 152, 'V236')}"/><rect x="20" y="112" width="200" height="124"/><path d="M8 114L120 50L232 114"/><rect x="40" y="136" width="46" height="40"/><path d="M63 136v40M40 156h46"/><rect x="112" y="152" width="72" height="84"/><path d="M148 152v84"/><path d="M330 236V172"/><circle cx="330" cy="130" r="44"/><path d="M308 120a24 24 0 0 1 30-14M318 148a20 20 0 0 0 26-6"/><path d="${ticks(232, 410, 14, 236)}"/><circle cx="244" cy="226" r="10"/><circle cx="264" cy="228" r="8"/>`,
-  commercial: `<path d="M0 236H420"/><rect x="60" y="40" width="300" height="196"/><path d="M52 40H368M52 32H368M52 32V40M368 32V40"/><path d="M60 122H360M60 130H360"/>${[84, 154, 224, 294].map((x) => `<rect x="${x}" y="62" width="50" height="46"/><path d="M${x + 25} 62v46"/>`).join('')}<rect x="84" y="146" width="194" height="90"/><path d="M132 146v90M180 146v90M228 146v90"/><rect x="298" y="154" width="40" height="82"/><path d="M290 146H346L340 136H296Z"/><path d="M30 236V204"/><circle cx="30" cy="190" r="16"/><path d="M394 236V204"/><circle cx="394" cy="190" r="16"/>`,
-};
-const art = (k, cls = 'entry-art') => `<svg class="${cls}" viewBox="0 0 420 240" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true" preserveAspectRatio="xMidYMax meet">${ART[k]}</svg>`;
 
 // ---------------------------------------------------------------- shared blocks
 const isActive = (k) => (k === '' ? CUR === '' : CUR === k || CUR.startsWith(k + '/'));
@@ -120,30 +118,26 @@ const navLink = ([k, label]) => `<a class="nav-link" href="${L(k)}"${isActive(k)
 
 function header() {
   const over = CUR === '';
+  const links = [['projects', 'Projects'], ['process', 'Process'], ['about', 'About'], ['reviews', 'Reviews'], ['contact', 'Contact']];
   return `
 <a class="skip" href="#main">Skip to content</a>
 ${PREVIEW ? `<div class="preview-bar" role="note"><div class="wrap"><span class="pv-dot" aria-hidden="true"></span><span><b>Website concept by Marvani</b> for ${esc(biz.name)}</span><span class="pv-sep">Preview, not live yet. Dashed tags mark details still to add.</span></div></div>` : ''}
 <header class="site-head${over ? ' is-over' : ''}" id="site-head">
   <div class="head-in">
-    <nav class="nav nav-l" aria-label="Main">
-      ${navLink(['', 'Home'])}
+    <a class="brand" href="${L('')}" aria-label="${attr(biz.name)}, home">${crest(120, 'brand-crest')}<span class="brand-txt"><b>Bighorn</b><small>Construction &amp; Hardscape</small></span></a>
+    <nav class="nav" aria-label="Main">
       <div class="nav-item has-menu">
         <a class="nav-link" href="${L('services')}"${isActive('services') ? ' aria-current="page"' : ''}>Services</a>
-        <button class="nav-caret" type="button" aria-expanded="false" aria-controls="mega"><span class="sr">Show services</span><svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button>
+        <button class="nav-caret" type="button" aria-expanded="false" aria-controls="mega"><span class="sr">Show services</span><svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
         <div class="mega" id="mega">
-          <ul class="mega-list">${services.map((s) => `<li><a href="${L('services/' + s.slug)}"${CUR === 'services/' + s.slug ? ' aria-current="page"' : ''}>${icon(SVC_ICON[s.slug], 26, 1.3)}<span><b>${esc(s.name)}</b><small>${esc(s.line)}</small></span></a></li>`).join('')}</ul>
+          <ul class="mega-list">${services.map((s) => `<li><a href="${L('services/' + s.slug)}"${CUR === 'services/' + s.slug ? ' aria-current="page"' : ''}>${icon(SVC_ICON[s.slug], 26, 1.4)}<span><b>${esc(s.name)}</b><small>${esc(s.line)}</small></span></a></li>`).join('')}</ul>
+          <a class="mega-all" href="${L('services')}">All services ${arrow}</a>
         </div>
       </div>
-      ${navLink(['projects', 'Projects'])}
-      ${navLink(['process', 'Process'])}
+      ${links.map(navLink).join('')}
     </nav>
-    <a class="brand" href="${L('')}" aria-label="${attr(biz.name)}, home">${crest(120, 'brand-crest')}<span class="brand-txt"><b>Bighorn</b><small>Construction &amp; Hardscape</small></span></a>
-    <nav class="nav nav-r" aria-label="Company">
-      ${navLink(['about', 'About'])}
-      ${navLink(['reviews', 'Reviews'])}
-      ${navLink(['contact', 'Contact'])}
-      <a class="btn btn-clay head-cta" href="tel:${biz.tel}">${biz.phone}</a>
-    </nav>
+    <a class="head-tel" href="tel:${biz.tel}">${icon('phone', 18, 1.6)}<span>${biz.phone}</span></a>
+    <a class="btn btn-clay head-cta" href="${L('quote')}">Free estimate</a>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="mnav"><span class="menu-bars" aria-hidden="true"></span><span class="menu-lbl">Menu</span></button>
   </div>
 </header>
@@ -153,10 +147,10 @@ ${PREVIEW ? `<div class="preview-bar" role="note"><div class="wrap"><span class=
       <li><a href="${L('')}">Home</a></li>
       <li><a href="${L('services')}">Services</a>
         <ul class="mnav-sub">${services.map((s) => `<li><a href="${L('services/' + s.slug)}">${esc(s.nav)}</a></li>`).join('')}</ul></li>
-      ${[['projects', 'Projects'], ['process', 'Process'], ['about', 'About'], ['reviews', 'Reviews'], ['contact', 'Contact']].map(([k, l]) => `<li><a href="${L(k)}">${l}</a></li>`).join('')}
+      ${links.map(([k, l]) => `<li><a href="${L(k)}">${l}</a></li>`).join('')}
     </ul>
     <div class="mnav-cta">
-      ${btn(L('quote'), 'Request a free estimate', 'btn-clay btn-lg')}
+      ${btn(L('quote'), 'Get a free estimate', 'btn-clay btn-lg')}
       <a class="btn btn-ghost btn-lg" href="tel:${biz.tel}">Call ${biz.phone}</a>
     </div>
   </div>
@@ -164,30 +158,29 @@ ${PREVIEW ? `<div class="preview-bar" role="note"><div class="wrap"><span class=
 }
 
 function footer() {
-  const card = (href, ic, h, v) => `<a class="foot-card" href="${href}">${icon(ic, 40)}<span class="fc-h">${h}</span><span class="fc-v">${v}</span>${arrow}</a>`;
   return `
 <footer class="site-foot">
-  <div class="wrap">
-    <div class="foot-cards">
-      ${card(`mailto:${biz.email}`, 'mail', 'Email', esc(biz.email))}
-      ${card(`tel:${biz.tel}`, 'phone', 'Call or text', biz.phone)}
-      ${card(L('contact'), 'pin', 'Service area', 'Reno, Sparks and surrounding areas')}
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <a class="foot-logo" href="${L('')}" aria-label="${attr(biz.name)}, home">${crest(240, 'foot-crest')}<span><b>Bighorn</b><small>Construction &amp; Hardscape</small></span></a>
+      <p class="foot-tag">${esc(biz.tagline)}</p>
+      <p class="foot-lic">Licensed, insured &amp; bonded &middot; ${license()}</p>
+      <a class="foot-ig" href="${biz.instagram}" target="_blank" rel="noopener">${icon('insta', 20, 1.5)}<span>${biz.igHandle}</span></a>
     </div>
-    <div class="foot-cols">
-      <div class="foot-brand">
-        <a href="${L('')}" aria-label="${attr(biz.name)}, home">${crest(240, 'foot-crest')}</a>
-        <p class="foot-tag">${esc(biz.tagline)}</p>
-        <p class="foot-lic">Licensed, insured &amp; bonded<br>${license()}</p>
-        <a class="foot-ig" href="${biz.instagram}" target="_blank" rel="noopener" aria-label="Bighorn on Instagram">${icon('insta', 22, 1.4)}</a>
-      </div>
-      <div><h2 class="foot-h">Pages</h2><ul><li><a href="${L('')}">Home</a></li><li><a href="${L('about')}">About</a></li><li><a href="${L('projects')}">Projects</a></li><li><a href="${L('process')}">Our process</a></li><li><a href="${L('reviews')}">Reviews</a></li><li><a href="${L('contact')}">Contact</a></li><li><a href="${L('quote')}">Free estimate</a></li></ul></div>
-      <div><h2 class="foot-h">Services</h2><ul>${services.map((s) => `<li><a href="${L('services/' + s.slug)}">${esc(s.nav.charAt(0).toUpperCase() + s.nav.slice(1))}</a></li>`).join('')}</ul></div>
-      <div><h2 class="foot-h">Contact</h2><ul class="foot-contact"><li><a href="tel:${biz.tel}">${biz.phone}</a><span>Call or text</span></li><li><a href="mailto:${biz.email}">${biz.email}</a></li><li>${biz.city}, Nevada</li><li><span>Estimates are always free</span></li></ul></div>
+    <div><h2 class="foot-h">Services</h2><ul>${services.map((s) => `<li><a href="${L('services/' + s.slug)}">${esc(s.nav.charAt(0).toUpperCase() + s.nav.slice(1))}</a></li>`).join('')}</ul></div>
+    <div><h2 class="foot-h">Company</h2><ul><li><a href="${L('projects')}">Projects</a></li><li><a href="${L('process')}">Our process</a></li><li><a href="${L('about')}">About Bighorn</a></li><li><a href="${L('reviews')}">Reviews</a></li><li><a href="${L('contact')}">Contact</a></li></ul></div>
+    <div class="foot-contact">
+      <h2 class="foot-h">Get in touch</h2>
+      <a class="foot-tel" href="tel:${biz.tel}">${biz.phone}</a>
+      <p>Call or text</p>
+      <a href="mailto:${biz.email}">${biz.email}</a>
+      <p>${biz.city}, Nevada &middot; Estimates are always free</p>
+      ${btn(L('quote'), 'Get a free estimate', 'btn-clay')}
     </div>
-    <div class="foot-base">
-      <span>&copy; ${YEAR} ${esc(biz.name)}. All rights reserved.</span>
-      <span>${PREVIEW ? 'Website concept by Marvani' : 'Website by Marvani'}</span>
-    </div>
+  </div>
+  <div class="wrap foot-base">
+    <span>&copy; ${YEAR} ${esc(biz.name)}</span>
+    <span>${PREVIEW ? 'Website concept by Marvani' : 'Website by Marvani'}</span>
   </div>
 </footer>
 <nav class="mbar" aria-label="Quick contact">
@@ -205,27 +198,24 @@ function pageHead({ crumbs: cr, label, title, lede, image, pos = '50% 50%', extr
     ${cr ? crumbs(cr) : ''}
     ${label ? `<p class="label label-sand">${label}</p>` : ''}
     <h1 class="d-xl">${title}</h1>
-    ${rule}
     ${lede ? `<p class="lede">${lede}</p>` : ''}
     ${extra}
   </div>
 </section>`;
 }
 
-function cta({ title = 'Ready to start your project?', text = 'Estimates are free. Call, text or send a few details and we will set up a walkthrough.', service = '' } = {}) {
+function cta({ title = 'Ready to start your project?', text = 'Estimates are free. Send a few details or give us a call, and we will set up a walkthrough.', service = '' } = {}) {
   const id = 'cta-' + (CUR.replace(/\W/g, '') || 'home');
   return `
-<section class="cta2" aria-labelledby="${id}">
-  ${crest(640, 'cta2-mark')}
-  <div class="wrap cta2-in">
-    <h2 class="d-l" id="${id}">${title}</h2>
-    <p class="cta2-sub">${text}</p>
-    <div class="cta-row">${btn(service ? L('quote', service) : L('quote'), 'Get a free estimate', 'btn-clay btn-lg')}<a class="btn btn-ghost btn-lg" href="tel:${biz.tel}">Call ${biz.phone}</a></div>
+<section class="cta3" aria-labelledby="${id}">
+  <div class="wrap cta3-in">
+    <div class="cta3-copy"><h2 class="d-l" id="${id}">${title}</h2><p>${text}</p></div>
+    <div class="cta-row">${btn(service ? L('quote', service) : L('quote'), 'Get a free estimate', 'btn-white btn-lg')}<a class="btn btn-ghost btn-lg" href="tel:${biz.tel}">${icon('phone', 16, 1.8)}${biz.phone}</a></div>
   </div>
 </section>`;
 }
 
-const secHead = (label, title, id, sub = '', dark = false) => `<div class="sec-center"><p class="label${dark ? ' label-sand' : ''}">${label}</p><h2 class="d-l" id="${id}">${title}</h2>${rule}${sub ? `<p class="sec-sub">${sub}</p>` : ''}</div>`;
+const secHead = (label, title, id, sub = '', dark = false) => `<div class="sec-head${sub ? ' split' : ''}"><div><p class="label${dark ? ' label-sand' : ''}">${label}</p><h2 class="d-l" id="${id}">${title}</h2></div>${sub ? `<p class="sec-sub">${sub}</p>` : ''}</div>`;
 
 function compare(p, { sizes = '(min-width: 1100px) 34vw, 100vw', caption = true, big = false } = {}) {
   const bl = p.beforeLabel || 'Before', al = p.afterLabel || 'After';
@@ -256,15 +246,6 @@ function workCard(p, cls = '') {
 </a>`;
 }
 
-function tile(p) {
-  return `
-<a class="tile${p.landscape ? ' is-land' : ''}" href="${L('projects/' + p.slug)}">
-  ${pic(p.after, { alt: p.alts.after, sizes: '(min-width: 1000px) 34vw, 100vw', pos: p.afterPos })}
-  ${pic(p.before, { alt: '', cls: 'tile-before', sizes: '(min-width: 1000px) 34vw, 100vw', pos: p.beforePos })}
-  <span class="tile-flag">${p.status === 'In progress' ? '<i class="live" aria-hidden="true"></i>In progress' : '<span class="f-a">After</span><span class="f-b">Before</span>'}</span>
-  <span class="tile-meta"><span class="mono">${esc(p.type)} &middot; ${esc(p.tags.slice(0, 2).join(', '))}</span><span class="tile-t">${esc(p.title)}</span></span>
-</a>`;
-}
 
 function processSteps() {
   return `
@@ -429,106 +410,121 @@ page('', {
   desc: 'Concrete, paver patios, backyard design, sod and sprinklers, fencing, dirt work and remodels in Reno, Sparks and Northern Nevada. Owner-run, licensed, insured and bonded. Free estimates: 775-440-3757.',
   ld: () => [bizLd(), { '@context': 'https://schema.org', '@type': 'WebSite', name: biz.name, url: SITE_URL + '/' }],
   render() {
-    const slides = [['backyard-after', '50% 62%'], ['sod-after', '50% 55%'], ['sideyard-after', '50% 60%']];
-    const entries = [
-      ['services/pavers-hardscape', 'hardscape', 'pavers', 'Hardscape &amp; concrete'],
-      ['services/backyard-design', 'backyard', 'tree', 'Backyards &amp; landscaping'],
-      ['services/remodels', 'commercial', 'building', 'Remodels &amp; commercial'],
-    ];
-    const ring = (ic, h, p) => `<li class="ring" data-ring><span class="ring-c"><svg class="ring-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="56"/><circle class="ring-bar" cx="60" cy="60" r="56"/></svg>${icon(ic, 40, 1.2)}</span><h3 class="d-s">${h}</h3><p>${p}</p></li>`;
+    const hp = [[projBy('backyard-rebuild'), '50% 62%'], [projBy('sod-install'), '50% 58%'], [projBy('side-yard-concrete'), '50% 60%']];
+    const trust = [['license', 'Licensed &amp; bonded', 'Nevada contractor'], ['shield', 'Insured', 'For the work on your property'], ['estimate', 'Free estimates', 'On site, no obligation'], ['hat', 'Owner-run', 'You deal with the owner']];
     return `
 <section class="hero" data-hero aria-labelledby="hero-h">
   <div class="hero-bg" aria-hidden="true">
-    ${slides.map(([img, pos], i) => `<div class="hero-slide${i === 0 ? ' is-on' : ''}">${pic(img, { alt: '', sizes: '100vw', pos, eager: i === 0, defer: i > 0 })}</div>`).join('')}
+    ${hp.map(([p, pos], i) => `<div class="hero-slide${i === 0 ? ' is-on' : ''}">${pic(p.after, { alt: '', sizes: '100vw', pos, eager: i === 0, defer: i > 0 })}</div>`).join('')}
   </div>
-  <div class="hero-in">
-    <h1 class="hero-h" id="hero-h"><span class="hn-1">Bighorn</span><span class="hn-2">Construction &amp; Hardscape</span></h1>
-    <p class="hero-tag">Concrete <i>&middot;</i> Pavers <i>&middot;</i> Landscaping <i>&middot;</i> Remodels <span>in Reno, Sparks &amp; Northern Nevada</span></p>
-    <div class="cta-row">${btn(L('quote'), 'Request a free estimate', 'btn-ghost btn-lg')}</div>
+  <div class="wrap hero-in">
+    <p class="label label-sand">Reno &middot; Sparks &middot; Northern Nevada</p>
+    <h1 class="hero-h" id="hero-h"><span class="sr">${esc(biz.name)}: </span>Built for the <em>high desert.</em></h1>
+    <p class="hero-lede">Concrete, pavers, lawns, fences and remodels from an owner-run Reno crew that gets the dirt work right before anything goes on top.</p>
+    <div class="cta-row">${btn(L('quote'), 'Get a free estimate', 'btn-clay btn-lg')}<a class="btn btn-ghost btn-lg" href="${L('projects')}">See our work</a></div>
+  </div>
+  <div class="wrap hero-proj">
+    <div class="hp-list" role="group" aria-label="Featured jobs in the background photo">
+      ${hp.map(([p], i) => `<button type="button" class="hp-item" data-go="${i}" data-href="${L('projects/' + p.slug)}"${i === 0 ? ' aria-current="true"' : ''}><i aria-hidden="true"></i><span class="hp-no">0${i + 1}</span><span class="hp-t">${esc(p.title)}</span><span class="hp-s">${esc(p.tags.slice(0, 2).join(' · '))}</span></button>`).join('')}
+    </div>
+    <a class="hp-link" href="${L('projects/' + hp[0][0].slug)}" data-hero-link>View this project ${arrow}</a>
   </div>
 </section>
 
-<section class="entry" aria-label="What we build">
-  <div class="wrap entry-grid">
-    ${entries.map(([href, a, ic, t]) => `<a class="entry-card" href="${L(href)}">${art(a)}${icon(ic, 46, 1)}<span class="entry-t">${t}</span></a>`).join('')}
-  </div>
+<section class="trust" aria-label="Why Bighorn">
+  <div class="wrap"><ul class="trust-bar">${trust.map(([ic, b, sm]) => `<li>${icon(ic, 34, 1.3)}<span><b>${b}</b><small>${sm}</small></span></li>`).join('')}</ul></div>
 </section>
 
-<section class="band paper intro2" aria-labelledby="intro-h">
+<section class="band paper about2" aria-labelledby="who-h">
   <div class="wrap two-col">
-    <div class="intro2-l" data-rise>
-      <h2 class="d-strong" id="intro-h">Tough work.<br>Flawless results.</h2>
-      ${rule}
-      <blockquote class="owner-q"><p>“${esc(biz.ownerQuote)}”</p></blockquote>
-      <p class="owner-sig">The owner <span>&middot; ${esc(biz.name)}</span></p>
-    </div>
-    <div class="intro2-r" data-rise>
-      <p>${esc(biz.name)} is an owner-run company in Reno, Nevada. We build the ground around homes and businesses: concrete walkways and pads, paver patios, sod and sprinkler systems, fences and gates, and the dirt work underneath all of it.</p>
-      <p>We are licensed, insured and bonded. Estimates are free, and the person you talk to on the phone is the person responsible for your job.</p>
-      ${btn(L('about'), 'About us')}
+    <figure class="about2-media" data-rise>
+      ${pic('office-demo', { alt: projBy('office-remodel').alts.after, sizes: '(min-width: 1000px) 46vw, 100vw' })}
+      <figcaption class="about2-badge">${crest(120, '', '')}<span><b>Owner-run</b><small>Reno, Nevada</small></span></figcaption>
+    </figure>
+    <div class="about2-copy">
+      <p class="label">Who we are</p>
+      <h2 class="d-l" id="who-h">One crew for the whole yard.</h2>
+      <p class="lede">${esc(biz.name)} is an owner-run company based in Reno. We handle the ground around homes and businesses, from the first cut of dirt to the last paver, plus remodels and commercial work.</p>
+      <ul class="check-list">
+        <li>${icon('check', 18, 2.2)}Dirt work, base and finish done by the same crew</li>
+        <li>${icon('check', 18, 2.2)}A clear scope and price before any work starts</li>
+        <li>${icon('check', 18, 2.2)}A clean site when we leave</li>
+      </ul>
+      <blockquote class="owner-q"><p>“${esc(biz.ownerQuote)}”</p><footer>The owner</footer></blockquote>
+      <div class="cta-row">${btn(L('about'), 'About Bighorn', 'btn-ink')}<a class="link-arrow" href="${L('process')}">How we work ${arrow}</a></div>
     </div>
   </div>
 </section>
 
-<section class="svc2" aria-labelledby="svc-h">
-  ${art('backyard', 'svc2-bg')}
-  <div class="wrap">
-    ${secHead('Our services', 'From the ground up', 'svc-h', '', true)}
-    <ul class="svc2-grid">
-      ${services.map((s) => `<li><a class="svc2-item" href="${L('services/' + s.slug)}">${icon(SVC_ICON[s.slug], 38, 1.1)}<span class="svc2-t">${esc(s.name)}</span><span class="svc2-d">${esc(s.line)}</span></a></li>`).join('')}
+<section class="svc3" aria-labelledby="svc-h">
+  <div class="wrap svc3-grid">
+    <div class="svc3-head">
+      <p class="label label-sand">What we build</p>
+      <h2 class="d-l" id="svc-h">Seven trades.<br>One phone number.</h2>
+      <p>Most outdoor projects need three or four of these. When one crew does all of them, nothing gets lost between contractors.</p>
+      ${btn(L('services'), 'All services', 'btn-ghost')}
+    </div>
+    <ul class="svc3-list">
+      ${services.map((s) => `<li><a class="svc3-row" href="${L('services/' + s.slug)}"><span class="svc3-ico">${icon(SVC_ICON[s.slug], 30, 1.3)}</span><span class="svc3-txt"><b>${esc(s.name)}</b><small>${esc(s.line)}</small></span><span class="svc3-thumb">${pic(s.card || s.image, { alt: '', sizes: '120px', pos: s.card ? s.cardPos : s.imagePos })}</span>${arrow}</a></li>`).join('')}
     </ul>
   </div>
 </section>
 
-<section class="band paper big-sec" aria-labelledby="big-h">
+<section class="band sand spot" aria-labelledby="spot-h" data-spot>
   <div class="wrap">
-    <div class="big-stage"><span class="big-word" aria-hidden="true">Free</span><h2 class="big-title" id="big-h">Estimates on every job</h2></div>
-    <ul class="rings">
-      ${ring('license', 'Licensed', `A Nevada contractor’s license: ${license()}.`)}
-      ${ring('shield', 'Insured', 'Insured for the work we do on your property, big job or small.')}
-      ${ring('seal', 'Bonded', 'A contractor’s bond backs our license, as Nevada requires.')}
-    </ul>
-  </div>
-</section>
-
-${cta()}
-
-<section class="band paper split2" aria-labelledby="split-h">
-  <div class="wrap two-col">
-    <div class="split2-copy" data-rise>
-      <h2 class="d-strong" id="split-h">The whole yard,<br>one crew.</h2>
-      ${rule}
-      <p>Most outdoor projects need dirt work, a solid base, the surface, water and a fence. We do all of it on one schedule, so you are not lining up three contractors and hoping they show up in the right order.</p>
-      <p>We work across Reno, Sparks, Sun Valley, Spanish Springs, Carson City, Fernley, Fallon and the towns between.</p>
-      ${btn(L('services'), 'Our services')}
+    <div class="spot-head">
+      <div><p class="label">Recent work</p><h2 class="d-l" id="spot-h">Before &amp; after, from our own jobs</h2></div>
+      <div class="spot-ctrl"><span class="spot-count" aria-live="polite"><b data-spot-n>01</b> / ${String(projects.length).padStart(2, '0')}</span><button type="button" class="spot-btn" data-spot-prev aria-label="Previous project">${icon('chevL', 22, 1.6)}</button><button type="button" class="spot-btn" data-spot-next aria-label="Next project">${icon('chevR', 22, 1.6)}</button></div>
     </div>
-    <figure class="split2-fig"><span class="vlabel" aria-hidden="true">Reno &middot; Sparks</span>${pic('sod-after', { alt: projBy('sod-install').alts.after, sizes: '(min-width: 1000px) 46vw, 100vw', pos: '50% 60%' })}</figure>
+    <div class="spot-stage">
+      ${projects.map((p, i) => `
+      <article class="spot-slide${p.landscape ? ' is-land' : ''}" data-i="${i}" aria-label="${i + 1} of ${projects.length}: ${attr(p.title)}">
+        <a class="spot-media" href="${L('projects/' + p.slug)}" tabindex="-1" aria-hidden="true">
+          <span class="spot-after">${pic(p.after, { alt: '', sizes: '(min-width: 1000px) 44vw, 100vw', pos: p.afterPos })}<span class="ba-tag ba-tag-a">${p.afterLabel || 'After'}</span></span>
+          <span class="spot-before">${pic(p.before, { alt: '', sizes: '(min-width: 1000px) 18vw, 40vw', pos: p.beforePos })}<span class="ba-tag">${p.beforeLabel || 'Before'}</span></span>
+        </a>
+        <div class="spot-copy">
+          <p class="mono">${esc(p.type)}${p.date ? ' &middot; ' + esc(p.date) : ''}${p.status === 'In progress' ? ' &middot; <span class="live-tag"><i class="live" aria-hidden="true"></i>In progress</span>' : ''}</p>
+          <h3 class="d-strong">${esc(p.title)}</h3>
+          <p>${esc(p.summary)}</p>
+          <ul class="tag-list tag-list-ink">${p.tags.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+          ${btn(L('projects/' + p.slug), 'See the project', 'btn-ink')}
+        </div>
+      </article>`).join('')}
+    </div>
+    <p class="spot-note">Phone photos straight from the job site. No stock photography. <a href="${L('projects')}">All projects</a></p>
   </div>
 </section>
 
-<section class="band concrete tiles-sec" aria-labelledby="work-h">
+<section class="band paper how" aria-labelledby="how-h">
   <div class="wrap">
-    ${secHead('Our work', 'Before &amp; after', 'work-h', 'Photos from our own jobs. Hover a project to see where it started.')}
-    <div class="tiles">
-      ${['backyard-rebuild', 'side-yard-concrete', 'sod-install', 'staircase-renovation', 'office-remodel'].map((k) => tile(projBy(k))).join('')}
+    ${secHead('How it works', 'From first call to final walkthrough', 'how-h', `The same five steps on a gate repair and on a full backyard. <a href="${L('process')}">More on our process</a>.`)}
+    <ol class="steps-row">${steps.map(([h, p], i) => `<li data-rise><span class="row-no">0${i + 1}</span><h3 class="d-s">${h}</h3><p>${p}</p></li>`).join('')}</ol>
+  </div>
+</section>
+
+${areaSection()}
+
+<section class="band paper rev2" aria-labelledby="rev-h">
+  <div class="wrap rev2-grid">
+    <div class="rev2-copy"><p class="label">Reviews</p><h2 class="d-l" id="rev-h">What clients say</h2><p>Real reviews from Bighorn clients, published with their permission.</p><a class="link-arrow" href="${L('reviews')}">All reviews ${arrow}</a></div>
+    <div class="rev2-slot"><span class="rev-mark" aria-hidden="true">“</span>${todoBox('A real client review', 'Paste a Google review here, with the client’s first name, town and project. We will not publish made-up reviews.')}</div>
+  </div>
+</section>
+
+<section class="band sand contact3" aria-labelledby="ct-h">
+  <div class="wrap contact3-grid">
+    <div class="contact3-info">
+      <p class="label label-sand">Free estimate</p>
+      <h2 class="d-l" id="ct-h">Tell us what you’re planning</h2>
+      <p>Send a few details and we will set up a walkthrough. Prefer to talk? Call or text any time.</p>
+      <dl class="direct direct-dark">
+        <div><dt>Call or text</dt><dd><a class="direct-val" href="tel:${biz.tel}">${biz.phone}</a><button class="copy" type="button" data-copy="${biz.phone}">Copy</button></dd></div>
+        <div><dt>Email</dt><dd><a class="direct-val" href="mailto:${biz.email}">${biz.email}</a><button class="copy" type="button" data-copy="${biz.email}">Copy</button></dd></div>
+        <div><dt>Instagram</dt><dd><a class="direct-val" href="${biz.instagram}" target="_blank" rel="noopener">${biz.igHandle}</a></dd></div>
+      </dl>
     </div>
-    <div class="center-row">${btn(L('projects'), 'All projects', 'btn-ink')}</div>
-  </div>
-</section>
-
-<section class="quote-band" aria-labelledby="rev-h">
-  <div class="qb-bg" data-parallax aria-hidden="true">${pic('backyard-after', { alt: '', sizes: '100vw', pos: '50% 40%' })}</div>
-  <div class="wrap qb-in">
-    <h2 class="d-xl" id="rev-h">What clients say</h2>
-    ${todoBox('A real client review', 'Paste a Google review here, with the client’s first name, town and project. We will not publish made-up reviews.')}
-    <a class="link-arrow" href="${L('reviews')}">All reviews ${arrow}</a>
-  </div>
-</section>
-
-<section class="band paper contact2" aria-labelledby="ct-h">
-  <div class="wrap contact2-in">
-    ${secHead('Contact', 'Tell us about your project', 'ct-h', `Or call or text <a href="tel:${biz.tel}">${biz.phone}</a>. Estimates are free.`)}
-    ${quoteForm({ compact: true })}
+    <div class="contact3-form">${quoteForm({ compact: true })}</div>
   </div>
 </section>`;
   },
@@ -1001,7 +997,7 @@ ${pg.key === '404' ? '' : `<link rel="canonical" href="${canonical(pg.key)}">`}
 <link rel="apple-touch-icon" href="${A('img/crest-180.png')}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&family=Mulish:ital,wght@0,300;0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <link rel="stylesheet" href="${A('assets/site.css')}">
 ${ld.map((x) => `<script type="application/ld+json">${JSON.stringify(x)}</script>`).join('\n')}`;
 }
